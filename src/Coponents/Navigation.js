@@ -7,7 +7,7 @@ function Navigation({ firstName, lastName }) {
   return (
     <div className="navigation-container">
       <div className="login-heading-container">
-        <img src={logo} alt="logo" width="20%" />
+        <img src={logo} alt="logo" width="18%" />
         <h2>BiblioSpace</h2>
       </div>
       <h3 className="nav-name">Hello {firstName},</h3>

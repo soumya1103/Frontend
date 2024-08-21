@@ -1,0 +1,57 @@
+.sidebar-container {
+  /* background-color: #f6eee0; */
+  background-color: #faf5ec;
+  padding: 10% 5% 5% 22%;
+  height: 83vh;
+  border-right: 0.5px solid #a4755116;
+  display: grid;
+}
+
+.sidebar-inner-container {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.sidebar-icon h3 {
+  color: #003060;
+  font-size: 1.4rem;
+}
+
+.sidebar-inner-container h3:hover {
+  text-decoration: underline;
+  text-decoration-color: #e55b13;
+}
+
+.sidebar-icon {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sidebar-icon img {
+  text-align: right;
+  justify-content: right;
+  margin-right: 5%;
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sidebar-logout-btn img {
+  margin-right: 5%;
+}
+
+.sidebar-logout-btn h3 {
+  color: #e55b13;
+  font-size: 1.5rem;
+}
+
+.sidebar-logout-btn :hover {
+  text-decoration: underline;
+  text-decoration-color: #003060;
+}

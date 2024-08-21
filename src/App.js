@@ -1,12 +1,13 @@
 import "./App.css";
-import Navigation from "./Coponents/Navigation";
+// import DashboardHoc from "./Coponents/HOC/DashboardHoc";
+import Dashboard from "./Pages/Dashboard";
 import Login from "./Pages/Login";
 
 function App() {
   return (
     <div className="App">
       {/* <Login /> */}
-      <Navigation firstName="Soumya" lastName="Agrawal" />
+      <Dashboard />
     </div>
   );
 }
