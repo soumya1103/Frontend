@@ -8,6 +8,7 @@ import axios from "axios";
 
 function Books() {
   const [books, setBooks] = useState([]);
+
   const columns = [
     { header: "Category", accessor: "categoryName" },
     { header: "Title", accessor: "bookTitle" },
@@ -25,7 +26,7 @@ function Books() {
 
         const booksData = response.data.map((book) => ({
           ...book,
-          operation: <Operation />,
+          operation: <Operation widthE="15%" widthD="12%" />,
         }));
 
         setBooks(booksData);

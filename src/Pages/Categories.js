@@ -1,81 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardHoc from "../Coponents/HOC/DashboardHoc";
 import "./Categories.css";
 import Button from "../Coponents/Button";
 import Table from "../Coponents/Table";
 import SearchBar from "../Coponents/SearchBar";
 import Operation from "../Coponents/Operation";
+import axios from "axios";
 
 function Categories() {
+  const [categories, setCategories] = useState([]);
+
   const columns = [
-    { header: "ID", accessor: "id" },
-    { header: "Name", accessor: "name" },
-    { header: "Email", accessor: "email" },
+    { header: "Icon", accessor: "categoryIcon" },
+    { header: "Name", accessor: "categoryName" },
     { header: "Operation", accessor: "operation" },
   ];
 
-  const data = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 3,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 4,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 5,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 6,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 7,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 8,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 9,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 10,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-  ];
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/lms/categories")
+      .then((response) => {
+        console.log(response.data);
+
+        const categoriesData = response.data.map((category) => ({
+          ...category,
+          categoryIcon: (
+            <img
+              src={category.categoryIcon}
+              alt={category.categoryName}
+              width="13%"
+            />
+          ),
+          operation: <Operation widthE="7%" widthD="5.5%" />,
+        }));
+
+        setCategories(categoriesData);
+      })
+      .catch((error) => {
+        console.error(
+          "There was an error fetching the categories data!",
+          error
+        );
+      });
+  }, []);
 
   const handleSearch = (query) => {
     // Perform your search logic here, e.g., filter a list or make an API call
@@ -91,7 +58,7 @@ function Categories() {
         <Button>Add Category</Button>
       </div>
       <div className="pages-table">
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={categories} />
       </div>
     </div>
   );
