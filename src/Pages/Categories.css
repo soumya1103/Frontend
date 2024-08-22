@@ -1,0 +1,14 @@
+.pages-outer-container {
+  padding: 2% 4%;
+}
+
+.pages-inner-container {
+  display: grid;
+  grid-template-columns: 30% 11%;
+  text-align: left;
+  justify-content: space-between;
+}
+
+.pages-table {
+  padding-top: 2%;
+}

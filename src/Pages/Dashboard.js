@@ -24,6 +24,7 @@ function Dashboard() {
     { id: 7, name: "Michael Johnson", email: "michael@example.com" },
     { id: 8, name: "Michael Johnson", email: "michael@example.com" },
     { id: 9, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 10, name: "Michael Johnson", email: "michael@example.com" },
   ];
 
   return (

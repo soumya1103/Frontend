@@ -6,21 +6,42 @@
   color: #a47551;
   text-align: center;
   outline: 2px solid #a4755141;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  table-layout: fixed;
 }
 
 .table-container th {
-  padding: 1.5%;
+  padding: 1%;
   border-bottom: 1px solid #a4755141;
+  font-size: 1rem;
 }
 
 .table-container td {
   border-top: 1px solid #a4755141;
-  padding: 1.5%;
+  padding: 1%;
   text-align: left;
+  font-size: 0.9rem;
 }
 
 .table-container th {
   text-align: center;
   background-color: #f6eee0;
   text-align: left;
+}
+
+.table th:first-child,
+.table td:first-child {
+  min-width: 150px; /* Minimum width for the first column */
+}
+
+.table th:last-child,
+.table td:last-child {
+  min-width: 100px; /* Minimum width for the last column */
+}
+
+.table th:not(:first-child):not(:last-child),
+.table td:not(:first-child):not(:last-child) {
+  min-width: 100px; /* Minimum width for other columns */
 }

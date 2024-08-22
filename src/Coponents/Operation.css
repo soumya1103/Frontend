@@ -1,0 +1,14 @@
+.operation-container {
+  display: flex;
+  gap: 5%;
+}
+
+.operation-img {
+  cursor: pointer;
+  padding-bottom: 1%;
+  border-bottom: 3px solid #fcfaf6;
+}
+
+.operation-img:hover {
+  border-bottom: 3px solid #003060;
+}
