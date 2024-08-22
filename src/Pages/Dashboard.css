@@ -41,3 +41,10 @@
   color: #a47551;
   margin: 0;
 }
+
+.dashboard-table-container {
+  display: grid;
+  padding: 3% 4%;
+  gap: 5%;
+  grid-template-columns: auto auto;
+}

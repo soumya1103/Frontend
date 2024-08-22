@@ -1,0 +1,26 @@
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 5px;
+  overflow: hidden;
+  color: #a47551;
+  text-align: center;
+  outline: 2px solid #a4755141;
+}
+
+.table-container th {
+  padding: 1.5%;
+  border-bottom: 1px solid #a4755141;
+}
+
+.table-container td {
+  border-top: 1px solid #a4755141;
+  padding: 1.5%;
+  text-align: left;
+}
+
+.table-container th {
+  text-align: center;
+  background-color: #f6eee0;
+  text-align: left;
+}

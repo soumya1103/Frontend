@@ -8,6 +8,24 @@ import inhouseUserDashboard from "../Images/inhouse-users-dashboard.png";
 import Table from "../Coponents/Table";
 
 function Dashboard() {
+  const columns = [
+    { header: "ID", accessor: "id" },
+    { header: "Name", accessor: "name" },
+    { header: "Email", accessor: "email" },
+  ];
+
+  const data = [
+    { id: 1, name: "John Doe", email: "john@example.com" },
+    { id: 2, name: "Jane Smith", email: "jane@example.com" },
+    { id: 3, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 4, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 5, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 6, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 7, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 8, name: "Michael Johnson", email: "michael@example.com" },
+    { id: 9, name: "Michael Johnson", email: "michael@example.com" },
+  ];
+
   return (
     <>
       <div className="dashboard-container">
@@ -32,8 +50,9 @@ function Dashboard() {
           <h4>Total Inhouse Users</h4>
         </div>
       </div>
-      <div>
-        <Table />
+      <div className="dashboard-table-container">
+        <Table columns={columns} data={data} />
+        <Table columns={columns} data={data} />
       </div>
     </>
   );
