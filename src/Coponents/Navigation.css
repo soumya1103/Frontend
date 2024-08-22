@@ -4,13 +4,13 @@
   padding: 0% 3% 0% 0;
   align-items: center;
   text-align: center;
-  background-color: #f6eee0;
-
+  /* background-color: #f6eee0; */
+  background-color: #faf5ec;
   border-bottom: 0.5px solid #a475513f;
 }
 
 .login-heading-container h2 {
-  color: #003060;
+  color: #e55b13;
   font-family: "Roboto Slab", serif;
   font-weight: 500;
   font-style: normal;

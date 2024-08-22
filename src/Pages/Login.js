@@ -4,9 +4,12 @@ import loginImg from "../Images/login-image.png";
 import "./Login.css";
 import Button from "../Coponents/Button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [selectedRole, setSelectedRole] = useState("admin");
+
+  const navigate = useNavigate();
 
   const handleAdminClick = () => {
     setSelectedRole("admin");
@@ -14,6 +17,10 @@ const Login = () => {
 
   const handleUserClick = () => {
     setSelectedRole("user");
+  };
+
+  const handleLogin = () => {
+    navigate("/dashboard");
   };
 
   return (
@@ -40,17 +47,17 @@ const Login = () => {
           </div>
           <form className="login-form">
             {selectedRole === "admin" && (
-              <input placeholder="Email" required type="email" />
+              <input placeholder="Email" type="email" />
             )}
 
             {selectedRole === "user" && (
               <input placeholder="Phone Number" required type="tel" />
             )}
             <br />
-            <input placeholder="Password" required type="password" />
+            <input placeholder="Password" type="password" />
             <br />
             <div className="login-button">
-              <Button>Login</Button>
+              <Button onClick={handleLogin}>Login</Button>
             </div>
           </form>
         </div>
