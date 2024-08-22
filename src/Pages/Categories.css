@@ -10,5 +10,7 @@
 }
 
 .pages-table {
-  padding-top: 2%;
+  margin-top: 2%;
+  overflow: scroll;
+  height: 74vh;
 }
