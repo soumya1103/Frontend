@@ -28,8 +28,8 @@ function Dashboard() {
   ];
 
   return (
-    <>
-      <div className="dashboard-container">
+    <div className="dashboard-outer-container">
+      <div className="dashboard-inner-container">
         <div className="dashboard-card">
           <img src={bookDashboard} alt="book" width="20%" />
           <h4>500</h4>
@@ -55,7 +55,7 @@ function Dashboard() {
         <Table columns={columns} data={data} />
         <Table columns={columns} data={data} />
       </div>
-    </>
+    </div>
   );
 }
 

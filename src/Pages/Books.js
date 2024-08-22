@@ -87,7 +87,7 @@ function Books() {
   return (
     <div className="pages-outer-container">
       <div className="pages-inner-container">
-        <SearchBar placeholder="Search  Books" onSearch={handleSearch} />
+        <SearchBar placeholder="Search Books" onSearch={handleSearch} />
         <Button>Add Books</Button>
       </div>
       <div className="pages-table">
