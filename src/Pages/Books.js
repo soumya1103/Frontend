@@ -26,7 +26,14 @@ function Books() {
 
         const booksData = response.data.map((book) => ({
           ...book,
-          operation: <Operation widthE="13%" widthD="10%" />,
+          operation: (
+            <Operation
+              widthE="13%"
+              widthD="10%"
+              showExtra={true}
+              isBooksPage={true}
+            />
+          ),
         }));
 
         setBooks(booksData);

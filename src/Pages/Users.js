@@ -21,7 +21,14 @@ function Users() {
       .then((response) => {
         const usersData = response.data.map((user) => ({
           ...user,
-          operation: <Operation widthE="6%" widthD="5%" showExtra={true} />,
+          operation: (
+            <Operation
+              widthE="6%"
+              widthD="5%"
+              showExtra={true}
+              isBooksPage={false}
+            />
+          ),
         }));
 
         setUsers(usersData);

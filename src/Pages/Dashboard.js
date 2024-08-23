@@ -12,7 +12,8 @@ function Dashboard() {
   const [booksData, setBooksData] = useState([]);
   const [totalBooks, setTotalBooks] = useState(0);
   const [totalCategories, setTotalCategories] = useState(0);
-  // const [usersData, setUsersData] = useState([]);
+  const [usersData, setUsersData] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
 
   const booksColumns = [
     { header: "Title", accessor: "bookTitle" },
@@ -21,11 +22,10 @@ function Dashboard() {
     { header: "Count", accessor: "bookCount" },
   ];
 
-  // const usersColumns = [
-  //   { header: "Category ID", accessor: "categoryId" },
-  //   { header: "Name", accessor: "categoryName" },
-  //   { header: "Icon", accessor: "categoryIcon" },
-  // ];
+  const userColumns = [
+    { header: "Name", accessor: "userName" },
+    { header: "Phone Number", accessor: "userCredential" },
+  ];
 
   useEffect(() => {
     axios
@@ -51,34 +51,17 @@ function Dashboard() {
         );
       });
 
-    // axios
-    //   .get("http://localhost:8080/lms/users")
-    //   .then((response) => {
-    //     setUsersData(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("There was an error fetching the users data!", error);
-    //   });
+    axios
+      .get("http://localhost:8080/lms/user")
+      .then((response) => {
+        const limitedUsersData = response.data.slice(0, 11);
+        setUsersData(limitedUsersData);
+        setTotalUsers(response.data.length);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the users data!", error);
+      });
   }, []);
-
-  const columns = [
-    { header: "ID", accessor: "id" },
-    { header: "Name", accessor: "name" },
-    { header: "Email", accessor: "email" },
-  ];
-
-  const data = [
-    { id: 1, name: "John Doe", email: "john@example.com" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
-    { id: 3, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 4, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 5, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 6, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 7, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 8, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 9, name: "Michael Johnson", email: "michael@example.com" },
-    { id: 10, name: "Michael Johnson", email: "michael@example.com" },
-  ];
 
   return (
     <div className="dashboard-outer-container">
@@ -95,7 +78,7 @@ function Dashboard() {
         </div>
         <div className="dashboard-card">
           <img src={userDashboard} alt="user" width="20%" />
-          <h4>50</h4>
+          <h4>{totalUsers}</h4>
           <h4>Total Users</h4>
         </div>
         <div className="dashboard-card">
@@ -105,8 +88,14 @@ function Dashboard() {
         </div>
       </div>
       <div className="dashboard-table-container">
-        <Table columns={booksColumns} data={booksData} />
-        <Table columns={columns} data={data} />
+        <div>
+          <h2>Books</h2>
+          <Table columns={booksColumns} data={booksData} />
+        </div>
+        <div>
+          <h2>Users</h2>
+          <Table columns={userColumns} data={usersData} />
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 .dashboard-outer-container {
-  padding: 3% 3%;
+  padding: 2% 3%;
 }
 
 .dashboard-inner-container {
@@ -47,7 +47,12 @@
 
 .dashboard-table-container {
   display: grid;
-  margin-top: 5%;
+  margin-top: 2.5%;
   gap: 6%;
   grid-template-columns: auto auto;
+}
+
+.dashboard-table-container h2 {
+  color: #a47551;
+  font-size: 1.4rem;
 }

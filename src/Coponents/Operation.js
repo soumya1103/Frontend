@@ -2,9 +2,10 @@ import React from "react";
 import editIcon from "../Images/edit-icon.svg";
 import deleteIcon from "../Images/trash-icon.svg";
 import assignBookIcon from "../Images/assign-book-icon.svg";
+import assignUserIcon from "../Images/assign-user-icon.svg";
 import "./Operation.css";
 
-function Operation({ widthE, widthD, showExtra }) {
+function Operation({ widthE, widthD, showExtra, isBooksPage }) {
   return (
     <div className="operation-container">
       <img src={editIcon} alt="edit" className="operation-img" width={widthE} />
@@ -16,8 +17,8 @@ function Operation({ widthE, widthD, showExtra }) {
       />
       {showExtra && (
         <img
-          src={assignBookIcon}
-          alt="extra"
+          src={isBooksPage ? assignUserIcon : assignBookIcon}
+          alt={isBooksPage ? "assign user" : "assign book"}
           className="operation-img"
           width={widthD}
         />
