@@ -20,8 +20,6 @@ function Categories() {
     axios
       .get("http://localhost:8080/lms/categories")
       .then((response) => {
-        console.log(response.data);
-
         const categoriesData = response.data.map((category) => ({
           ...category,
           categoryIcon: (

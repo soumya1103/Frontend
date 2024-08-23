@@ -1,86 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardHoc from "../Coponents/HOC/DashboardHoc";
 import Button from "../Coponents/Button";
 import Table from "../Coponents/Table";
 import SearchBar from "../Coponents/SearchBar";
 import Operation from "../Coponents/Operation";
+import axios from "axios";
 
 function Users() {
+  const [users, setUsers] = useState([]);
+
   const columns = [
-    { header: "ID", accessor: "id" },
-    { header: "Name", accessor: "name" },
-    { header: "Email", accessor: "email" },
+    { header: "Name", accessor: "userName" },
+    { header: "Phone Number", accessor: "userCredential" },
     { header: "Operation", accessor: "operation" },
   ];
 
-  const data = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 3,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 4,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 5,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 6,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 7,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 8,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 9,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-    {
-      id: 10,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation />,
-    },
-  ];
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/lms/user")
+      .then((response) => {
+        const usersData = response.data.map((user) => ({
+          ...user,
+          operation: <Operation widthE="6%" widthD="5%" showExtra={true} />,
+        }));
+
+        setUsers(usersData);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the users data!", error);
+      });
+  }, []);
 
   const handleSearch = (query) => {
-    // Perform your search logic here, e.g., filter a list or make an API call
+    // Perform your search logic here, e.g., filter the users list or make an API call
     console.log("Searching for:", query);
-    // Update the searchResults state with the results
-    // setSearchResults(results);
+    // Update the users state with the filtered results
   };
 
   return (
@@ -90,7 +44,7 @@ function Users() {
         <Button>Add User</Button>
       </div>
       <div className="pages-table">
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={users} />
       </div>
     </div>
   );
