@@ -30,18 +30,3 @@
   background-color: #f6eee0;
   text-align: left;
 }
-
-.table th:first-child,
-.table td:first-child {
-  min-width: 150px; /* Minimum width for the first column */
-}
-
-.table th:last-child,
-.table td:last-child {
-  min-width: 100px; /* Minimum width for the last column */
-}
-
-.table th:not(:first-child):not(:last-child),
-.table td:not(:first-child):not(:last-child) {
-  min-width: 100px; /* Minimum width for other columns */
-}

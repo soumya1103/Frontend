@@ -11,6 +11,10 @@
 
 .pages-table {
   margin-top: 2%;
-  overflow: scroll;
+  overflow-y: scroll;
   height: 74vh;
+}
+
+.pages-table::-webkit-scrollbar {
+  display: none;
 }
