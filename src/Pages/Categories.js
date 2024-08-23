@@ -31,7 +31,7 @@ function Categories() {
               width="13%"
             />
           ),
-          operation: <Operation widthE="7%" widthD="5.5%" />,
+          operation: <Operation widthE="6%" widthD="4.5%" />,
         }));
 
         setCategories(categoriesData);
