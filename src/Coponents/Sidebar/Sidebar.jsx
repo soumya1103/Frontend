@@ -1,11 +1,11 @@
 import React from "react";
 import "./Sidebar.css";
-import dashboard from "../Images/dashboard-image.svg";
-import categories from "../Images/categories-image.svg";
-import books from "../Images/book-image.svg";
-import users from "../Images/users-image.svg";
-import issuances from "../Images/issuances-image.svg";
-import logout from "../Images/logout-image.svg";
+import dashboard from "../../Images/dashboard-image.svg";
+import categories from "../../Images/categories-image.svg";
+import books from "../../Images/book-image.svg";
+import users from "../../Images/users-image.svg";
+import issuances from "../../Images/issuances-image.svg";
+import logout from "../../Images/logout-image.svg";
 import { Link, useLocation } from "react-router-dom";
 
 function Sidebar() {

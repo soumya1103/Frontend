@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import DashboardHoc from "../Coponents/HOC/DashboardHoc";
+import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import "./Dashboard.css";
-import bookDashboard from "../Images/book-dashboard.png";
-import categoryDashboard from "../Images/categories-dashboard.png";
-import userDashboard from "../Images/users-dashboard.png";
-import inhouseUserDashboard from "../Images/inhouse-users-dashboard.png";
-import Table from "../Coponents/Table";
+import bookDashboard from "../../Images/book-dashboard.png";
+import categoryDashboard from "../../Images/categories-dashboard.png";
+import userDashboard from "../../Images/users-dashboard.png";
+import inhouseUserDashboard from "../../Images/inhouse-users-dashboard.png";
+import Table from "../../Coponents/Table/Table";
 import axios from "axios";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);
   const [totalBooks, setTotalBooks] = useState(0);
   const [totalCategories, setTotalCategories] = useState(0);
-  const [usersData, setUsersData] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
 
   const booksColumns = [
@@ -22,16 +21,11 @@ function Dashboard() {
     { header: "Count", accessor: "bookCount" },
   ];
 
-  const userColumns = [
-    { header: "Name", accessor: "userName" },
-    { header: "Phone Number", accessor: "userCredential" },
-  ];
-
   useEffect(() => {
     axios
       .get("http://localhost:8080/lms/books")
       .then((response) => {
-        const limitedBooksData = response.data.slice(0, 10);
+        const limitedBooksData = response.data.slice(0, 8);
         setBooksData(limitedBooksData);
         setTotalBooks(response.data.length);
       })
@@ -52,14 +46,12 @@ function Dashboard() {
       });
 
     axios
-      .get("http://localhost:8080/lms/user")
+      .get("http://localhost:8080/lms/users/count")
       .then((response) => {
-        const limitedUsersData = response.data.slice(0, 11);
-        setUsersData(limitedUsersData);
-        setTotalUsers(response.data.length);
+        setTotalUsers(response.data);
       })
       .catch((error) => {
-        console.error("There was an error fetching the users data!", error);
+        console.error("There was an error fetching the users count!", error);
       });
   }, []);
 
@@ -88,14 +80,8 @@ function Dashboard() {
         </div>
       </div>
       <div className="dashboard-table-container">
-        <div>
-          <h2>Books</h2>
-          <Table columns={booksColumns} data={booksData} />
-        </div>
-        <div>
-          <h2>Users</h2>
-          <Table columns={userColumns} data={usersData} />
-        </div>
+        <h2>Books</h2>
+        <Table columns={booksColumns} data={booksData} />
       </div>
     </div>
   );

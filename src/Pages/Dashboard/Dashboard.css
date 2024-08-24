@@ -46,10 +46,7 @@
 }
 
 .dashboard-table-container {
-  display: grid;
   margin-top: 2.5%;
-  gap: 6%;
-  grid-template-columns: auto auto;
 }
 
 .dashboard-table-container h2 {

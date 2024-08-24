@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import DashboardHoc from "../Coponents/HOC/DashboardHoc";
-import "./Categories.css";
-import Button from "../Coponents/Button";
-import Table from "../Coponents/Table";
-import SearchBar from "../Coponents/SearchBar";
-import Operation from "../Coponents/Operation";
+import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
+import Button from "../../Coponents/Button/Button";
+import Table from "../../Coponents/Table/Table";
+import "./Pages.css";
+import SearchBar from "../../Coponents/SearchBar/SearchBar";
+import Operation from "../../Coponents/Operation/Operation";
 import axios from "axios";
 
 function Categories() {
@@ -29,7 +29,7 @@ function Categories() {
               width="13%"
             />
           ),
-          operation: <Operation widthE="6%" widthD="4.5%" />,
+          operation: <Operation widthE="7%" widthD="5%" />,
         }));
 
         setCategories(categoriesData);
@@ -43,10 +43,7 @@ function Categories() {
   }, []);
 
   const handleSearch = (query) => {
-    // Perform your search logic here, e.g., filter a list or make an API call
     console.log("Searching for:", query);
-    // Update the searchResults state with the results
-    // setSearchResults(results);
   };
 
   return (

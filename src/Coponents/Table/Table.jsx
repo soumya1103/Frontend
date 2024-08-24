@@ -6,6 +6,7 @@ const Table = ({ columns, data }) => {
     <table className="table-container">
       <thead>
         <tr>
+          <th>S.No</th>
           {columns.map((column) => (
             <th key={column.accessor}>{column.header}</th>
           ))}
@@ -14,6 +15,7 @@ const Table = ({ columns, data }) => {
       <tbody>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
+            <td>{rowIndex + 1}</td>
             {columns.map((column) => (
               <td key={column.accessor}>{row[column.accessor]}</td>
             ))}

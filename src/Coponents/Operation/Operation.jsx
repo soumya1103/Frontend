@@ -1,8 +1,8 @@
 import React from "react";
-import editIcon from "../Images/edit-icon.svg";
-import deleteIcon from "../Images/trash-icon.svg";
-import assignBookIcon from "../Images/assign-book-icon.svg";
-import assignUserIcon from "../Images/assign-user-icon.svg";
+import editIcon from "../../Images/edit-icon.svg";
+import deleteIcon from "../../Images/trash-icon.svg";
+import assignBookIcon from "../../Images/assign-book-icon.svg";
+import assignUserIcon from "../../Images/assign-user-icon.svg";
 import "./Operation.css";
 
 function Operation({ widthE, widthD, showExtra, isBooksPage }) {

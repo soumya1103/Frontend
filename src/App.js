@@ -1,11 +1,11 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./Pages/Dashboard";
-import Login from "./Pages/Login";
-import Books from "./Pages/Books";
-import Categories from "./Pages/Categories";
-import Users from "./Pages/Users";
-import Issuances from "./Pages/Issuances";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import Login from "./Pages/Login/Login";
+import Books from "./Pages/SidebarPages/Books";
+import Categories from "./Pages/SidebarPages/Categories";
+import Users from "./Pages/SidebarPages/Users";
+import Issuances from "./Pages/SidebarPages/Issuances";
 
 function App() {
   return (

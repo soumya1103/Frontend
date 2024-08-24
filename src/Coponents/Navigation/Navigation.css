@@ -1,20 +1,28 @@
 .navigation-container {
   display: grid;
   grid-template-columns: 20% 20% 60%;
-  padding: 0% 3% 0% 0;
+  padding: 0.25% 3% 0.5% 0;
   align-items: center;
-  text-align: center;
-  /* background-color: #f6eee0; */
+  text-align: left;
   background-color: #faf5ec;
   border-bottom: 0.5px solid #a475513f;
 }
 
-.login-heading-container h2 {
+.navigation-heading-container {
+  display: flex;
+  text-align: center;
+  justify-content: left;
+  padding-left: 8%;
+  align-items: center;
+}
+
+.navigation-heading-container h2 {
   color: #e55b13;
   font-family: "Roboto Slab", serif;
   font-weight: 500;
   font-style: normal;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
+  margin: 0;
 }
 
 .nav-name {

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import DashboardHoc from "../Coponents/HOC/DashboardHoc";
-import Button from "../Coponents/Button";
-import Table from "../Coponents/Table";
-import SearchBar from "../Coponents/SearchBar";
-import Operation from "../Coponents/Operation";
+import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
+import Button from "../../Coponents/Button/Button";
+import Table from "../../Coponents/Table/Table";
+import "./Pages.css";
+import SearchBar from "../../Coponents/SearchBar/SearchBar";
+import Operation from "../../Coponents/Operation/Operation";
 import axios from "axios";
 
 function Users() {
@@ -23,8 +24,8 @@ function Users() {
           ...user,
           operation: (
             <Operation
-              widthE="6%"
-              widthD="5%"
+              widthE="7%"
+              widthD="5.5%"
               showExtra={true}
               isBooksPage={false}
             />
@@ -39,9 +40,7 @@ function Users() {
   }, []);
 
   const handleSearch = (query) => {
-    // Perform your search logic here, e.g., filter the users list or make an API call
     console.log("Searching for:", query);
-    // Update the users state with the filtered results
   };
 
   return (

@@ -1,8 +1,8 @@
 import React from "react";
-import icon from "../Images/icon.png";
-import loginImg from "../Images/login-image.png";
+import icon from "../../Images/icon.png";
+import loginImg from "../../Images/login-image.png";
 import "./Login.css";
-import Button from "../Coponents/Button";
+import Button from "../../Coponents/Button/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
