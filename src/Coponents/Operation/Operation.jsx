@@ -5,23 +5,41 @@ import assignBookIcon from "../../Images/assign-book-icon.svg";
 import assignUserIcon from "../../Images/assign-user-icon.svg";
 import "./Operation.css";
 
-function Operation({ widthE, widthD, showExtra, isBooksPage }) {
+function Operation({
+  widthE,
+  widthD,
+  showExtra,
+  isBooksPage,
+  onClickEdit,
+  onClickDelete,
+}) {
   return (
     <div className="operation-container">
-      <img src={editIcon} alt="edit" className="operation-img" width={widthE} />
-      <img
-        src={deleteIcon}
-        alt="delete"
-        className="operation-img"
-        width={widthD}
-      />
-      {showExtra && (
+      <button onClick={() => onClickEdit()}>
         <img
-          src={isBooksPage ? assignUserIcon : assignBookIcon}
-          alt={isBooksPage ? "assign user" : "assign book"}
+          src={editIcon}
+          alt="edit"
+          className="operation-img"
+          width={widthE}
+        />
+      </button>
+      <button onClick={() => onClickDelete()}>
+        <img
+          src={deleteIcon}
+          alt="delete"
           className="operation-img"
           width={widthD}
         />
+      </button>
+      {showExtra && (
+        <button>
+          <img
+            src={isBooksPage ? assignUserIcon : assignBookIcon}
+            alt={isBooksPage ? "assign user" : "assign book"}
+            className="operation-img"
+            width={widthD}
+          />
+        </button>
       )}
     </div>
   );

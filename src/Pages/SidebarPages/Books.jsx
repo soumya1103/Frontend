@@ -27,8 +27,8 @@ function Books() {
           ...book,
           operation: (
             <Operation
-              widthE="14%"
-              widthD="10%"
+              widthE="100%"
+              widthD="80%"
               showExtra={true}
               isBooksPage={true}
             />
