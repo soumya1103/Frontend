@@ -5,14 +5,13 @@ import Table from "../../Coponents/Table/Table";
 import "./Pages.css";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import Operation from "../../Coponents/Operation/Operation";
-import axios from "axios";
 import Modal from "../../Coponents/Modal/Modal";
 import Form from "../../Coponents/Form/Form";
 import {
   addCategory,
   deleteCategory,
   getAllCategories,
-  // updateCategory,
+  updateCategory,
 } from "../../Api/Service/CategoryService";
 
 function Categories() {
@@ -95,47 +94,26 @@ function Categories() {
     setShowModal(true);
   };
 
-  // const updateCategories = async (categoryToEdit) => {
-  //   try {
-  //     const response = await updateCategory(categoryToEdit);
-  //     console.log("Category edited successfully:", response.data);
-  //     setCategories(
-  //       categories.map((category) =>
-  //         category.categoryName === categoryToEdit ? response.data : category
-  //       )
-  //     );
-  //     handleClose();
-  //     await loadCategories();
-  //   } catch (error) {
-  //     console.log("There was an error updating the category", error);
-  //   }
-  // };
+  const updateCategories = async (formData, resetForm, categoryToEdit) => {
+    try {
+      const response = await updateCategory(formData, categoryToEdit);
+      console.log("Category edited successfully:", response.data);
+      setCategories(
+        categories.map((category) =>
+          category.categoryName === categoryToEdit ? response.data : category
+        )
+      );
+      resetForm();
+      handleClose();
+      await loadCategories();
+    } catch (error) {
+      console.log("There was an error updating the category", error);
+    }
+  };
 
   const handleFormSubmit = (formData, resetForm) => {
-    // console.log(formData);
-    console.log({ isEdit, categoryToEdit });
-
     if (isEdit && categoryToEdit) {
-      axios
-        .put(
-          `http://localhost:8080/lms/categories/name/${categoryToEdit}`,
-          formData
-        )
-        .then((response) => {
-          console.log("Category edited successfully:", response.data);
-          setCategories(
-            categories.map((category) =>
-              category.categoryName === categoryToEdit
-                ? response.data
-                : category
-            )
-          );
-          handleClose();
-          loadCategories();
-        })
-        .catch((error) => {
-          console.log("There was an error updating the category", error);
-        });
+      updateCategories(formData, resetForm, categoryToEdit);
     } else {
       addCategories(formData, resetForm);
     }

@@ -12,6 +12,6 @@ export const addCategory = async (formData) => {
   return await app.post("/lms/categories", formData);
 };
 
-export const updateCategory = async (categoryToEdit, formData) => {
+export const updateCategory = async (formData, categoryToEdit) => {
   return await app.put(`/lms/categories/name/${categoryToEdit}`, formData);
 };
