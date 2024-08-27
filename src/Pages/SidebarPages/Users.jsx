@@ -24,8 +24,8 @@ function Users() {
           ...user,
           operation: (
             <Operation
-              widthE="7%"
-              widthD="5.5%"
+              widthE="50%"
+              widthD="45%"
               showExtra={true}
               isBooksPage={false}
             />
