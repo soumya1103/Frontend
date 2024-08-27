@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import Button from "../../Coponents/Button/Button";
 import Table from "../../Coponents/Table/Table";
@@ -8,10 +8,18 @@ import Operation from "../../Coponents/Operation/Operation";
 import axios from "axios";
 import Modal from "../../Coponents/Modal/Modal";
 import Form from "../../Coponents/Form/Form";
+import {
+  addCategory,
+  deleteCategory,
+  getAllCategories,
+  // updateCategory,
+} from "../../Api/Service/CategoryService";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
 
   const columns = [
     { header: "Icon", accessor: "categoryIcon" },
@@ -19,77 +27,144 @@ function Categories() {
     { header: "Operation", accessor: "operation" },
   ];
 
+  const addCategories = async (formData, resetForm) => {
+    try {
+      const response = await addCategory(formData);
+      console.log("Category added successfully:", response.data);
+      setCategories([...categories, response.data]);
+      resetForm();
+      handleClose();
+      await loadCategories();
+    } catch (error) {
+      console.error("There was an error adding the category!", error);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const response = await getAllCategories();
+
+      const categoriesData = response.data.map((category) => ({
+        ...category,
+        categoryIcon: (
+          <img
+            src={category.categoryIcon}
+            alt={category.categoryName}
+            width="13%"
+          />
+        ),
+        operation: (
+          <Operation
+            widthE="60%"
+            widthD="45%"
+            onClickEdit={() => handleEditIcon(category.categoryName)}
+            onClickDelete={() => handleDeleteIcon(category.categoryName)}
+          />
+        ),
+      }));
+
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error("There was an error fetching the categories data!", error);
+    }
+  };
+
+  const handleDeleteIcon = async (categoryName) => {
+    try {
+      const response = await deleteCategory(categoryName);
+      console.log("Category deleted successfully:", response.data);
+      await loadCategories();
+    } catch (error) {
+      console.error("There was an error deleting the category!", error);
+    }
+  };
+
   const handleClick = () => {
+    setIsEdit(false);
     setShowModal(true);
   };
 
   const handleClose = () => {
     setShowModal(false);
+    setCategoryToEdit(null);
   };
 
-  const handleDeleteIcon = (categoryName) => {
-    axios
-      .delete(`http://localhost:8080/lms/categories/name/${categoryName}`)
-      .then((response) => {
-        console.log("Category deleted successfully:", response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error deleting the category!", error);
-      });
+  const handleEditIcon = (categoryName) => {
+    setIsEdit(true);
+    setCategoryToEdit(categoryName);
+    setShowModal(true);
   };
+
+  // const updateCategories = async (categoryToEdit) => {
+  //   try {
+  //     const response = await updateCategory(categoryToEdit);
+  //     console.log("Category edited successfully:", response.data);
+  //     setCategories(
+  //       categories.map((category) =>
+  //         category.categoryName === categoryToEdit ? response.data : category
+  //       )
+  //     );
+  //     handleClose();
+  //     await loadCategories();
+  //   } catch (error) {
+  //     console.log("There was an error updating the category", error);
+  //   }
+  // };
 
   const handleFormSubmit = (formData, resetForm) => {
-    axios
-      .post("http://localhost:8080/lms/categories", formData)
-      .then((response) => {
-        console.log("Category added successfully:", response.data);
-        setCategories([...categories, response.data]);
-        resetForm();
-        handleClose();
-      })
-      .catch((error) => {
-        console.error("There was an error adding the category!", error);
-      });
+    // console.log(formData);
+    console.log({ isEdit, categoryToEdit });
+
+    if (isEdit && categoryToEdit) {
+      axios
+        .put(
+          `http://localhost:8080/lms/categories/name/${categoryToEdit}`,
+          formData
+        )
+        .then((response) => {
+          console.log("Category edited successfully:", response.data);
+          setCategories(
+            categories.map((category) =>
+              category.categoryName === categoryToEdit
+                ? response.data
+                : category
+            )
+          );
+          handleClose();
+          loadCategories();
+        })
+        .catch((error) => {
+          console.log("There was an error updating the category", error);
+        });
+    } else {
+      addCategories(formData, resetForm);
+    }
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/lms/categories")
-      .then((response) => {
-        const categoriesData = response.data.map((category) => ({
-          ...category,
-          categoryIcon: (
-            <img
-              src={category.categoryIcon}
-              alt={category.categoryName}
-              width="13%"
-            />
-          ),
-          operation: (
-            <Operation
-              widthE="60%"
-              widthD="45%"
-              onClickEdit={() => {}}
-              onClickDelete={() => handleDeleteIcon(category.categoryName)}
-            />
-          ),
-        }));
-
-        setCategories(categoriesData);
-      })
-      .catch((error) => {
-        console.error(
-          "There was an error fetching the categories data!",
-          error
-        );
-      });
+    loadCategories();
   }, []);
 
   const handleSearch = (query) => {
     console.log("Searching for:", query);
   };
 
-  const formArr = [
+  const formArrForEdit = [
+    {
+      label: "Category Name : ",
+      name: "categoryName",
+      type: "text",
+      required: false,
+    },
+    {
+      label: "Category Icon URL : ",
+      name: "categoryIcon",
+      type: "text",
+      required: false,
+    },
+  ];
+
+  const formArrForAdd = [
     {
       label: "Category Name : ",
       name: "categoryName",
@@ -120,9 +195,10 @@ function Categories() {
         width="400px"
       >
         <Form
-          title="Add Category"
-          formArr={formArr}
-          submitBtn="Add"
+          title={isEdit ? "Edit Category" : "Add Category"}
+          formArr={isEdit ? formArrForEdit : formArrForAdd}
+          submitBtn={isEdit ? "Update" : "Add"}
+          initialValues={isEdit ? categoryToEdit : {}}
           onSubmit={handleFormSubmit}
         />
       </Modal>
