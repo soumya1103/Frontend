@@ -127,33 +127,18 @@ function Categories() {
     console.log("Searching for:", query);
   };
 
-  const formArrForEdit = [
+  const formArr = [
     {
       label: "Category Name : ",
       name: "categoryName",
       type: "text",
-      required: false,
+      required: isEdit ? false : true,
     },
     {
       label: "Category Icon URL : ",
       name: "categoryIcon",
       type: "text",
-      required: false,
-    },
-  ];
-
-  const formArrForAdd = [
-    {
-      label: "Category Name : ",
-      name: "categoryName",
-      type: "text",
-      required: true,
-    },
-    {
-      label: "Category Icon URL : ",
-      name: "categoryIcon",
-      type: "text",
-      required: true,
+      required: isEdit ? false : true,
     },
   ];
 
@@ -174,7 +159,7 @@ function Categories() {
       >
         <Form
           title={isEdit ? "Edit Category" : "Add Category"}
-          formArr={isEdit ? formArrForEdit : formArrForAdd}
+          formArr={formArr}
           submitBtn={isEdit ? "Update" : "Add"}
           initialValues={isEdit ? categoryToEdit : {}}
           onSubmit={handleFormSubmit}

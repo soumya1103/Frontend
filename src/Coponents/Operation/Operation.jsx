@@ -12,6 +12,8 @@ function Operation({
   isBooksPage,
   onClickEdit,
   onClickDelete,
+  onClickAssignBook,
+  onClickAssignUser,
 }) {
   return (
     <div className="operation-container">
@@ -32,7 +34,11 @@ function Operation({
         />
       </button>
       {showExtra && (
-        <button>
+        <button
+          onClick={
+            isBooksPage ? () => onClickAssignUser() : () => onClickAssignBook()
+          }
+        >
           <img
             src={isBooksPage ? assignUserIcon : assignBookIcon}
             alt={isBooksPage ? "assign user" : "assign book"}
