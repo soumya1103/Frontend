@@ -8,10 +8,10 @@ export const deleteCategory = async (categoryName) => {
   return await app.delete(`/lms/categories/name/${categoryName}`);
 };
 
-export const addCategory = async (formData) => {
-  return await app.post("/lms/categories", formData);
+export const addCategory = async (categoryData) => {
+  return await app.post("/lms/categories", categoryData);
 };
 
-export const updateCategory = async (formData, categoryToEdit) => {
-  return await app.put(`/lms/categories/name/${categoryToEdit}`, formData);
+export const updateCategory = async (categoryData, categoryName) => {
+  return await app.put(`/lms/categories/name/${categoryName}`, categoryData);
 };
