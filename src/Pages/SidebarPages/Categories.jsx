@@ -6,7 +6,6 @@ import "./Pages.css";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import Operation from "../../Coponents/Operation/Operation";
 import Modal from "../../Coponents/Modal/Modal";
-import Form from "../../Coponents/Form/Form";
 import {
   addCategory,
   deleteCategory,
@@ -19,9 +18,7 @@ function Categories() {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-
-  // const [categoryName, setCategoryName] = useState("");
-  // const [categoryIcon, setCategoryIcon] = useState("");
+  const [categoryToEdit, setCategoryToEdit] = useState();
 
   const [categoryData, setCategoryData] = useState({
     categoryName: "",
@@ -55,7 +52,7 @@ function Categories() {
           <Operation
             widthE="60%"
             widthD="45%"
-            onClickEdit={() => handleEditIcon(category.categoryName)}
+            onClickEdit={() => handleEditIcon(category)}
             onClickDelete={() => handleDeleteIcon(category.categoryName)}
           />
         ),
@@ -78,6 +75,8 @@ function Categories() {
   };
 
   const handleClick = () => {
+    setCategoryData({ categoryName: "", categoryIcon: "" });
+    setIsEdit(false);
     setShowModal(true);
   };
 
@@ -85,9 +84,14 @@ function Categories() {
     setShowModal(false);
   };
 
-  const handleEditIcon = async (categoryName) => {
+  const handleEditIcon = async (category) => {
+    setCategoryData({
+      categoryName: category.categoryName,
+      categoryIcon: category.categoryIcon,
+    });
     setIsEdit(true);
     setShowModal(true);
+    setCategoryToEdit(category.categoryName);
   };
 
   const updateCategories = async (categoryData, categoryName) => {
@@ -114,14 +118,6 @@ function Categories() {
     }
   };
 
-  // const handleFormSubmit = (formData, resetForm) => {
-  //   if (isEdit && categoryToEdit) {
-  //     updateCategories(formData, resetForm, categoryToEdit);
-  //   } else {
-  //     addCategories(formData, resetForm);
-  //   }
-  // };
-
   useEffect(() => {
     loadCategories();
   }, []);
@@ -135,23 +131,8 @@ function Categories() {
   };
 
   const onSumbitEditHandler = async () => {
-    await updateCategories(categoryData);
+    await updateCategories(categoryData, categoryToEdit);
   };
-
-  // const formArr = [
-  //   {
-  //     label: "Category Name : ",
-  //     name: "categoryName",
-  //     type: "text",
-  //     required: isEdit ? false : true,
-  //   },
-  //   {
-  //     label: "Category Icon URL : ",
-  //     name: "categoryIcon",
-  //     type: "text",
-  //     required: isEdit ? false : true,
-  //   },
-  // ];
 
   return (
     <div className="pages-outer-container">
@@ -165,38 +146,33 @@ function Categories() {
       <Modal
         show={showModal}
         onClose={handleClose}
-        height="200px"
+        height="230px"
         width="400px"
       >
-        {/* <Form
-          title={isEdit ? "Edit Category" : "Add Category"}
-          formArr={formArr}
-          submitBtn={isEdit ? "Update" : "Add"}
-          initialValues={isEdit ? categoryToEdit : {}}
-          onSubmit={handleFormSubmit}
-        /> */}
         {isEdit ? (
           <p className="form-title">Edit Category</p>
         ) : (
           <p className="form-title">Add Category</p>
         )}
+
         <Input
           label="Category Name"
           name="categoryName"
           value={categoryData.categoryName}
           type="text"
-          required={isEdit ? "false" : "true"}
+          required={isEdit ? false : true}
           onChange={(e) => handleChange(e)}
-        ></Input>
-        <br />
+        />
+
         <Input
           label="Category Icon"
           name="categoryIcon"
           type="text"
           value={categoryData.categoryIcon}
-          required={isEdit ? "false" : "true"}
+          required={!isEdit}
           onChange={(e) => handleChange(e)}
-        ></Input>
+        />
+
         <div className="form-submit-btn">
           {isEdit ? (
             <Button onClick={onSumbitEditHandler}>Update</Button>
