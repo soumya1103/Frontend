@@ -12,7 +12,7 @@ import {
   getAllCategories,
   updateCategory,
 } from "../../Api/Service/CategoryService";
-import Input from "../../Coponents/Form/Input";
+import Input from "../../Coponents/Input/Input";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -30,9 +30,9 @@ function Categories() {
   };
 
   const columns = [
-    { header: "Icon", accessor: "categoryIcon" },
     { header: "Name", accessor: "categoryName" },
-    { header: "Operation", accessor: "operation" },
+    { header: "Icon", accessor: "categoryIcon" },
+    { header: "Action", accessor: "operation" },
   ];
 
   const loadCategories = async () => {

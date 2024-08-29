@@ -7,12 +7,12 @@
   grid-template-columns: auto auto auto auto;
   justify-content: center;
   align-items: center;
-  gap: 6%;
+  gap: 4%;
 }
 
 .dashboard-card {
   background-color: #f6eee0;
-  width: 245px;
+  width: 263px;
   height: 120px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
@@ -34,6 +34,15 @@
   margin-left: auto;
   margin-right: auto;
   align-self: center;
+}
+
+.dashboard-card h3 {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  color: #a47551;
+  margin: 0;
 }
 
 .dashboard-card h4 {

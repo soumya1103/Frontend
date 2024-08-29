@@ -26,6 +26,10 @@
   text-decoration-color: #e55b13;
 }
 
+.sidebar-icon.active h3 {
+  color: #e55b13;
+}
+
 .sidebar-icon {
   display: flex;
   justify-content: left;
@@ -61,11 +65,5 @@
 }
 
 .sidebar-logout-btn :hover {
-  text-decoration: underline;
-  text-decoration-color: #003060;
-}
-
-.active {
-  text-decoration: underline;
-  text-decoration-color: #003060;
+  color: #003060;
 }

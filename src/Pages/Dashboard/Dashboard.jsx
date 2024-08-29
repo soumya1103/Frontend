@@ -60,22 +60,22 @@ function Dashboard() {
       <div className="dashboard-inner-container">
         <div className="dashboard-card">
           <img src={bookDashboard} alt="book" width="20%" />
-          <h4>{totalBooks}</h4>
+          <h3>{totalBooks}</h3>
           <h4>Total Books</h4>
         </div>
         <div className="dashboard-card">
           <img src={categoryDashboard} alt="category" width="20%" />
-          <h4>{totalCategories}</h4>
+          <h3>{totalCategories}</h3>
           <h4>Total Categories</h4>
         </div>
         <div className="dashboard-card">
           <img src={userDashboard} alt="user" width="20%" />
-          <h4>{totalUsers}</h4>
+          <h3>{totalUsers}</h3>
           <h4>Total Users</h4>
         </div>
         <div className="dashboard-card">
           <img src={inhouseUserDashboard} alt="inhouse-user" width="20%" />
-          <h4>20</h4>
+          <h3>20</h3>
           <h4>Total Inhouse Users</h4>
         </div>
       </div>

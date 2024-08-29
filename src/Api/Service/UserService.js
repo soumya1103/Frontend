@@ -1,7 +1,11 @@
 import app from "../apiClient";
 
 export const getUserByRole = async () => {
-  return await app.get("/lms/user");
+  return await app.get("/lms/users");
+};
+
+export const getUsersByCredential = async (userCredential) => {
+  return await app.get(`/lms/users/credential/${userCredential}`);
 };
 
 // export const deleteBook = async (bookId) => {

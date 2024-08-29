@@ -26,6 +26,7 @@ function Input({
         min={min}
         max={max}
         readOnly={readOnly}
+        placeholder={label}
       />
     </>
   );
