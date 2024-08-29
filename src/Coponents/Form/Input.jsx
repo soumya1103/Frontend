@@ -1,9 +1,19 @@
 import React from "react";
 import "./Form.css";
 
-function Input({ label, name, type, required, value, onChange }) {
+function Input({
+  label,
+  name,
+  min,
+  max,
+  type,
+  required,
+  value,
+  onChange,
+  readOnly,
+}) {
   return (
-    <div className="form-content">
+    <>
       <label className="form-field-label">{label}</label>
       <input
         className="form-field-input"
@@ -13,8 +23,11 @@ function Input({ label, name, type, required, value, onChange }) {
         value={value}
         onChange={(e) => onChange(e)}
         autoComplete="off"
+        min={min}
+        max={max}
+        readOnly={readOnly}
       />
-    </div>
+    </>
   );
 }
 

@@ -12,13 +12,52 @@ import {
   updateBook,
 } from "../../Api/Service/BookService";
 import Modal from "../../Coponents/Modal/Modal";
-import Form from "../../Coponents/Form/Form";
+import Input from "../../Coponents/Form/Input";
+import { getAllCategories } from "../../Api/Service/CategoryService";
+import { getUserByRole } from "../../Api/Service/UserService";
+import { addIssuanceByBook } from "../../Api/Service/IssuanceService";
 
 function Books() {
   const [books, setBooks] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [bookToEdit, setBookToEdit] = useState(null);
+  const [bookToEdit, setBookToEdit] = useState();
+  const [categories, setCategories] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState();
+  const [userCred, setUserCred] = useState("");
+  const [showBookModal, setShowBookModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+
+  const [bookData, setBookData] = useState({
+    categoryId: "",
+    categoryName: "",
+    bookTitle: "",
+    bookAuthor: "",
+    bookRating: "",
+    bookCount: "",
+  });
+
+  const [issuanceData, setIssuanceData] = useState({
+    userId: "",
+    bookId: "",
+    userCredential: "",
+    userName: "",
+    bookTitle: "",
+    returnDate: "",
+    issuanceType: "",
+  });
+
+  const handleChange = (e) => {
+    setBookData({ ...bookData, [e.target.name]: e.target.value });
+  };
+
+  const handleCategoryChange = (e) => {
+    setBookData({ ...bookData, categoryId: e.target.value });
+  };
+
+  const handleUserChange = (e) => {
+    setIssuanceData({ ...issuanceData, [e.target.value]: e.target.value });
+  };
 
   const columns = [
     { header: "Category", accessor: "categoryName" },
@@ -28,19 +67,6 @@ function Books() {
     { header: "Count", accessor: "bookCount" },
     { header: "Operation", accessor: "operation" },
   ];
-
-  const addBooks = async (formData, resetForm) => {
-    try {
-      const response = await addBook(formData);
-      console.log("Book added successfully:", response.data);
-      setBooks([...books, response.data]);
-      resetForm();
-      handleClose();
-      await loadBooks();
-    } catch (error) {
-      console.error("There was an error adding the category!", error);
-    }
-  };
 
   const loadBooks = async () => {
     try {
@@ -54,7 +80,7 @@ function Books() {
             showExtra={true}
             onClickAssignUser={() => handleAssignUser(book.bookTitle)}
             isBooksPage={true}
-            onClickEdit={() => handleEditIcon(book.bookId)}
+            onClickEdit={() => handleEditIcon(book)}
             onClickDelete={() => handleDeleteIcon(book.bookId)}
           />
         ),
@@ -77,92 +103,113 @@ function Books() {
   };
 
   const handleClick = () => {
+    setBookData({
+      categoryId: "",
+      categoryName: "",
+      bookTitle: "",
+      bookAuthor: "",
+      bookRating: "",
+      bookCount: "",
+    });
     setIsEdit(false);
-    setShowModal(true);
+    setShowBookModal(true);
   };
 
-  const handleClose = () => {
-    setShowModal(false);
-    setBookToEdit(null);
+  const handleCloseBookModal = () => {
+    setShowBookModal(false);
   };
 
-  const handleEditIcon = (bookId) => {
+  const handleCloseAssignModal = () => {
+    setShowAssignModal(false);
+  };
+
+  const handleEditIcon = (book) => {
+    setBookData({
+      categoryId: book.categoryId,
+      categoryName: book.categoryName,
+      bookTitle: book.bookTitle,
+      bookAuthor: book.bookAuthor,
+      bookRating: book.bookRating,
+      bookCount: book.bookCount,
+    });
     setIsEdit(true);
-    setBookToEdit(bookId);
-    setShowModal(true);
+    setShowBookModal(true);
+    setBookToEdit(book.bookId);
   };
 
-  const updateBooks = async (formData, resetForm, bookToEdit) => {
+  const handleAssignUser = () => {
+    setShowAssignModal(true);
+  };
+
+  const updateBooks = async (bookData, bookId) => {
     try {
-      const response = await updateBook(formData, bookToEdit);
+      const response = await updateBook(bookData, bookId);
       console.log("Book edited successfully:", response.data);
-      setBooks(
-        books.map((book) => (book.bookId === bookToEdit ? response.data : book))
-      );
-      resetForm();
-      handleClose();
+      setBooks([...books, response.data]);
+      handleCloseBookModal();
       await loadBooks();
     } catch (error) {
       console.log("There was an error updating the book", error);
     }
   };
 
-  const handleFormSubmit = (formData, resetForm) => {
-    if (isEdit && bookToEdit) {
-      updateBooks(formData, resetForm, bookToEdit);
-    } else {
-      addBooks(formData, resetForm);
+  const addBooks = async (bookData) => {
+    try {
+      console.log(bookData);
+      const response = await addBook(bookData);
+      console.log("Book added successfully:", response.data);
+      setBooks([...books, response.data]);
+      handleCloseBookModal();
+      await loadBooks();
+    } catch (error) {
+      console.error("There was an error adding the book!", error);
     }
   };
 
   useEffect(() => {
     loadBooks();
+    fetchCategories();
+    fetchUsers();
   }, []);
-
-  const handleAssignUser = () => {};
 
   const handleSearch = (query) => {
     console.log("Searching for:", query);
   };
 
-  const formArr = [
-    {
-      label: "Category Name : ",
-      name: "categoryId",
-      type: "select",
-      required: isEdit ? false : true,
-    },
-    {
-      label: "Book Title : ",
-      name: "bookTitle",
-      type: "text",
-      required: isEdit ? false : true,
-    },
-    {
-      label: "Book Author : ",
-      name: "bookAuthor",
-      type: "text",
-      required: isEdit ? false : true,
-    },
-    {
-      label: "Book Rating : ",
-      name: "bookRating",
-      type: "number",
-      min: 1,
-      max: 5,
-      oninput: "validateNonNegative(this)",
-      required: isEdit ? false : true,
-    },
-    {
-      label: "Book Count : ",
-      name: "bookCount",
-      type: "number",
-      min: 1,
-      max: 5,
-      oninput: "validateNonNegative(this)",
-      required: isEdit ? false : true,
-    },
-  ];
+  const onSumbitAddHandler = async () => {
+    await addBooks(bookData);
+  };
+
+  const onSumbitEditHandler = async () => {
+    await updateBooks(bookData, bookToEdit);
+  };
+
+  const onSubmitAssignUserHandler = async () => {
+    await addIssuanceByBook();
+  };
+
+  const fetchCategories = async () => {
+    const response = await getAllCategories();
+    setCategories(response.data);
+  };
+
+  const fetchUsers = async () => {
+    const response = await getUserByRole();
+    setUsers(response.data);
+  };
+
+  const handleCredChange = async (credential) => {
+    try {
+      // const { data } = await getUserByCred(credential);
+      const data = {
+        id: "1",
+        name: "som",
+      };
+      setUser(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="pages-outer-container">
@@ -174,19 +221,133 @@ function Books() {
         <Table columns={columns} data={books} />
       </div>
       <Modal
-        show={showModal}
-        onClose={handleClose}
-        height="350px"
+        show={showBookModal}
+        onClose={handleCloseBookModal}
+        height="330px"
         width="400px"
       >
-        <Form
-          title={isEdit ? "Edit Book" : "Add Book"}
-          formArr={formArr}
-          submitBtn={isEdit ? "Update" : "Add"}
-          initialValues={isEdit ? bookToEdit : {}}
-          onSubmit={handleFormSubmit}
-          showCategoryDropdown={true}
-        />
+        {isEdit ? (
+          <p className="form-title">Edit Book</p>
+        ) : (
+          <p className="form-title">Add Book</p>
+        )}
+
+        <div className="form-content">
+          <label className="form-field-label">Category Name</label>
+          <select
+            className="form-field-input"
+            value={bookData.categoryId}
+            onChange={(e) => handleCategoryChange(e)}
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category.categoryId} value={category.categoryId}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
+          <Input
+            label="Book Title"
+            name="bookTitle"
+            value={bookData.bookTitle}
+            type="text"
+            required={isEdit ? false : true}
+            onChange={(e) => handleChange(e)}
+          />
+          <Input
+            label="Book Author"
+            name="bookAuthor"
+            value={bookData.bookAuthor}
+            type="text"
+            required={isEdit ? false : true}
+            onChange={(e) => handleChange(e)}
+          />
+          <Input
+            label="Book Rating"
+            name="bookRating"
+            value={bookData.bookRating}
+            type="number"
+            min="1"
+            max="5"
+            required={isEdit ? false : true}
+            onChange={(e) => handleChange(e)}
+          />
+          <Input
+            label="Book Count"
+            name="bookCount"
+            value={bookData.bookCount}
+            type="number"
+            min={isEdit ? "0" : "1"}
+            required={isEdit ? false : true}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+        <div className="form-submit-btn">
+          {isEdit ? (
+            <Button onClick={onSumbitEditHandler}>Update</Button>
+          ) : (
+            <Button onClick={onSumbitAddHandler}>Add</Button>
+          )}
+        </div>
+      </Modal>
+
+      <Modal
+        show={showAssignModal}
+        onClose={handleCloseAssignModal}
+        height="330px"
+        width="400px"
+      >
+        <p className="form-title">Assign User</p>
+        <div className="form-content">
+          <label className="form-field-label">User Credential</label>
+          <select
+            className="form-field-input"
+            value={userCred}
+            onChange={(e) => {
+              handleCredChange(e.target.value);
+            }}
+          >
+            <option value="">Select Mobile No.</option>
+            {users.map((user) => (
+              <option key={user.userId} value={user.userId}>
+                {user.userCredential}
+              </option>
+            ))}
+          </select>
+          <Input
+            label="User Name"
+            name="userName"
+            value={user.name}
+            type="text"
+            onChange={(e) => handleUserChange(e)}
+            readOnly={true}
+          />
+          <Input
+            label="Book Title"
+            name="bookTitle"
+            value={issuanceData.bookTitle}
+            type="text"
+            onChange={(e) => handleUserChange(e)}
+            readOnly={true}
+          />
+          <Input
+            label="Return Date"
+            name="returnDate"
+            value={issuanceData.returnDate}
+            type="date"
+            required={true}
+            onChange={(e) => handleUserChange(e)}
+          />
+          <label className="form-field-label">Issuance Type</label>
+          <select className="form-field-input">
+            <option value="">Select Type</option>
+            <option value="">Remote</option>
+            <option value="">Inhouse</option>
+          </select>
+        </div>
+        <div className="form-submit-btn">
+          <Button onClick={onSubmitAssignUserHandler}>Assign</Button>
+        </div>
       </Modal>
     </div>
   );

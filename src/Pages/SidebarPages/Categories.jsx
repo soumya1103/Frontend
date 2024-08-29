@@ -154,24 +154,25 @@ function Categories() {
         ) : (
           <p className="form-title">Add Category</p>
         )}
+        <div className="form-content">
+          <Input
+            label="Category Name"
+            name="categoryName"
+            value={categoryData.categoryName}
+            type="text"
+            required={isEdit ? false : true}
+            onChange={(e) => handleChange(e)}
+          />
 
-        <Input
-          label="Category Name"
-          name="categoryName"
-          value={categoryData.categoryName}
-          type="text"
-          required={isEdit ? false : true}
-          onChange={(e) => handleChange(e)}
-        />
-
-        <Input
-          label="Category Icon"
-          name="categoryIcon"
-          type="text"
-          value={categoryData.categoryIcon}
-          required={!isEdit}
-          onChange={(e) => handleChange(e)}
-        />
+          <Input
+            label="Category Icon"
+            name="categoryIcon"
+            type="text"
+            value={categoryData.categoryIcon}
+            required={!isEdit}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
 
         <div className="form-submit-btn">
           {isEdit ? (

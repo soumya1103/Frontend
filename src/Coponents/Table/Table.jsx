@@ -13,7 +13,7 @@ const Table = ({ columns, data }) => {
         </tr>
       </thead>
       <tbody>
-        {data.map((row, rowIndex) => (
+        {data?.map((row, rowIndex) => (
           <tr key={rowIndex}>
             <td>{rowIndex + 1}</td>
             {columns.map((column) => (
