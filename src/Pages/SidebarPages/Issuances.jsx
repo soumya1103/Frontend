@@ -5,82 +5,52 @@ import Table from "../../Coponents/Table/Table";
 import "./Pages.css";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import Operation from "../../Coponents/Operation/Operation";
-import axios from "axios";
+import { getIssuances } from "../../Api/Service/IssuanceService";
 
 function Issuances() {
   const columns = [
-    { header: "ID", accessor: "id" },
-    { header: "Name", accessor: "name" },
-    { header: "Email", accessor: "email" },
-    { header: "Operation", accessor: "operation" },
+    { header: "Phone No.", accessor: "userCredential" },
+    { header: "User Name", accessor: "userName" },
+    { header: "Book Title", accessor: "bookTitle" },
+    { header: "Issue Date", accessor: "issueDate" },
+    { header: "Return Date", accessor: "returnDate" },
+    { header: "Status", accessor: "status" },
+    { header: "Issuance Type", accessor: "issuanceType" },
+    { header: "Action", accessor: "operation" },
   ];
 
-  const data = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 3,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 4,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 5,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 6,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 7,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 8,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 9,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-    {
-      id: 10,
-      name: "Michael Johnson",
-      email: "michael@example.com",
-      operation: <Operation widthE="70%" widthD="60%" showExtra={false} />,
-    },
-  ];
+  const [issuances, setIssuances] = useState([]);
+
+  const loadIssuances = async () => {
+    try {
+      const response = await getIssuances();
+      const issuancesData = response.data.map((issuance) => ({
+        ...issuance,
+        operation: (
+          <Operation
+            widthE="100%"
+            widthD="90%"
+            showExtra={true}
+            isBooksPage={false}
+            // onClickEdit={() => handleEditIcon(book)}
+            // onClickDelete={() => handleDeleteIcon(book.bookId)}
+          />
+        ),
+      }));
+
+      setIssuances(issuancesData);
+    } catch (error) {
+      console.error("There was an error fetching the issuance data!", error);
+    }
+  };
 
   const handleSearch = (query) => {
     console.log("Searching for:", query);
   };
+
+  useEffect(() => {
+    loadIssuances();
+  }, []);
 
   return (
     <div className="pages-outer-container">
@@ -89,7 +59,7 @@ function Issuances() {
         <Button>Add Issuance</Button>
       </div>
       <div className="pages-table">
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={issuances} />
       </div>
     </div>
   );

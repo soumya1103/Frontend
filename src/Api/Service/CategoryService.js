@@ -15,3 +15,7 @@ export const addCategory = async (categoryData) => {
 export const updateCategory = async (categoryData, categoryName) => {
   return await app.put(`/lms/categories/name/${categoryName}`, categoryData);
 };
+
+export const countCategory = async () => {
+  return await app.get("/lms/categories/count");
+};

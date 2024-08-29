@@ -8,14 +8,18 @@ export const getUsersByCredential = async (userCredential) => {
   return await app.get(`/lms/users/credential/${userCredential}`);
 };
 
-// export const deleteBook = async (bookId) => {
-//   return await app.delete(`/lms/books/id/${bookId}`);
-// };
+export const deleteUser = async (userId) => {
+  return await app.delete(`/lms/users/id/${userId}`);
+};
 
-// export const addBook = async (formData) => {
-//   return await app.post("/lms/books", formData);
-// };
+export const addUser = async (userData) => {
+  return await app.post("/lms/users", userData);
+};
 
-// export const updateBook = async (formData, bookId) => {
-//   return await app.put(`/lms/books/id/${bookId}`, formData);
-// };
+export const updateUser = async (userData, userId) => {
+  return await app.put(`/lms/users/id/${userId}`, userData);
+};
+
+export const countUser = async () => {
+  return await app.get("/lms/users/count");
+};

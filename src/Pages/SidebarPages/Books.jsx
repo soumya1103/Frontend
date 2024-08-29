@@ -73,8 +73,8 @@ function Books() {
             widthE="100%"
             widthD="80%"
             showExtra={true}
-            onClickAssignUser={() => handleAssignUser(book)}
             isBooksPage={true}
+            onClickAssignUser={() => handleAssignUser(book)}
             onClickEdit={() => handleEditIcon(book)}
             onClickDelete={() => handleDeleteIcon(book.bookId)}
           />
@@ -363,8 +363,8 @@ function Books() {
             onChange={(e) => setIssuanceType(e.target.value)}
           >
             <option value="">Select Type</option>
-            <option value="remote">Remote</option>
-            <option value="inhouse">Inhouse</option>
+            <option value="Remote">Remote</option>
+            <option value="Inhouse">Inhouse</option>
           </select>
         </div>
         <div className="form-submit-btn">

@@ -15,3 +15,7 @@ export const addIssuance = async (formData) => {
 export const updateIssuance = async (formData, bookId) => {
   return await app.put(`/lms/books/id/${bookId}`, formData);
 };
+
+export const countByType = async () => {
+  return await app.get("/lms/issuances/type/count");
+};

@@ -11,12 +11,14 @@ function Input({
   value,
   onChange,
   readOnly,
+  className,
+  maxLength,
 }) {
   return (
     <>
       <label className="form-field-label">{label}</label>
       <input
-        className="form-field-input"
+        className={`form-field-input ${className}`}
         name={name}
         type={type}
         required={required}
@@ -27,6 +29,7 @@ function Input({
         max={max}
         readOnly={readOnly}
         placeholder={label}
+        maxLength={maxLength}
       />
     </>
   );
