@@ -9,22 +9,30 @@ import {
   addBook,
   deleteBook,
   getAllBooks,
+  getBookByTitle,
   updateBook,
 } from "../../Api/Service/BookService";
 import Modal from "../../Coponents/Modal/Modal";
-import Input from "../../Coponents/Form/Input";
+import Input from "../../Coponents/Input/Input";
 import { getAllCategories } from "../../Api/Service/CategoryService";
-import { getUserByRole } from "../../Api/Service/UserService";
-import { addIssuanceByBook } from "../../Api/Service/IssuanceService";
+import {
+  getUserByRole,
+  getUsersByCredential,
+} from "../../Api/Service/UserService";
+import { addIssuance } from "../../Api/Service/IssuanceService";
 
 function Books() {
   const [books, setBooks] = useState([]);
+  const [issuance, setIssuance] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [bookToEdit, setBookToEdit] = useState();
   const [categories, setCategories] = useState([]);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState();
-  const [userCred, setUserCred] = useState("");
+  const [userCredential, setUserCredential] = useState("");
+  const [issuanceType, setIssuanceType] = useState("");
+  const [bookId, setBookId] = useState("");
+  const [returnDate, setReturnDate] = useState();
   const [showBookModal, setShowBookModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
 
@@ -35,16 +43,7 @@ function Books() {
     bookAuthor: "",
     bookRating: "",
     bookCount: "",
-  });
-
-  const [issuanceData, setIssuanceData] = useState({
-    userId: "",
     bookId: "",
-    userCredential: "",
-    userName: "",
-    bookTitle: "",
-    returnDate: "",
-    issuanceType: "",
   });
 
   const handleChange = (e) => {
@@ -55,17 +54,13 @@ function Books() {
     setBookData({ ...bookData, categoryId: e.target.value });
   };
 
-  const handleUserChange = (e) => {
-    setIssuanceData({ ...issuanceData, [e.target.value]: e.target.value });
-  };
-
   const columns = [
     { header: "Category", accessor: "categoryName" },
     { header: "Title", accessor: "bookTitle" },
     { header: "Author", accessor: "bookAuthor" },
     { header: "Rating", accessor: "bookRating" },
     { header: "Count", accessor: "bookCount" },
-    { header: "Operation", accessor: "operation" },
+    { header: "Action", accessor: "operation" },
   ];
 
   const loadBooks = async () => {
@@ -78,7 +73,7 @@ function Books() {
             widthE="100%"
             widthD="80%"
             showExtra={true}
-            onClickAssignUser={() => handleAssignUser(book.bookTitle)}
+            onClickAssignUser={() => handleAssignUser(book)}
             isBooksPage={true}
             onClickEdit={() => handleEditIcon(book)}
             onClickDelete={() => handleDeleteIcon(book.bookId)}
@@ -137,8 +132,17 @@ function Books() {
     setBookToEdit(book.bookId);
   };
 
-  const handleAssignUser = () => {
-    setShowAssignModal(true);
+  const handleAssignUser = async (book) => {
+    try {
+      setBookData({
+        bookTitle: book.bookTitle,
+      });
+      setShowAssignModal(true);
+      const response = await getBookByTitle(book.bookTitle);
+      setBookId(response.data.bookId);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateBooks = async (bookData, bookId) => {
@@ -162,7 +166,20 @@ function Books() {
       handleCloseBookModal();
       await loadBooks();
     } catch (error) {
-      console.error("There was an error adding the book!", error);
+      console.log("There was an error adding the book!", error);
+    }
+  };
+
+  const addIssuances = async (issuanceData) => {
+    try {
+      console.log(issuanceData);
+      const response = await addIssuance(issuanceData);
+      console.log("Issuance added successfully:", response.data);
+      setIssuance([...issuance, response.data]);
+      handleCloseAssignModal();
+      window.location.reload();
+    } catch (error) {
+      console.log("There was an error adding the issuance!", error);
     }
   };
 
@@ -184,8 +201,14 @@ function Books() {
     await updateBooks(bookData, bookToEdit);
   };
 
-  const onSubmitAssignUserHandler = async () => {
-    await addIssuanceByBook();
+  const onSubmitAddIssuanceHandler = async () => {
+    const obj = {
+      userId: user.userId,
+      bookId: bookId,
+      returnDate: returnDate + "T00:00:00",
+      issuanceType: issuanceType,
+    };
+    await addIssuances(obj);
   };
 
   const fetchCategories = async () => {
@@ -198,14 +221,11 @@ function Books() {
     setUsers(response.data);
   };
 
-  const handleCredChange = async (credential) => {
+  const handleCredentialChange = async (credential) => {
     try {
-      // const { data } = await getUserByCred(credential);
-      const data = {
-        id: "1",
-        name: "som",
-      };
-      setUser(data);
+      setUserCredential(credential);
+      const response = await getUsersByCredential(credential);
+      setUser(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -297,19 +317,19 @@ function Books() {
         height="330px"
         width="400px"
       >
-        <p className="form-title">Assign User</p>
+        <p className="form-title">Issue Book</p>
         <div className="form-content">
           <label className="form-field-label">User Credential</label>
           <select
             className="form-field-input"
-            value={userCred}
+            value={userCredential}
             onChange={(e) => {
-              handleCredChange(e.target.value);
+              handleCredentialChange(e.target.value);
             }}
           >
             <option value="">Select Mobile No.</option>
             {users.map((user) => (
-              <option key={user.userId} value={user.userId}>
+              <option key={user.userId} value={user?.userCredential}>
                 {user.userCredential}
               </option>
             ))}
@@ -317,36 +337,38 @@ function Books() {
           <Input
             label="User Name"
             name="userName"
-            value={user.name}
+            value={user?.userName}
             type="text"
-            onChange={(e) => handleUserChange(e)}
             readOnly={true}
           />
           <Input
             label="Book Title"
             name="bookTitle"
-            value={issuanceData.bookTitle}
+            value={bookData?.bookTitle}
             type="text"
-            onChange={(e) => handleUserChange(e)}
             readOnly={true}
           />
           <Input
             label="Return Date"
             name="returnDate"
-            value={issuanceData.returnDate}
+            value={returnDate}
             type="date"
             required={true}
-            onChange={(e) => handleUserChange(e)}
+            onChange={(e) => setReturnDate(e.target.value)}
           />
           <label className="form-field-label">Issuance Type</label>
-          <select className="form-field-input">
+          <select
+            className="form-field-input"
+            value={issuanceType}
+            onChange={(e) => setIssuanceType(e.target.value)}
+          >
             <option value="">Select Type</option>
-            <option value="">Remote</option>
-            <option value="">Inhouse</option>
+            <option value="remote">Remote</option>
+            <option value="inhouse">Inhouse</option>
           </select>
         </div>
         <div className="form-submit-btn">
-          <Button onClick={onSubmitAssignUserHandler}>Assign</Button>
+          <Button onClick={() => onSubmitAddIssuanceHandler()}>Issue</Button>
         </div>
       </Modal>
     </div>

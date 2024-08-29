@@ -15,3 +15,7 @@ export const addBook = async (formData) => {
 export const updateBook = async (formData, bookId) => {
   return await app.put(`/lms/books/id/${bookId}`, formData);
 };
+
+export const getBookByTitle = async (bookTitle) => {
+  return await app.get(`/lms/books/title/${bookTitle}`);
+};

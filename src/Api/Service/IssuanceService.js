@@ -1,21 +1,17 @@
 import app from "../apiClient";
 
 export const getIssuances = async () => {
-  return await app.get("/lms/user");
+  return await app.get("/lms/issuances");
 };
 
-export const deleteBook = async (bookId) => {
-  return await app.delete(`/lms/books/id/${bookId}`);
+export const deleteIssuance = async (bookId) => {
+  return await app.delete(`/lms/issuances/id/${bookId}`);
 };
 
-export const addIssuanceByUser = async (formData) => {
-  return await app.post("/lms/books", formData);
+export const addIssuance = async (formData) => {
+  return await app.post("/lms/issuances", formData);
 };
 
-export const addIssuanceByBook = async (formData) => {
-  return await app.post("/lms/books", formData);
-};
-
-export const updateBook = async (formData, bookId) => {
+export const updateIssuance = async (formData, bookId) => {
   return await app.put(`/lms/books/id/${bookId}`, formData);
 };
