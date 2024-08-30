@@ -84,7 +84,7 @@ function Categories() {
     setShowModal(false);
   };
 
-  const handleEditIcon = async (category) => {
+  const handleEditIcon = (category) => {
     setCategoryData({
       categoryName: category.categoryName,
       categoryIcon: category.categoryIcon,

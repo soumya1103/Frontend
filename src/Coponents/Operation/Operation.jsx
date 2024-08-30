@@ -21,6 +21,7 @@ function Operation({
         <img
           src={editIcon}
           alt="edit"
+          title="Edit"
           className="operation-img"
           width={widthE}
         />
@@ -29,6 +30,7 @@ function Operation({
         <img
           src={deleteIcon}
           alt="delete"
+          title="Delete"
           className="operation-img"
           width={widthD}
         />
@@ -42,6 +44,7 @@ function Operation({
           <img
             src={isBooksPage ? assignUserIcon : assignBookIcon}
             alt={isBooksPage ? "assign user" : "assign book"}
+            title={isBooksPage ? "Assign User" : "Assign Book"}
             className="operation-img"
             width={widthD}
           />

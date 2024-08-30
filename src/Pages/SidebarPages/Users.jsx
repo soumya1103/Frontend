@@ -134,7 +134,7 @@ function Users() {
     const obj = {
       userId: userId,
       bookId: book.bookId,
-      returnDate: returnDate + "T00:00:00",
+      returnDate: returnDate,
       issuanceType: issuanceType,
     };
     await addIssuances(obj);
@@ -318,7 +318,7 @@ function Users() {
             label="Return Date"
             name="returnDate"
             value={returnDate}
-            type="date"
+            type="datetime-local"
             required={true}
             onChange={(e) => setReturnDate(e.target.value)}
           />
