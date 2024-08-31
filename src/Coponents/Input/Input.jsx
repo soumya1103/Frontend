@@ -7,7 +7,6 @@ function Input({
   min,
   max,
   type,
-  required,
   value,
   onChange,
   readOnly,
@@ -21,7 +20,6 @@ function Input({
         className={`form-field-input ${className}`}
         name={name}
         type={type}
-        required={required}
         value={value}
         onChange={(e) => onChange(e)}
         autoComplete="off"

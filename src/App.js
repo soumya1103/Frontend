@@ -2,10 +2,10 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Login from "./Pages/Login/Login";
-import Books from "./Pages/SidebarPages/Books";
-import Categories from "./Pages/SidebarPages/Categories";
-import Users from "./Pages/SidebarPages/Users";
-import Issuances from "./Pages/SidebarPages/Issuances";
+import Books from "./Pages/Books/Books";
+import Categories from "./Pages/Categories/Categories";
+import Users from "./Pages/Users/Users";
+import Issuances from "./Pages/Issuances/Issuances";
 
 function App() {
   return (

@@ -10,6 +10,7 @@ function Operation({
   widthD,
   showExtra,
   isBooksPage,
+  isIssuance = false,
   onClickEdit,
   onClickDelete,
   onClickAssignBook,
@@ -26,15 +27,17 @@ function Operation({
           width={widthE}
         />
       </button>
-      <button onClick={() => onClickDelete()}>
-        <img
-          src={deleteIcon}
-          alt="delete"
-          title="Delete"
-          className="operation-img"
-          width={widthD}
-        />
-      </button>
+      {!isIssuance && (
+        <button onClick={() => onClickDelete()}>
+          <img
+            src={deleteIcon}
+            alt="delete"
+            title="Delete"
+            className="operation-img"
+            width={widthD}
+          />
+        </button>
+      )}
       {showExtra && (
         <button
           onClick={

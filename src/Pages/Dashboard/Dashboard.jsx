@@ -33,7 +33,7 @@ function Dashboard() {
       setBooksData(limitedBooksData);
       setTotalBooks(response.data.length);
     } catch (error) {
-      console.log("There was an error fetching the books data!", error);
+      console.log(error);
     }
   };
 
@@ -42,7 +42,7 @@ function Dashboard() {
       const response = await countCategory();
       setTotalCategories(response.data);
     } catch (error) {
-      console.error("There was an error fetching the categories count!", error);
+      console.error(error);
     }
   };
 
