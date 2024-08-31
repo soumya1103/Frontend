@@ -5,6 +5,7 @@ import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import UserTable from "./UserTable";
 import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
+import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import {
   addUser,
   deleteUser,
@@ -20,6 +21,7 @@ function Users() {
   const [isEdit, setIsEdit] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [userData, setUserData] = useState({
     userCredential: "",
     userName: "",
@@ -32,6 +34,7 @@ function Users() {
   const [books, setBooks] = useState([]);
   const [returnDate, setReturnDate] = useState();
   const [issuanceType, setIssuanceType] = useState();
+  const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
     loadUsers();
@@ -131,13 +134,23 @@ function Users() {
     setUserToEdit(user.userId);
   };
 
-  const handleDeleteIcon = async (userId) => {
+  const handleDeleteIcon = (userId) => {
+    setUserToDelete(userId);
+    setShowConfirmationModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      const response = await deleteUser(userId);
-      console.log("User deleted successfully:", response.data);
-      await loadUsers();
+      if (userToDelete) {
+        await deleteUser(userToDelete);
+        console.log("User deleted successfully");
+        await loadUsers();
+      }
     } catch (error) {
       console.error("Error deleting user:", error);
+    } finally {
+      setShowConfirmationModal(false);
+      setUserToDelete(null);
     }
   };
 
@@ -176,6 +189,7 @@ function Users() {
 
   const handleCloseUserModal = () => setShowUserModal(false);
   const handleCloseAssignModal = () => setShowAssignModal(false);
+  const handleCloseConfirmationModal = () => setShowConfirmationModal(false);
 
   return (
     <div className="pages-outer-container">
@@ -213,6 +227,13 @@ function Users() {
         onIssuanceTypeChange={setIssuanceType}
         onSubmit={addIssuances}
       />
+      {showConfirmationModal && (
+        <ConfirmationModal
+          show={showConfirmationModal}
+          onClose={handleCloseConfirmationModal}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
     </div>
   );
 }

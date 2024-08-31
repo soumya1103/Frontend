@@ -5,6 +5,7 @@ import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import BookTable from "./BookTable";
 import BookModal from "./BookModal";
 import AssignModal from "./AssignModal";
+import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import {
   addBook,
   deleteBook,
@@ -40,6 +41,8 @@ function Books() {
   const [bookToEdit, setBookToEdit] = useState();
   const [showBookModal, setShowBookModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
 
   useEffect(() => {
     loadBooks();
@@ -82,13 +85,9 @@ function Books() {
     setBookData({ ...bookData, categoryId: e.target.value });
   };
 
-  const handleDeleteIcon = async (bookId) => {
-    try {
-      await deleteBook(bookId);
-      await loadBooks();
-    } catch (error) {
-      console.error("Error deleting book", error);
-    }
+  const handleDeleteIcon = (bookId) => {
+    setBookToDelete(bookId);
+    setShowConfirmationModal(true);
   };
 
   const handleEditIcon = (book) => {
@@ -150,6 +149,11 @@ function Books() {
 
   const handleCloseAssignModal = () => setShowAssignModal(false);
 
+  const handleCloseConfirmationModal = () => {
+    setShowConfirmationModal(false);
+    setBookToDelete(null);
+  };
+
   const onSumbitAddHandler = async () => {
     await addBooks(bookData);
   };
@@ -175,6 +179,19 @@ function Books() {
       setUser(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (bookToDelete) {
+      try {
+        await deleteBook(bookToDelete);
+        await loadBooks();
+      } catch (error) {
+        console.error("Error deleting book", error);
+      } finally {
+        handleCloseConfirmationModal();
+      }
     }
   };
 
@@ -220,11 +237,16 @@ function Books() {
         bookData={bookData}
         returnDate={returnDate}
         issuanceType={issuanceType}
-        users={users} // Pass users to AssignModal
+        users={users}
         onCredentialChange={handleCredentialChange}
         onReturnDateChange={setReturnDate}
         onIssuanceTypeChange={setIssuanceType}
         onSubmit={onSubmitAddIssuanceHandler}
+      />
+      <ConfirmationModal
+        show={showConfirmationModal}
+        onClose={handleCloseConfirmationModal}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

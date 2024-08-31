@@ -4,6 +4,7 @@ import Button from "../../Coponents/Button/Button";
 import Table from "../../Coponents/Table/Table";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import CategoryModal from "./CategoryModal";
+import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import {
   getAllCategories,
   deleteCategory,
@@ -14,8 +15,10 @@ import CategoryOperations from "./CategoryOperations";
 function Categories() {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState();
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [categoryData, setCategoryData] = useState({
     categoryName: "",
     categoryIcon: "",
@@ -61,14 +64,9 @@ function Categories() {
     setShowModal(true);
   };
 
-  const handleDeleteIcon = async (categoryName) => {
-    try {
-      const response = await deleteCategory(categoryName);
-      console.log("Category deleted successfully:", response.data);
-      await loadCategories();
-    } catch (error) {
-      console.error("There was an error deleting the category!", error);
-    }
+  const handleDeleteIcon = (categoryName) => {
+    setCategoryToDelete(categoryName);
+    setShowConfirmationModal(true);
   };
 
   const handleModalClose = () => setShowModal(false);
@@ -81,6 +79,21 @@ function Categories() {
 
   const handleSearch = (query) => {
     console.log("Searching for:", query);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (categoryToDelete) {
+      try {
+        await deleteCategory(categoryToDelete);
+        console.log("Category deleted successfully");
+        await loadCategories();
+      } catch (error) {
+        console.error("There was an error deleting the category!", error);
+      } finally {
+        setShowConfirmationModal(false);
+        setCategoryToDelete(null);
+      }
+    }
   };
 
   return (
@@ -99,6 +112,13 @@ function Categories() {
           categoryToEdit={categoryToEdit}
           onClose={handleModalClose}
           reloadCategories={loadCategories}
+        />
+      )}
+      {showConfirmationModal && (
+        <ConfirmationModal
+          show={showConfirmationModal}
+          onClose={() => setShowConfirmationModal(false)}
+          onConfirm={handleConfirmDelete}
         />
       )}
     </div>
