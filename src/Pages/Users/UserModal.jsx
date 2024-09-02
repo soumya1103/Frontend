@@ -13,7 +13,7 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
   };
 
   return (
-    <Modal show={show} onClose={onClose} height="250px" width="400px">
+    <Modal show={show} onClose={onClose} height={isEdit ? "210px" : "250px"} width="400px">
       <p className="form-title">{isEdit ? "Edit User" : "Add User"}</p>
       <div className="form-content">
         <Input
@@ -25,20 +25,8 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
           onChange={handlePhoneNumberChange}
           maxLength={10}
         />
-        <Input
-          label="User Name"
-          name="userName"
-          value={userData.userName}
-          type="text"
-          onChange={onChange}
-        />
-        <Input
-          label="Password"
-          name="password"
-          value={userData.password}
-          type="text"
-          onChange={onChange}
-        />
+        <Input label="User Name" name="userName" value={userData.userName} type="text" onChange={onChange} />
+        {isEdit ? "" : <Input label="Password" name="password" value={userData.password} type="text" onChange={onChange} />}
       </div>
       <div className="form-submit-btn">
         <Button onClick={onSubmit}>{isEdit ? "Update" : "Add"}</Button>

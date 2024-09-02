@@ -5,12 +5,10 @@ import Table from "../../Coponents/Table/Table";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import CategoryModal from "./CategoryModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import {
-  getAllCategories,
-  deleteCategory,
-} from "../../Api/Service/CategoryService";
+import { getAllCategories, deleteCategory } from "../../Api/Service/CategoryService";
 import "../Pages.css";
 import CategoryOperations from "./CategoryOperations";
+import { useSelector } from "react-redux";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -24,29 +22,19 @@ function Categories() {
     categoryIcon: "",
   });
 
+  const auth = useSelector((state) => state.auth);
+
   useEffect(() => {
     loadCategories();
   }, []);
 
   const loadCategories = async () => {
     try {
-      const response = await getAllCategories();
+      const response = await getAllCategories(auth?.token);
       const categoriesData = response.data.map((category) => ({
         ...category,
-        categoryIcon: (
-          <img
-            src={category.categoryIcon}
-            alt={category.categoryName}
-            width="13%"
-          />
-        ),
-        operation: (
-          <CategoryOperations
-            category={category}
-            onEdit={handleEditIcon}
-            onDelete={handleDeleteIcon}
-          />
-        ),
+        categoryIcon: <img src={category.categoryIcon} alt={category.categoryName} width="13%" />,
+        operation: <CategoryOperations category={category} onEdit={handleEditIcon} onDelete={handleDeleteIcon} />,
       }));
       setCategories(categoriesData);
     } catch (error) {
@@ -84,7 +72,7 @@ function Categories() {
   const handleConfirmDelete = async () => {
     if (categoryToDelete) {
       try {
-        await deleteCategory(categoryToDelete);
+        await deleteCategory(categoryToDelete, auth?.token);
         console.log("Category deleted successfully");
         await loadCategories();
       } catch (error) {
@@ -112,14 +100,11 @@ function Categories() {
           categoryToEdit={categoryToEdit}
           onClose={handleModalClose}
           reloadCategories={loadCategories}
+          auth={auth}
         />
       )}
       {showConfirmationModal && (
-        <ConfirmationModal
-          show={showConfirmationModal}
-          onClose={() => setShowConfirmationModal(false)}
-          onConfirm={handleConfirmDelete}
-        />
+        <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleConfirmDelete} />
       )}
     </div>
   );

@@ -4,13 +4,7 @@ import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 import { addCategory, updateCategory } from "../../Api/Service/CategoryService";
 
-function CategoryModal({
-  isEdit,
-  categoryData,
-  categoryToEdit,
-  onClose,
-  reloadCategories,
-}) {
+function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCategories, auth }) {
   const [formData, setFormData] = useState(categoryData);
 
   const handleChange = (e) => {
@@ -19,9 +13,9 @@ function CategoryModal({
 
   const handleSubmit = async () => {
     if (isEdit) {
-      await updateCategory(formData, categoryToEdit);
+      await updateCategory(formData, categoryToEdit, auth?.token);
     } else {
-      await addCategory(formData);
+      await addCategory(formData, auth?.token);
     }
     reloadCategories();
     onClose();
@@ -31,20 +25,8 @@ function CategoryModal({
     <Modal show={true} onClose={onClose} height="230px" width="400px">
       <p className="form-title">{isEdit ? "Edit Category" : "Add Category"}</p>
       <div className="form-content">
-        <Input
-          label="Category Name"
-          name="categoryName"
-          type="text"
-          value={formData.categoryName}
-          onChange={handleChange}
-        />
-        <Input
-          label="Category Icon"
-          name="categoryIcon"
-          type="text"
-          value={formData.categoryIcon}
-          onChange={handleChange}
-        />
+        <Input label="Category Name" name="categoryName" type="text" value={formData.categoryName} onChange={handleChange} />
+        <Input label="Category Icon" name="categoryIcon" type="text" value={formData.categoryIcon} onChange={handleChange} />
       </div>
       <div className="form-submit-btn">
         <Button onClick={handleSubmit}>{isEdit ? "Update" : "Add"}</Button>

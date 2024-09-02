@@ -7,6 +7,7 @@ import Operation from "../../Coponents/Operation/Operation";
 import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import AddIssuanceModal from "./AddIssuanceModal";
 import EditIssuanceModal from "./EditIssuanceModal";
+import { useSelector } from "react-redux";
 
 function Issuances() {
   const columns = [
@@ -25,9 +26,11 @@ function Issuances() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentIssuance, setCurrentIssuance] = useState(null);
 
+  const auth = useSelector((state) => state.auth);
+
   const loadIssuances = async () => {
     try {
-      const response = await getIssuances();
+      const response = await getIssuances(auth?.token);
       const issuanceList = response.data.map((issuance) => ({
         ...issuance,
         operation: (
@@ -58,9 +61,15 @@ function Issuances() {
       <div className="pages-table">
         <Table columns={columns} data={issuances} />
       </div>
-      <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} />
+      <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} auth={auth} />
       {currentIssuance && (
-        <EditIssuanceModal show={showEditModal} onClose={() => setShowEditModal(false)} issuance={currentIssuance} reloadIssuances={loadIssuances} />
+        <EditIssuanceModal
+          auth={auth}
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          issuance={currentIssuance}
+          reloadIssuances={loadIssuances}
+        />
       )}
     </div>
   );

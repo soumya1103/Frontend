@@ -6,19 +6,11 @@ import BookTable from "./BookTable";
 import BookModal from "./BookModal";
 import AssignModal from "./AssignModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import {
-  addBook,
-  deleteBook,
-  getAllBooks,
-  getBookByTitle,
-  updateBook,
-} from "../../Api/Service/BookService";
+import { addBook, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { getAllCategories } from "../../Api/Service/CategoryService";
-import {
-  getUserByRole,
-  getUsersByCredential,
-} from "../../Api/Service/UserService";
+import { getUserByRole, getUsersByCredential } from "../../Api/Service/UserService";
 import { addIssuance } from "../../Api/Service/IssuanceService";
+import { useSelector } from "react-redux";
 
 function Books() {
   const [books, setBooks] = useState([]);
@@ -44,6 +36,8 @@ function Books() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
+  const auth = useSelector((state) => state.auth);
+
   useEffect(() => {
     loadBooks();
     fetchCategories();
@@ -52,7 +46,7 @@ function Books() {
 
   const loadBooks = async () => {
     try {
-      const response = await getAllBooks();
+      const response = await getAllBooks(auth?.token);
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books", error);
@@ -61,7 +55,7 @@ function Books() {
 
   const fetchCategories = async () => {
     try {
-      const response = await getAllCategories();
+      const response = await getAllCategories(auth?.token);
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories", error);
@@ -70,7 +64,7 @@ function Books() {
 
   const fetchUsers = async () => {
     try {
-      const response = await getUserByRole();
+      const response = await getUserByRole(auth?.token);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users", error);
@@ -108,7 +102,7 @@ function Books() {
     setBookData({ bookTitle: book.bookTitle });
     setShowAssignModal(true);
     try {
-      const response = await getBookByTitle(book.bookTitle);
+      const response = await getBookByTitle(book.bookTitle, auth?.token);
       setBookId(response.data.bookId);
     } catch (error) {
       console.log(error);
@@ -117,7 +111,7 @@ function Books() {
 
   const updateBooks = async (bookData, bookId) => {
     try {
-      await updateBook(bookData, bookId);
+      await updateBook(bookData, bookId, auth?.token);
       await loadBooks();
       handleCloseBookModal();
     } catch (error) {
@@ -127,7 +121,7 @@ function Books() {
 
   const addBooks = async (bookData) => {
     try {
-      await addBook(bookData);
+      await addBook(bookData, auth?.token);
       await loadBooks();
       handleCloseBookModal();
     } catch (error) {
@@ -137,9 +131,8 @@ function Books() {
 
   const addIssuances = async (issuanceData) => {
     try {
-      await addIssuance(issuanceData);
+      await addIssuance(issuanceData, auth?.token);
       handleCloseAssignModal();
-      window.location.reload();
     } catch (error) {
       console.error("Error adding issuance", error);
     }
@@ -175,7 +168,7 @@ function Books() {
   const handleCredentialChange = async (credential) => {
     try {
       setUserCredential(credential);
-      const response = await getUsersByCredential(credential);
+      const response = await getUsersByCredential(credential, auth?.token);
       setUser(response.data);
     } catch (error) {
       console.log(error);
@@ -185,7 +178,7 @@ function Books() {
   const handleConfirmDelete = async () => {
     if (bookToDelete) {
       try {
-        await deleteBook(bookToDelete);
+        await deleteBook(bookToDelete, auth?.token);
         await loadBooks();
       } catch (error) {
         console.error("Error deleting book", error);
@@ -198,10 +191,7 @@ function Books() {
   return (
     <div className="pages-outer-container">
       <div className="pages-inner-container">
-        <SearchBar
-          placeholder="Search Books"
-          onSearch={(query) => console.log("Searching for:", query)}
-        />
+        <SearchBar placeholder="Search Books" onSearch={(query) => console.log("Searching for:", query)} />
         <Button
           onClick={() => {
             setShowBookModal(true);
@@ -212,12 +202,7 @@ function Books() {
         </Button>
       </div>
       <div className="pages-table">
-        <BookTable
-          books={books}
-          onEdit={handleEditIcon}
-          onDelete={handleDeleteIcon}
-          onAssign={handleAssignUser}
-        />
+        <BookTable books={books} onEdit={handleEditIcon} onDelete={handleDeleteIcon} onAssign={handleAssignUser} />
       </div>
       <BookModal
         show={showBookModal}
@@ -243,11 +228,7 @@ function Books() {
         onIssuanceTypeChange={setIssuanceType}
         onSubmit={onSubmitAddIssuanceHandler}
       />
-      <ConfirmationModal
-        show={showConfirmationModal}
-        onClose={handleCloseConfirmationModal}
-        onConfirm={handleConfirmDelete}
-      />
+      <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
     </div>
   );
 }

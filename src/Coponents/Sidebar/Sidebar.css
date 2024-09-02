@@ -49,6 +49,8 @@
   justify-content: left;
   align-items: center;
   cursor: pointer;
+  background: none;
+  border: none;
 }
 
 .sidebar-logout-btn img {

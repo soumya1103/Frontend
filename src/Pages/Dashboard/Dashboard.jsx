@@ -6,11 +6,11 @@ import categoryDashboard from "../../Images/categories-dashboard.png";
 import userDashboard from "../../Images/users-dashboard.png";
 import inhouseUserDashboard from "../../Images/inhouse-users-dashboard.png";
 import Table from "../../Coponents/Table/Table";
-import axios from "axios";
 import { getAllBooks } from "../../Api/Service/BookService";
 import { countCategory } from "../../Api/Service/CategoryService";
 import { countUser } from "../../Api/Service/UserService";
 import { countByType } from "../../Api/Service/IssuanceService";
+import { useSelector } from "react-redux";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);
@@ -19,6 +19,7 @@ function Dashboard() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalInHouseUsers, setTotalInHouseUsers] = useState(0);
 
+  const auth = useSelector((state) => state.auth);
   const booksColumns = [
     { header: "Title", accessor: "bookTitle" },
     { header: "Author", accessor: "bookAuthor" },
@@ -28,7 +29,7 @@ function Dashboard() {
 
   const loadBooks = async () => {
     try {
-      const response = await getAllBooks();
+      const response = await getAllBooks(auth?.token);
       const limitedBooksData = response.data.slice(0, 8);
       setBooksData(limitedBooksData);
       setTotalBooks(response.data.length);
@@ -39,7 +40,7 @@ function Dashboard() {
 
   const categoryCount = async () => {
     try {
-      const response = await countCategory();
+      const response = await countCategory(auth?.token);
       setTotalCategories(response.data);
     } catch (error) {
       console.error(error);
@@ -48,7 +49,7 @@ function Dashboard() {
 
   const userCount = async () => {
     try {
-      const response = await countUser();
+      const response = await countUser(auth?.token);
       setTotalUsers(response.data);
     } catch (error) {
       console.error("There was an error fetching the users count!", error);
@@ -57,13 +58,10 @@ function Dashboard() {
 
   const inHouseUserCount = async () => {
     try {
-      const response = await countByType();
+      const response = await countByType(auth?.token);
       setTotalInHouseUsers(response.data);
     } catch (error) {
-      console.error(
-        "There was an error fetching the inhouse users count!",
-        error
-      );
+      console.error("There was an error fetching the inhouse users count!", error);
     }
   };
 

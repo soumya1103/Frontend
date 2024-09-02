@@ -6,15 +6,11 @@ import UserTable from "./UserTable";
 import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import {
-  addUser,
-  deleteUser,
-  getUserByRole,
-  updateUser,
-} from "../../Api/Service/UserService";
+import { addUser, deleteUser, getUserByRole, updateUser } from "../../Api/Service/UserService";
 import { getAllBooks, getBookByTitle } from "../../Api/Service/BookService";
 import { addIssuance } from "../../Api/Service/IssuanceService";
 import Operation from "../../Coponents/Operation/Operation";
+import { useSelector } from "react-redux";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -36,6 +32,8 @@ function Users() {
   const [issuanceType, setIssuanceType] = useState();
   const [userToDelete, setUserToDelete] = useState(null);
 
+  const auth = useSelector((state) => state.auth);
+
   useEffect(() => {
     loadUsers();
     fetchBooks();
@@ -43,7 +41,7 @@ function Users() {
 
   const loadUsers = async () => {
     try {
-      const response = await getUserByRole();
+      const response = await getUserByRole(auth?.token);
       const usersData = response.data.map((user) => ({
         ...user,
         operation: (
@@ -66,7 +64,7 @@ function Users() {
 
   const fetchBooks = async () => {
     try {
-      const response = await getAllBooks();
+      const response = await getAllBooks(auth?.token);
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -83,7 +81,7 @@ function Users() {
 
   const addUsers = async () => {
     try {
-      const response = await addUser(userData);
+      const response = await addUser(userData, auth?.token);
       console.log("User added successfully:", response.data);
       setUsers([...users, response.data]);
       handleCloseUserModal();
@@ -95,11 +93,9 @@ function Users() {
 
   const updateUsers = async () => {
     try {
-      const response = await updateUser(userData, userToEdit);
+      const response = await updateUser(userData, userToEdit, auth?.token);
       console.log("User updated successfully:", response.data);
-      setUsers(
-        users.map((user) => (user.userId === userToEdit ? response.data : user))
-      );
+      setUsers(users.map((user) => (user.userId === userToEdit ? response.data : user)));
       handleCloseUserModal();
       await loadUsers();
     } catch (error) {
@@ -109,15 +105,17 @@ function Users() {
 
   const addIssuances = async () => {
     try {
-      const response = await addIssuance({
-        userId,
-        bookId: book.bookId,
-        returnDate,
-        issuanceType,
-      });
+      const response = await addIssuance(
+        {
+          userId,
+          bookId: book.bookId,
+          returnDate,
+          issuanceType,
+        },
+        auth?.token
+      );
       console.log("Issuance added successfully:", response.data);
       handleCloseAssignModal();
-      window.location.reload();
     } catch (error) {
       console.error("Error adding issuance:", error);
     }
@@ -142,7 +140,7 @@ function Users() {
   const handleConfirmDelete = async () => {
     try {
       if (userToDelete) {
-        await deleteUser(userToDelete);
+        await deleteUser(userToDelete, auth?.token);
         console.log("User deleted successfully");
         await loadUsers();
       }
@@ -170,7 +168,7 @@ function Users() {
   const handleBookChange = async (title) => {
     try {
       setBookTitle(title);
-      const response = await getBookByTitle(title);
+      const response = await getBookByTitle(title, auth?.token);
       setBook(response.data);
     } catch (error) {
       console.error("Error fetching book:", error);
@@ -198,12 +196,7 @@ function Users() {
         <Button onClick={handleClick}>Add User</Button>
       </div>
       <div className="pages-table">
-        <UserTable
-          users={users}
-          onEdit={handleEditIcon}
-          onDelete={handleDeleteIcon}
-          onAssign={handleAssignBook}
-        />
+        <UserTable users={users} onEdit={handleEditIcon} onDelete={handleDeleteIcon} onAssign={handleAssignBook} />
       </div>
       <UserModal
         show={showUserModal}
@@ -228,11 +221,7 @@ function Users() {
         onSubmit={addIssuances}
       />
       {showConfirmationModal && (
-        <ConfirmationModal
-          show={showConfirmationModal}
-          onClose={handleCloseConfirmationModal}
-          onConfirm={handleConfirmDelete}
-        />
+        <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
       )}
     </div>
   );

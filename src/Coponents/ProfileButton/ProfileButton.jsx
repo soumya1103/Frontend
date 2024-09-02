@@ -1,12 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./ProfileButton.css";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../../Redux/Authentication/AuthenticationAction";
+import { logout } from "../../Api/Service/Login";
 
-const ProfileButton = ({ firstName, lastName }) => {
+const ProfileButton = ({ name }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    dispatch(logoutUser());
+    navigate("/login");
+  };
+
   const getFirstLetter = () => {
-    const firstLetter = firstName ? firstName.charAt(0) : "";
+    const firstLetter = name ? name.charAt(0) : "";
     return firstLetter.toUpperCase();
   };
 
@@ -39,10 +52,10 @@ const ProfileButton = ({ firstName, lastName }) => {
       </div>
       {showDropdown && (
         <div className="dropdown-menu">
-          <p>
-            {firstName} {lastName}
-          </p>
-          <button className="logout-btn">Logout</button>
+          <p>{name}</p>
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
         </div>
       )}
     </div>

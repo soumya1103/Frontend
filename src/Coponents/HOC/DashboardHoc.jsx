@@ -7,7 +7,7 @@ const DashboardHoc = (Component) =>
   function HOC() {
     return (
       <>
-        <Navigation firstName="Soumya" lastName="Agrawal" />
+        <Navigation />
         <div className="dashboard-hoc-container">
           <Sidebar />
           <div className="dashboard-hoc-right-container">

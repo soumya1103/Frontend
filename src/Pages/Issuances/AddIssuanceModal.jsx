@@ -6,7 +6,7 @@ import { addIssuance } from "../../Api/Service/IssuanceService";
 import { getUserByRole, getUsersByCredential } from "../../Api/Service/UserService";
 import { getAllBooks, getBookByTitle } from "../../Api/Service/BookService";
 
-function AddIssuanceModal({ show, onClose, reloadIssuances }) {
+function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
   const [issuanceData, setIssuanceData] = useState({
     userId: "",
     bookId: "",
@@ -21,10 +21,10 @@ function AddIssuanceModal({ show, onClose, reloadIssuances }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const usersResponse = await getUserByRole();
+      const usersResponse = await getUserByRole(auth?.token);
       setUsers(usersResponse.data);
 
-      const booksResponse = await getAllBooks();
+      const booksResponse = await getAllBooks(auth?.token);
       setBooks(booksResponse.data);
     };
 
@@ -33,7 +33,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances }) {
 
   const handleCredentialChange = async (e) => {
     try {
-      const response = await getUsersByCredential(e.target.value);
+      const response = await getUsersByCredential(e.target.value, auth?.token);
       setIssuanceData({ ...issuanceData, userId: response.data.userId });
       setUserName(response.data.userName);
     } catch (error) {
@@ -43,7 +43,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances }) {
 
   const handleBookChange = async (e) => {
     try {
-      const response = await getBookByTitle(e.target.value);
+      const response = await getBookByTitle(e.target.value, auth?.token);
       setIssuanceData({ ...issuanceData, bookId: response.data.bookId });
       setBookAuthor(response.data.bookAuthor);
     } catch (error) {
@@ -57,7 +57,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances }) {
 
   const handleAddIssuance = async () => {
     try {
-      await addIssuance(issuanceData);
+      await addIssuance(issuanceData, auth?.token);
       onClose();
       reloadIssuances();
     } catch (error) {

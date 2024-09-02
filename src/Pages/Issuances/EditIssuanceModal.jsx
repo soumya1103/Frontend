@@ -3,36 +3,35 @@ import Modal from "../../Coponents/Modal/Modal";
 import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 import { updateIssuance } from "../../Api/Service/IssuanceService";
-import { getUserByRole, getUsersByCredential } from "../../Api/Service/UserService";
-import { getAllBooks, getBookByTitle } from "../../Api/Service/BookService";
+import { getUsersByCredential } from "../../Api/Service/UserService";
+import { getBookByTitle } from "../../Api/Service/BookService";
 
-function EditIssuanceModal({ show, onClose, issuance, reloadIssuances }) {
+function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
   const [issuanceId, setIssuanceId] = useState();
   const [issuanceData, setIssuanceData] = useState({});
   const [userName, setUserName] = useState("");
-  const [bookAuthor, setBookAuthor] = useState("");
   const [users, setUsers] = useState([]);
   const [books, setBooks] = useState([]);
 
+  const fetchData = async () => {
+    try {
+      setIssuanceData(issuance);
+
+      const booksResponse = await getBookByTitle(issuance.bookTitle, auth?.token);
+      setBooks(booksResponse.data.bookId);
+
+      const usersResponse = await getUsersByCredential(issuance.userCredential, auth?.token);
+      setUsers(usersResponse.data.userId);
+
+      setUserName(issuance.userName || "");
+
+      setIssuanceId(issuance.issuanceId);
+    } catch (error) {
+      console.error("Failed to fetch users or books", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIssuanceData(issuance);
-
-        const booksResponse = await getBookByTitle(issuance.bookTitle);
-        setBooks(booksResponse.data.bookId);
-
-        const usersResponse = await getUsersByCredential(issuance.userCredential);
-        setUsers(usersResponse.data.userId);
-
-        setUserName(issuance.userName || "");
-
-        setIssuanceId(issuance.issuanceId);
-      } catch (error) {
-        console.error("Failed to fetch users or books", error);
-      }
-    };
-
     fetchData();
   }, [issuance]);
 
@@ -50,7 +49,7 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances }) {
         issuanceType: issuanceData.issuanceType,
       };
 
-      await updateIssuance(updatePayload, issuanceId);
+      await updateIssuance(updatePayload, issuanceId, auth?.token);
       onClose();
       reloadIssuances();
     } catch (error) {
