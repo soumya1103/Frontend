@@ -25,7 +25,7 @@ export const deleteUser = async (userId, token) => {
 };
 
 export const addUser = async (userData, token) => {
-  return await app.post("/lms/users", userData, {
+  return await app.post("/lms/users/user", userData, {
     headers: {
       Authorization: token,
     },
