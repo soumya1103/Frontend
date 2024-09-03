@@ -1,0 +1,59 @@
+.profile-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-button {
+  width: 35px;
+  height: 35px;
+  background-color: #003060;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: "Roboto Slab", serif;
+  font-weight: 500;
+  font-style: normal;
+  user-select: none;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: -35px;
+  background-color: #fff;
+  color: #e55b13;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-family: "Roboto Slab", serif;
+  font-weight: 500;
+  font-style: normal;
+  width: 150px;
+  text-align: center;
+}
+
+.logout-btn {
+  background-color: #a47551;
+  color: #fff;
+  text-align: center;
+  border: none;
+  padding: 4% 15%;
+  border-radius: 20px;
+  margin-bottom: 8%;
+  font-family: "Roboto Slab", serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background-color: #003060;
+  cursor: pointer;
+  transition: 0.4s;
+}

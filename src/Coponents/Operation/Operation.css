@@ -1,0 +1,22 @@
+.operation-container {
+  display: flex;
+  gap: 5%;
+}
+
+.operation-img {
+  cursor: pointer;
+  padding-bottom: 5%;
+  border-bottom: 3px solid #fcfaf6;
+}
+
+.operation-img:hover {
+  border-bottom: 3px solid #003060;
+}
+
+.operation-container button {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: 13%;
+}

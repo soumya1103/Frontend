@@ -1,0 +1,32 @@
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 5px;
+  overflow: hidden;
+  color: #a47551;
+  text-align: center;
+  outline: 2px solid #a4755141;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  table-layout: fixed;
+}
+
+.table-container th {
+  padding: 1%;
+  border-bottom: 1px solid #a4755141;
+  font-size: 1rem;
+}
+
+.table-container td {
+  border-top: 1px solid #a4755141;
+  padding: 1%;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.table-container th {
+  text-align: center;
+  background-color: #f6eee0;
+  text-align: left;
+}

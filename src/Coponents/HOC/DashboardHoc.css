@@ -1,0 +1,10 @@
+.dashboard-hoc-container {
+  display: grid;
+  grid-template-columns: 17% 83%;
+}
+
+.dashboard-hoc-right-container {
+  /* background-color: #faf5ec; */
+  /* background-color: #fbf7f0; */
+  background-color: #fcfaf6;
+}

@@ -1,0 +1,64 @@
+.dashboard-outer-container {
+  padding: 2% 3%;
+}
+
+.dashboard-inner-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 4%;
+}
+
+.dashboard-card {
+  background-color: #f6eee0;
+  width: 263px;
+  height: 120px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 5% 0%;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-card img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  align-self: center;
+}
+
+.dashboard-card h3 {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  color: #a47551;
+  margin: 0;
+}
+
+.dashboard-card h4 {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  color: #a47551;
+  margin: 0;
+}
+
+.dashboard-table-container {
+  margin-top: 2.5%;
+}
+
+.dashboard-table-container h2 {
+  color: #a47551;
+  font-size: 1.4rem;
+}
