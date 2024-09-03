@@ -1,0 +1,17 @@
+.issuance-history {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+.user-history-inner-container {
+  display: grid;
+  grid-template-columns: 28% 14%;
+  text-align: left;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-history-table {
+  overflow: hidden;
+  margin-top: 1%;
+}

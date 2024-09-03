@@ -8,6 +8,14 @@ export const getIssuances = async (token) => {
   });
 };
 
+export const getIssuancesByUserCredential = async (userCredential, token) => {
+  return await app.get(`/lms/issuance/user/${userCredential}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};
+
 export const deleteIssuance = async (bookId, token) => {
   return await app.delete(`/lms/issuances/id/${bookId}`, {
     headers: {

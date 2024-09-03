@@ -26,7 +26,6 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
           maxLength={10}
         />
         <Input label="User Name" name="userName" value={userData.userName} type="text" onChange={onChange} />
-        {isEdit ? "" : <Input label="Password" name="password" value={userData.password} type="text" onChange={onChange} />}
       </div>
       <div className="form-submit-btn">
         <Button onClick={onSubmit}>{isEdit ? "Update" : "Add"}</Button>

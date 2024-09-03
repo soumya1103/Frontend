@@ -21,7 +21,6 @@ function Users() {
   const [userData, setUserData] = useState({
     userCredential: "",
     userName: "",
-    password: "",
   });
   const [userToEdit, setUserToEdit] = useState();
   const [userId, setUserId] = useState("");
@@ -125,7 +124,6 @@ function Users() {
     setUserData({
       userCredential: user.userCredential,
       userName: user.userName,
-      password: user.password,
     });
     setIsEdit(true);
     setShowUserModal(true);
@@ -139,6 +137,7 @@ function Users() {
 
   const handleConfirmDelete = async () => {
     try {
+      console.log(userToDelete);
       if (userToDelete) {
         await deleteUser(userToDelete, auth?.token);
         console.log("User deleted successfully");
@@ -179,7 +178,6 @@ function Users() {
     setUserData({
       userCredential: "",
       userName: "",
-      password: "",
     });
     setIsEdit(false);
     setShowUserModal(true);
