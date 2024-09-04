@@ -16,6 +16,11 @@
   padding: 2%;
   border-radius: 5px;
   position: relative;
+  overflow-y: scroll;
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-close {

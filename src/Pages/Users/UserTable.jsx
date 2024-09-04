@@ -2,7 +2,7 @@ import React from "react";
 import Table from "../../Coponents/Table/Table";
 import Operation from "../../Coponents/Operation/Operation";
 
-const UserTable = ({ users, onEdit, onDelete, onAssign }) => {
+const UserTable = ({ users, onEdit, onDelete, onAssign, onShowIssuance }) => {
   const columns = [
     { header: "Phone Number", accessor: "userCredential" },
     { header: "Name", accessor: "userName" },
@@ -20,6 +20,7 @@ const UserTable = ({ users, onEdit, onDelete, onAssign }) => {
         onClickAssignBook={() => onAssign(user)}
         onClickEdit={() => onEdit(user)}
         onClickDelete={() => onDelete(user.userId)}
+        onClickUserHistory={() => onShowIssuance(user.userId)}
       />
     ),
   }));

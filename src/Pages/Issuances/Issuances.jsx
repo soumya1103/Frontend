@@ -28,11 +28,20 @@ function Issuances() {
 
   const auth = useSelector((state) => state.auth);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString();
+    const formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   const loadIssuances = async () => {
     try {
       const response = await getIssuances(auth?.token);
       const issuanceList = response.data.map((issuance) => ({
         ...issuance,
+        issueDate: formatDate(issuance.issueDate),
+        returnDate: formatDate(issuance.returnDate),
         operation: (
           <Operation widthE="130%" showExtra={false} isBooksPage={false} isIssuance={true} onClickEdit={() => handleEditIssuanceIcon(issuance)} />
         ),

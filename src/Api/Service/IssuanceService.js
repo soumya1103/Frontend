@@ -47,3 +47,19 @@ export const countByType = async (token) => {
     },
   });
 };
+
+export const getIssuancesByBookId = async (bookId, token) => {
+  return await app.get(`/lms/issuances/book/${bookId}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};
+
+export const getIssuancesByUserId = async (userId, token) => {
+  return await app.get(`/lms/issuances/user/${userId}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};

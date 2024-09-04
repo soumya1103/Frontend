@@ -9,11 +9,13 @@ import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import { addBook, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { getAllCategories } from "../../Api/Service/CategoryService";
 import { getUserByRole, getUsersByCredential } from "../../Api/Service/UserService";
-import { addIssuance } from "../../Api/Service/IssuanceService";
+import { addIssuance, getIssuancesByBookId } from "../../Api/Service/IssuanceService";
 import { useSelector } from "react-redux";
+import BookIssuanceHistory from "./BookIssuanceHistory";
 
 function Books() {
   const [books, setBooks] = useState([]);
+  const [issuances, setIssuances] = useState([]);
   const [categories, setCategories] = useState([]);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState();
@@ -34,6 +36,7 @@ function Books() {
   const [showBookModal, setShowBookModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showIssuanceModal, setShowIssuanceModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
 
   const auth = useSelector((state) => state.auth);
@@ -140,6 +143,8 @@ function Books() {
 
   const handleCloseBookModal = () => setShowBookModal(false);
 
+  const handleCloseIssuanceModal = () => setShowIssuanceModal(false);
+
   const handleCloseAssignModal = () => setShowAssignModal(false);
 
   const handleCloseConfirmationModal = () => {
@@ -188,6 +193,17 @@ function Books() {
     }
   };
 
+  const handleShowIssuance = async (bookId) => {
+    setIssuances([]);
+    setShowIssuanceModal(true);
+    try {
+      const response = await getIssuancesByBookId(bookId, auth?.token);
+      setIssuances(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="pages-outer-container">
       <div className="pages-inner-container">
@@ -202,8 +218,15 @@ function Books() {
         </Button>
       </div>
       <div className="pages-table">
-        <BookTable books={books} onEdit={handleEditIcon} onDelete={handleDeleteIcon} onAssign={handleAssignUser} />
+        <BookTable
+          books={books}
+          onEdit={handleEditIcon}
+          onDelete={handleDeleteIcon}
+          onAssign={handleAssignUser}
+          onShowIssuance={handleShowIssuance}
+        />
       </div>
+      <BookIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
       <BookModal
         show={showBookModal}
         onClose={handleCloseBookModal}

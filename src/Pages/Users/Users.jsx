@@ -8,9 +8,10 @@ import AssignBookModal from "./AssignBookModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import { addUser, deleteUser, getUserByRole, updateUser } from "../../Api/Service/UserService";
 import { getAllBooks, getBookByTitle } from "../../Api/Service/BookService";
-import { addIssuance } from "../../Api/Service/IssuanceService";
+import { addIssuance, getIssuancesByUserId } from "../../Api/Service/IssuanceService";
 import Operation from "../../Coponents/Operation/Operation";
 import { useSelector } from "react-redux";
+import UserIssuanceHistory from "./UserIssuanceHistory";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -30,6 +31,8 @@ function Users() {
   const [returnDate, setReturnDate] = useState();
   const [issuanceType, setIssuanceType] = useState();
   const [userToDelete, setUserToDelete] = useState(null);
+  const [showIssuanceModal, setShowIssuanceModal] = useState(false);
+  const [issuances, setIssuances] = useState([]);
 
   const auth = useSelector((state) => state.auth);
 
@@ -49,9 +52,11 @@ function Users() {
             widthD="45%"
             showExtra={true}
             isBooksPage={false}
+            isHistory={true}
             onClickAssignBook={() => handleAssignBook(user)}
             onClickEdit={() => handleEditIcon(user)}
             onClickDelete={() => handleDeleteIcon(user.userId)}
+            onClickHistory={() => handleHistory(user.userId)}
           />
         ),
       }));
@@ -60,6 +65,8 @@ function Users() {
       console.error("Error fetching users:", error);
     }
   };
+
+  const handleHistory = () => {};
 
   const fetchBooks = async () => {
     try {
@@ -183,9 +190,20 @@ function Users() {
     setShowUserModal(true);
   };
 
+  const handleShowIssuance = async (userId) => {
+    setShowIssuanceModal(true);
+    try {
+      const response = await getIssuancesByUserId(userId, auth?.token);
+      setIssuances(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleCloseUserModal = () => setShowUserModal(false);
   const handleCloseAssignModal = () => setShowAssignModal(false);
   const handleCloseConfirmationModal = () => setShowConfirmationModal(false);
+  const handleCloseIssuanceModal = () => setShowIssuanceModal(false);
 
   return (
     <div className="pages-outer-container">
@@ -194,8 +212,15 @@ function Users() {
         <Button onClick={handleClick}>Add User</Button>
       </div>
       <div className="pages-table">
-        <UserTable users={users} onEdit={handleEditIcon} onDelete={handleDeleteIcon} onAssign={handleAssignBook} />
+        <UserTable
+          users={users}
+          onEdit={handleEditIcon}
+          onDelete={handleDeleteIcon}
+          onAssign={handleAssignBook}
+          onShowIssuance={handleShowIssuance}
+        />
       </div>
+      <UserIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
       <UserModal
         show={showUserModal}
         onClose={handleCloseUserModal}

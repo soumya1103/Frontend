@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../Redux/Authentication/AuthenticationAction";
 import { logout } from "../../Api/Service/Login";
+import Button from "../Button/Button";
 
 const ProfileButton = ({ name }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -53,9 +54,9 @@ const ProfileButton = ({ name }) => {
       {showDropdown && (
         <div className="dropdown-menu">
           <p>{name}</p>
-          <button onClick={handleLogout} className="logout-btn">
+          <Button onClick={handleLogout} className="logout-btn">
             Logout
-          </button>
+          </Button>
         </div>
       )}
     </div>

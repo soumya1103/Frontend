@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentUser } from "./Api/Service/Login";
 import { loginUser } from "./Redux/Authentication/AuthenticationAction";
+import BookIssuanceHistory from "./Pages/Books/BookIssuanceHistory";
 
 function App() {
   const navigate = useNavigate();
@@ -81,6 +82,14 @@ function App() {
           element={
             <AdminRoute>
               <Users />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/bookIssuanceHistory"
+          element={
+            <AdminRoute>
+              <BookIssuanceHistory />
             </AdminRoute>
           }
         />

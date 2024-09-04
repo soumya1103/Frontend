@@ -19,6 +19,13 @@ function UserHistory() {
 
   const auth = useSelector((state) => state.auth);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString();
+    const formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   const loadIssuances = async () => {
     try {
       console.log(auth);
@@ -26,6 +33,8 @@ function UserHistory() {
       const response = await getIssuancesByUserCredential(auth.userCredential, auth?.token);
       const issuanceList = response.data.map((issuance) => ({
         ...issuance,
+        issueDate: formatDate(issuance.issueDate),
+        returnDate: formatDate(issuance.returnDate),
       }));
       setIssuances(issuanceList);
     } catch (error) {
@@ -42,7 +51,6 @@ function UserHistory() {
       <Navigation />
       <div className="pages-outer-container">
         <div className="user-history-inner-container">
-          <SearchBar placeholder="Search Issuance" />
           <h3 className="issuance-history">Issuance History</h3>
         </div>
         <div className="user-history-table">

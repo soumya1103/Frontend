@@ -39,21 +39,8 @@
 }
 
 .logout-btn {
-  background-color: #a47551;
-  color: #fff;
   text-align: center;
-  border: none;
-  padding: 4% 15%;
-  border-radius: 20px;
+  display: block;
+  margin: 0 auto;
   margin-bottom: 8%;
-  font-family: "Roboto Slab", serif;
-  font-weight: 500;
-  font-style: normal;
-  font-size: 0.9rem;
-}
-
-.logout-btn:hover {
-  background-color: #003060;
-  cursor: pointer;
-  transition: 0.4s;
 }
