@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 
 function Issuances() {
   const columns = [
+    { header: "S.No.", accessor: "sNo" },
     { header: "Phone No.", accessor: "userCredential" },
     { header: "User Name", accessor: "userName" },
     { header: "Book Title", accessor: "bookTitle" },
@@ -26,6 +27,10 @@ function Issuances() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentIssuance, setCurrentIssuance] = useState(null);
 
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const size = 7;
+
   const auth = useSelector((state) => state.auth);
 
   const formatDate = (dateString) => {
@@ -37,9 +42,10 @@ function Issuances() {
 
   const loadIssuances = async () => {
     try {
-      const response = await getIssuances(auth?.token);
-      const issuanceList = response.data.map((issuance) => ({
+      const response = await getIssuances(page, size, auth?.token);
+      const issuanceList = response.data.content.map((issuance, index) => ({
         ...issuance,
+        sNo: index + 1 + page * size,
         issueDate: formatDate(issuance.issueDate),
         returnDate: formatDate(issuance.returnDate),
         operation: (
@@ -47,6 +53,7 @@ function Issuances() {
         ),
       }));
       setIssuances(issuanceList);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("There was an error fetching the issuance data!", error);
     }
@@ -59,7 +66,7 @@ function Issuances() {
 
   useEffect(() => {
     loadIssuances();
-  }, []);
+  }, [page, size]);
 
   return (
     <div className="pages-outer-container">
@@ -68,7 +75,7 @@ function Issuances() {
         <Button onClick={() => setShowAddModal(true)}>Add Issuance</Button>
       </div>
       <div className="pages-table">
-        <Table columns={columns} data={issuances} />
+        <Table show={true} columns={columns} data={issuances} currentPage={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} auth={auth} />
       {currentIssuance && (

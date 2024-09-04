@@ -1,0 +1,24 @@
+.pagination-container {
+  margin: 2% auto;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination-icon-left,
+.pagination-icon-right {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.pagination span {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #a47551;
+}

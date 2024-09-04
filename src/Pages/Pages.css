@@ -11,7 +11,7 @@
 
 .pages-table {
   margin-top: 2%;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   height: 73vh;
 }
 

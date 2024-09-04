@@ -1,7 +1,19 @@
 import app from "../apiClient";
 
-export const getAllCategories = async (token) => {
+export const getAllCategories = async (page, size, token) => {
   return await app.get("/lms/categories", {
+    headers: {
+      Authorization: token,
+    },
+    params: {
+      page: page,
+      size: size,
+    },
+  });
+};
+
+export const getAllCategoriesNp = async (token) => {
+  return await app.get("/lms/categories/all", {
     headers: {
       Authorization: token,
     },

@@ -1,7 +1,19 @@
 import app from "../apiClient";
 
-export const getUserByRole = async (token) => {
+export const getUserByRole = async (page, size, token) => {
   return await app.get("/lms/users", {
+    headers: {
+      Authorization: token,
+    },
+    params: {
+      page: page,
+      size: size,
+    },
+  });
+};
+
+export const getUserByRoleNp = async (token) => {
+  return await app.get("/lms/users/all", {
     headers: {
       Authorization: token,
     },

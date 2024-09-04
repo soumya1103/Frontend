@@ -22,21 +22,28 @@ function Categories() {
     categoryIcon: "",
   });
 
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const size = 7;
+
   const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, [page, size]);
 
   const loadCategories = async () => {
     try {
-      const response = await getAllCategories(auth?.token);
-      const categoriesData = response.data.map((category) => ({
+      const response = await getAllCategories(page, size, auth?.token);
+
+      const categoriesData = response.data.content.map((category, index) => ({
         ...category,
+        sNo: index + 1 + page * size,
         categoryIcon: <img src={category.categoryIcon} alt={category.categoryName} width="13%" />,
         operation: <CategoryOperations category={category} onEdit={handleEditIcon} onDelete={handleDeleteIcon} />,
       }));
       setCategories(categoriesData);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("There was an error fetching the categories data!", error);
     }
@@ -91,7 +98,7 @@ function Categories() {
         <Button onClick={handleAddCategoryClick}>Add Category</Button>
       </div>
       <div className="pages-table">
-        <Table columns={columns} data={categories} />
+        <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
       </div>
       {showModal && (
         <CategoryModal
@@ -111,6 +118,7 @@ function Categories() {
 }
 
 const columns = [
+  { header: "S.No.", accessor: "sNo" },
   { header: "Name", accessor: "categoryName" },
   { header: "Icon", accessor: "categoryIcon" },
   { header: "Action", accessor: "operation" },

@@ -1,9 +1,13 @@
 import app from "../apiClient";
 
-export const getIssuances = async (token) => {
+export const getIssuances = async (page, size, token) => {
   return await app.get("/lms/issuances", {
     headers: {
       Authorization: token,
+    },
+    params: {
+      page: page,
+      size: size,
     },
   });
 };

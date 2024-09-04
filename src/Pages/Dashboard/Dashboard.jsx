@@ -6,7 +6,7 @@ import categoryDashboard from "../../Images/categories-dashboard.png";
 import userDashboard from "../../Images/users-dashboard.png";
 import inhouseUserDashboard from "../../Images/inhouse-users-dashboard.png";
 import Table from "../../Coponents/Table/Table";
-import { getAllBooks } from "../../Api/Service/BookService";
+import { getAllBooksNp } from "../../Api/Service/BookService";
 import { countCategory } from "../../Api/Service/CategoryService";
 import { countUser } from "../../Api/Service/UserService";
 import { countByType } from "../../Api/Service/IssuanceService";
@@ -29,7 +29,7 @@ function Dashboard() {
 
   const loadBooks = async () => {
     try {
-      const response = await getAllBooks(auth?.token);
+      const response = await getAllBooksNp(auth?.token);
       const limitedBooksData = response.data.slice(0, 8);
       setBooksData(limitedBooksData);
       setTotalBooks(response.data.length);

@@ -1,7 +1,19 @@
 import app from "../apiClient";
 
-export const getAllBooks = async (token) => {
+export const getAllBooks = async (page, size, token) => {
   return await app.get("/lms/books", {
+    headers: {
+      Authorization: token,
+    },
+    params: {
+      page: page,
+      size: size,
+    },
+  });
+};
+
+export const getAllBooksNp = async (token) => {
+  return await app.get("/lms/books/all", {
     headers: {
       Authorization: token,
     },

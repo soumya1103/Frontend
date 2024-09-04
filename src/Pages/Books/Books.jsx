@@ -2,27 +2,24 @@ import React, { useEffect, useState } from "react";
 import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import Button from "../../Coponents/Button/Button";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
-import BookTable from "./BookTable";
 import BookModal from "./BookModal";
 import AssignModal from "./AssignModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import { addBook, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
-import { getAllCategories } from "../../Api/Service/CategoryService";
-import { getUserByRole, getUsersByCredential } from "../../Api/Service/UserService";
+import { getAllCategories, getAllCategoriesNp } from "../../Api/Service/CategoryService";
+import { getUserByRole, getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { addIssuance, getIssuancesByBookId } from "../../Api/Service/IssuanceService";
 import { useSelector } from "react-redux";
 import BookIssuanceHistory from "./BookIssuanceHistory";
+import Operation from "../../Coponents/Operation/Operation";
+import Table from "../../Coponents/Table/Table";
 
 function Books() {
   const [books, setBooks] = useState([]);
-  const [issuances, setIssuances] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [user, setUser] = useState();
-  const [userCredential, setUserCredential] = useState("");
-  const [issuanceType, setIssuanceType] = useState("");
-  const [bookId, setBookId] = useState("");
-  const [returnDate, setReturnDate] = useState();
+  const [isEdit, setIsEdit] = useState(false);
+  const [showBookModal, setShowBookModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [bookData, setBookData] = useState({
     categoryId: "",
     categoryName: "",
@@ -31,13 +28,22 @@ function Books() {
     bookRating: "",
     bookCount: "",
   });
-  const [isEdit, setIsEdit] = useState(false);
   const [bookToEdit, setBookToEdit] = useState();
-  const [showBookModal, setShowBookModal] = useState(false);
-  const [showAssignModal, setShowAssignModal] = useState(false);
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showIssuanceModal, setShowIssuanceModal] = useState(false);
+  const [bookId, setBookId] = useState("");
+  const [user, setUser] = useState();
+  const [userCredential, setUserCredential] = useState("");
+  const [users, setUsers] = useState([]);
+  const [returnDate, setReturnDate] = useState();
+  const [issuanceType, setIssuanceType] = useState("");
   const [bookToDelete, setBookToDelete] = useState(null);
+  const [showIssuanceModal, setShowIssuanceModal] = useState(false);
+
+  const [issuances, setIssuances] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const size = 7;
 
   const auth = useSelector((state) => state.auth);
 
@@ -45,12 +51,30 @@ function Books() {
     loadBooks();
     fetchCategories();
     fetchUsers();
-  }, []);
+  }, [page, size]);
 
   const loadBooks = async () => {
     try {
-      const response = await getAllBooks(auth?.token);
-      setBooks(response.data);
+      const response = await getAllBooks(page, size, auth?.token);
+
+      const booksData = response.data.content.map((book, index) => ({
+        ...book,
+        sNo: index + 1 + page * size,
+        operation: (
+          <Operation
+            widthE="100%"
+            widthD="80%"
+            showExtra={true}
+            isBooksPage={true}
+            onClickAssignUser={() => handleAssignUser(book)}
+            onClickEdit={() => handleEditIcon(book)}
+            onClickDelete={() => handleDeleteIcon(book.bookId)}
+            onClickBookHistory={() => handleShowIssuance(book.bookId)}
+          />
+        ),
+      }));
+      setBooks(booksData);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching books", error);
     }
@@ -58,7 +82,7 @@ function Books() {
 
   const fetchCategories = async () => {
     try {
-      const response = await getAllCategories(auth?.token);
+      const response = await getAllCategoriesNp(auth?.token);
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories", error);
@@ -67,7 +91,7 @@ function Books() {
 
   const fetchUsers = async () => {
     try {
-      const response = await getUserByRole(auth?.token);
+      const response = await getUserByRoleNp(auth?.token);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users", error);
@@ -204,6 +228,16 @@ function Books() {
     }
   };
 
+  const columns = [
+    { header: "S.No.", accessor: "sNo" },
+    { header: "Category", accessor: "categoryName" },
+    { header: "Title", accessor: "bookTitle" },
+    { header: "Author", accessor: "bookAuthor" },
+    { header: "Rating", accessor: "bookRating" },
+    { header: "Count", accessor: "bookCount" },
+    { header: "Action", accessor: "operation" },
+  ];
+
   return (
     <div className="pages-outer-container">
       <div className="pages-inner-container">
@@ -218,13 +252,7 @@ function Books() {
         </Button>
       </div>
       <div className="pages-table">
-        <BookTable
-          books={books}
-          onEdit={handleEditIcon}
-          onDelete={handleDeleteIcon}
-          onAssign={handleAssignUser}
-          onShowIssuance={handleShowIssuance}
-        />
+        <Table show={true} currentPage={page} totalPages={totalPages} onPageChange={setPage} columns={columns} data={books} />
       </div>
       <BookIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
       <BookModal

@@ -3,8 +3,8 @@ import Modal from "../../Coponents/Modal/Modal";
 import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 import { addIssuance } from "../../Api/Service/IssuanceService";
-import { getUserByRole, getUsersByCredential } from "../../Api/Service/UserService";
-import { getAllBooks, getBookByTitle } from "../../Api/Service/BookService";
+import { getUserByRole, getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
+import { getAllBooksNp, getBookByTitle } from "../../Api/Service/BookService";
 
 function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
   const [issuanceData, setIssuanceData] = useState({
@@ -19,15 +19,15 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
   const [users, setUsers] = useState([]);
   const [books, setBooks] = useState([]);
 
+  const fetchData = async () => {
+    const usersResponse = await getUserByRoleNp(auth?.token);
+    setUsers(usersResponse.data);
+
+    const booksResponse = await getAllBooksNp(auth?.token);
+    setBooks(booksResponse.data);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const usersResponse = await getUserByRole(auth?.token);
-      setUsers(usersResponse.data);
-
-      const booksResponse = await getAllBooks(auth?.token);
-      setBooks(booksResponse.data);
-    };
-
     fetchData();
   }, []);
 
