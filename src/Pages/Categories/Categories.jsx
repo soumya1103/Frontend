@@ -5,7 +5,7 @@ import Table from "../../Coponents/Table/Table";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import CategoryModal from "./CategoryModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import { getAllCategories, deleteCategory } from "../../Api/Service/CategoryService";
+import { getAllCategories, deleteCategory, categorySearch } from "../../Api/Service/CategoryService";
 import "../Pages.css";
 import CategoryOperations from "./CategoryOperations";
 import { useSelector } from "react-redux";
@@ -21,6 +21,9 @@ function Categories() {
     categoryName: "",
     categoryIcon: "",
   });
+
+  const [keyword, setKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -72,8 +75,33 @@ function Categories() {
     setShowModal(true);
   };
 
-  const handleSearch = (query) => {
-    console.log("Searching for:", query);
+  const handleSearch = async () => {
+    if (keyword.trim() === "") {
+      loadCategories();
+      setSearchData([]);
+    } else {
+      try {
+        const response = await categorySearch(keyword, auth?.token);
+        const categoriesData = response.data.map((category, index) => ({
+          ...category,
+          sNo: index + 1 + page * size,
+          categoryIcon: <img src={category.categoryIcon} alt={category.categoryName} width="13%" />,
+          operation: <CategoryOperations category={category} onEdit={handleEditIcon} onDelete={handleDeleteIcon} />,
+        }));
+        setSearchData(categoriesData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleOnChange = (e) => {
+    const value = e.target.value;
+    setKeyword(value);
+    if (value.trim() === "") {
+      loadCategories();
+      setSearchData([]);
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -94,11 +122,15 @@ function Categories() {
   return (
     <div className="pages-outer-container">
       <div className="pages-inner-container">
-        <SearchBar placeholder="Search Category" onSearch={handleSearch} />
+        <SearchBar placeholder="Search Category" handleOnChange={handleOnChange} handleSearch={handleSearch} />
         <Button onClick={handleAddCategoryClick}>Add Category</Button>
       </div>
       <div className="pages-table">
-        <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
+        {searchData.length !== 0 ? (
+          <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+        ) : (
+          <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
+        )}
       </div>
       {showModal && (
         <CategoryModal

@@ -51,3 +51,11 @@ export const countCategory = async (token) => {
     },
   });
 };
+
+export const categorySearch = async (keyword, token) => {
+  return await app.get(`/lms/categories/search/${keyword}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};

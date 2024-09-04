@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import Button from "../../Coponents/Button/Button";
 import Table from "../../Coponents/Table/Table";
-import { getIssuances } from "../../Api/Service/IssuanceService";
+import { getIssuances, issuanceSearch } from "../../Api/Service/IssuanceService";
 import Operation from "../../Coponents/Operation/Operation";
 import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import AddIssuanceModal from "./AddIssuanceModal";
@@ -30,6 +30,9 @@ function Issuances() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const size = 7;
+
+  const [keyword, setKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
 
   const auth = useSelector((state) => state.auth);
 
@@ -68,14 +71,52 @@ function Issuances() {
     loadIssuances();
   }, [page, size]);
 
+  const handleSearch = async () => {
+    if (keyword.trim() === "") {
+      loadIssuances();
+      setSearchData([]);
+    } else {
+      try {
+        const response = await issuanceSearch(keyword, auth?.token);
+        console.log(response.data);
+
+        const issuanceList = response.data.map((issuance, index) => ({
+          ...issuance,
+          sNo: index + 1 + page * size,
+          issueDate: formatDate(issuance.issueDate),
+          returnDate: formatDate(issuance.returnDate),
+          operation: (
+            <Operation widthE="130%" showExtra={false} isBooksPage={false} isIssuance={true} onClickEdit={() => handleEditIssuanceIcon(issuance)} />
+          ),
+        }));
+        setSearchData(issuanceList);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleOnChange = (e) => {
+    const value = e.target.value;
+    setKeyword(value);
+    if (value.trim() === "") {
+      loadIssuances();
+      setSearchData([]);
+    }
+  };
+
   return (
     <div className="pages-outer-container">
       <div className="pages-inner-container">
-        <SearchBar placeholder="Search Issuance" />
+        <SearchBar placeholder="Search Issuance" handleOnChange={handleOnChange} handleSearch={handleSearch} />
         <Button onClick={() => setShowAddModal(true)}>Add Issuance</Button>
       </div>
       <div className="pages-table">
-        <Table show={true} columns={columns} data={issuances} currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+        {searchData.length !== 0 ? (
+          <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+        ) : (
+          <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={issuances} onPageChange={setPage} />
+        )}
       </div>
       <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} auth={auth} />
       {currentIssuance && (

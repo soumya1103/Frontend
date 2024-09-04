@@ -67,3 +67,11 @@ export const getIssuancesByUserId = async (userId, token) => {
     },
   });
 };
+
+export const issuanceSearch = async (keyword, token) => {
+  return await app.get(`/lms/issuances/search/${keyword}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};

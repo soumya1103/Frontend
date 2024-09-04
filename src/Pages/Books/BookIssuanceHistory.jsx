@@ -12,6 +12,19 @@ const BookIssuanceHistory = ({ data, show, onClose }) => {
     { header: "Issuance Type", accessor: "issuanceType" },
   ];
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString();
+    const formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return `${formattedDate} ${formattedTime}`;
+  };
+
+  const issuanceList = data.map((issuance) => ({
+    ...issuance,
+    issueDate: formatDate(issuance.issueDate),
+    returnDate: formatDate(issuance.returnDate),
+  }));
+
   return (
     <Modal show={show} onClose={onClose} height="500px" width="1000px">
       {data.length === 0 ? (
@@ -19,7 +32,7 @@ const BookIssuanceHistory = ({ data, show, onClose }) => {
       ) : (
         <>
           <h3 className="form-title">Issuance History of {data[0].bookTitle}</h3>
-          <Table columns={columns} data={data} />
+          <Table columns={columns} data={issuanceList} />
         </>
       )}
     </Modal>

@@ -3,7 +3,7 @@ import Modal from "../../Coponents/Modal/Modal";
 import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 import { addIssuance } from "../../Api/Service/IssuanceService";
-import { getUserByRole, getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
+import { getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { getAllBooksNp, getBookByTitle } from "../../Api/Service/BookService";
 
 function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {

@@ -1,31 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import "./SearchBar.css";
 import search from "../../Images/search-icon.svg";
 
-const SearchBar = ({ placeholder, onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      onSearch(searchTerm);
-    }
-  };
-
+const SearchBar = ({ placeholder, handleSearch, handleOnChange }) => {
   return (
     <div className="search-bar-container">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className="search-input"
-      />
-      <button className="search-button" onClick={() => onSearch(searchTerm)}>
+      <input type="text" placeholder={placeholder} className="search-input" onChange={(e) => handleOnChange(e)} />
+      <button className="search-button" onClick={handleSearch}>
         <img src={search} alt="search" width="55%" />
       </button>
     </div>
