@@ -9,9 +9,10 @@
   left: 0;
   right: 0;
   margin: auto;
-  background-image: url(//bookly-theme.myshopify.com/cdn/shop/files/icons8-literature_1.gif?v=1679027144&width=1920);
   background-repeat: no-repeat;
   background-position: center;
   /* background-color: #f6eee0; */
   background-color: #ffffff;
+  opacity: 0.6;
+  background-image: url(//bookly-theme.myshopify.com/cdn/shop/files/icons8-literature_1.gif?v=1679027144&width=1920);
 }

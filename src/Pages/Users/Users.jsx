@@ -6,7 +6,7 @@ import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import { addUser, deleteUser, getUserByRole, updateUser, userSearch } from "../../Api/Service/UserService";
-import { getAllBooks, getAllBooksNp, getBookByTitle } from "../../Api/Service/BookService";
+import { getAllBooks, getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { addIssuance, getIssuancesByUserId } from "../../Api/Service/IssuanceService";
 import Operation from "../../Coponents/Operation/Operation";
 import { useSelector } from "react-redux";
@@ -177,7 +177,15 @@ function Users() {
         },
         auth?.token
       );
-      console.log("Issuance added successfully:", response.data);
+      console.log("Issuance added successfully:");
+      const addedBookTitle = response.data.bookTitle;
+
+      const { data } = await getBookByTitle(addedBookTitle, auth?.token);
+
+      const updatedBooks = { ...data, bookCount: data.bookCount - 1 };
+
+      await updateBook(updatedBooks, updatedBooks.bookId, auth?.token);
+
       handleCloseAssignModal();
     } catch (error) {
       console.error("Error adding issuance:", error);

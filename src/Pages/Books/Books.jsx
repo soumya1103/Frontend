@@ -127,7 +127,7 @@ function Books() {
   };
 
   const handleAssignUser = async (book) => {
-    setBookData({ bookTitle: book.bookTitle });
+    setBookData({ bookTitle: book.bookTitle, bookCount: book.bookCount });
     setShowAssignModal(true);
     try {
       const response = await getBookByTitle(book.bookTitle, auth?.token);
@@ -160,6 +160,12 @@ function Books() {
   const addIssuances = async (issuanceData) => {
     try {
       await addIssuance(issuanceData, auth?.token);
+      // const updatedBookData = {
+      //   ...bookData,
+      //   bookCount: bookData.bookCount - 1,
+      // };
+      // await updateBook(updatedBookData, bookId, auth?.token);
+
       handleCloseAssignModal();
     } catch (error) {
       console.error("Error adding issuance", error);
@@ -192,7 +198,19 @@ function Books() {
       returnDate: returnDate,
       issuanceType: issuanceType,
     };
-    await addIssuances(obj);
+    try {
+      await addIssuances(obj);
+
+      const updatedBookData = {
+        ...bookData,
+        bookCount: bookData.bookCount - 1,
+      };
+
+      await updateBook(updatedBookData, bookId, auth?.token);
+      await loadBooks();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCredentialChange = async (credential) => {

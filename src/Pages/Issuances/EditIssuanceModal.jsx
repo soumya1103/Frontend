@@ -4,7 +4,7 @@ import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 import { updateIssuance } from "../../Api/Service/IssuanceService";
 import { getUsersByCredential } from "../../Api/Service/UserService";
-import { getBookByTitle } from "../../Api/Service/BookService";
+import { getBookByTitle, updateBook } from "../../Api/Service/BookService";
 
 function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
   const [issuanceId, setIssuanceId] = useState();
@@ -12,16 +12,20 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
   const [userName, setUserName] = useState("");
   const [users, setUsers] = useState([]);
   const [books, setBooks] = useState([]);
+  const [originalStatus, setOriginalStatus] = useState("");
 
   const fetchData = async () => {
     try {
       setIssuanceData(issuance);
+      setOriginalStatus(issuance.status);
 
       const booksResponse = await getBookByTitle(issuance.bookTitle, auth?.token);
-      setBooks(booksResponse.data.bookId);
+      // setBooks(booksResponse.data.bookId);
+      setBooks(booksResponse.data);
 
       const usersResponse = await getUsersByCredential(issuance.userCredential, auth?.token);
-      setUsers(usersResponse.data.userId);
+      // setUsers(usersResponse.data.userId);
+      setUsers(usersResponse.data);
 
       setUserName(issuance.userName || "");
 
@@ -36,7 +40,31 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
   }, [issuance]);
 
   const handleChange = (e) => {
-    setIssuanceData({ ...issuanceData, [e.target.name]: e.target.value, userId: users, bookId: books });
+    // setIssuanceData({ ...issuanceData, [e.target.name]: e.target.value, userId: users.user, bookId: books });
+    setIssuanceData({ ...issuanceData, [e.target.name]: e.target.value, userId: users.userId, bookId: books.bookId });
+  };
+
+  const updateBookCount = async (newStatus) => {
+    try {
+      const updatedBook = { ...books };
+
+      // If status changes to "Issued" from "Returned" or new issuance
+      if (newStatus === "Issued" && originalStatus !== "Issued") {
+        updatedBook.bookCount = books.bookCount - 1;
+      }
+
+      // If status changes to "Returned" from "Issued"
+      if (newStatus === "Returned" && originalStatus === "Issued") {
+        updatedBook.bookCount = books.bookCount + 1;
+      }
+
+      // Update book only if the count is changed
+      if (updatedBook.bookCount !== books.bookCount) {
+        await updateBook(updatedBook, books.bookId, auth?.token);
+      }
+    } catch (error) {
+      console.error("Failed to update book count", error);
+    }
   };
 
   const handleUpdateIssuance = async () => {
@@ -49,7 +77,10 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
         issuanceType: issuanceData.issuanceType,
       };
 
+      await updateBookCount(issuanceData.status);
+
       await updateIssuance(updatePayload, issuanceId, auth?.token);
+
       onClose();
       reloadIssuances();
     } catch (error) {

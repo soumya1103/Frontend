@@ -4,7 +4,7 @@ import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 import { addIssuance } from "../../Api/Service/IssuanceService";
 import { getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
-import { getAllBooksNp, getBookByTitle } from "../../Api/Service/BookService";
+import { getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 
 function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
   const [issuanceData, setIssuanceData] = useState({
@@ -58,6 +58,14 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
   const handleAddIssuance = async () => {
     try {
       await addIssuance(issuanceData, auth?.token);
+      const issuedBook = books.find((book) => book.bookId === issuanceData.bookId);
+      if (issuedBook) {
+        const updatedBookData = {
+          ...issuedBook,
+          bookCount: issuedBook.bookCount - 1,
+        };
+        await updateBook(updatedBookData, issuanceData.bookId, auth?.token);
+      }
       onClose();
       reloadIssuances();
     } catch (error) {
@@ -83,7 +91,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
         <select className="form-field-input" name="bookTitle" onChange={handleBookChange}>
           <option value="">Select Book</option>
           {books.map((book) => (
-            <option key={book.bookId} value={book.bookTitle}>
+            <option key={book.bookId} value={book.bookTitle} disabled={book.bookCount === 0}>
               {book.bookTitle}
             </option>
           ))}
