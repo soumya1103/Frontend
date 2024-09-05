@@ -28,9 +28,13 @@ function Issuances() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentIssuance, setCurrentIssuance] = useState(null);
 
+  const [renderUtil, setRenderUtil] = useState(false);
+
+  const render = () => setRenderUtil((prev) => !prev);
+
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 7;
+  const size = 6;
 
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
@@ -129,7 +133,13 @@ function Issuances() {
               <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={issuances} onPageChange={setPage} />
             )}
           </div>
-          <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} auth={auth} />
+          <AddIssuanceModal
+            show={showAddModal}
+            onClose={() => setShowAddModal(false)}
+            reloadIssuances={loadIssuances}
+            auth={auth}
+            renderUtil={renderUtil}
+          />
           {currentIssuance && (
             <EditIssuanceModal
               auth={auth}
@@ -137,6 +147,7 @@ function Issuances() {
               onClose={() => setShowEditModal(false)}
               issuance={currentIssuance}
               reloadIssuances={loadIssuances}
+              render={render}
             />
           )}
         </div>

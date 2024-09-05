@@ -6,7 +6,7 @@ import { updateIssuance } from "../../Api/Service/IssuanceService";
 import { getUsersByCredential } from "../../Api/Service/UserService";
 import { getBookByTitle, updateBook } from "../../Api/Service/BookService";
 
-function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
+function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, render }) {
   const [issuanceId, setIssuanceId] = useState();
   const [issuanceData, setIssuanceData] = useState({});
   const [userName, setUserName] = useState("");
@@ -83,6 +83,7 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth }) {
 
       onClose();
       reloadIssuances();
+      render();
     } catch (error) {
       console.log(error);
     }

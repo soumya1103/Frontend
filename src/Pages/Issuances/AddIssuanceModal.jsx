@@ -6,7 +6,7 @@ import { addIssuance } from "../../Api/Service/IssuanceService";
 import { getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 
-function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
+function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) {
   const [issuanceData, setIssuanceData] = useState({
     userId: "",
     bookId: "",
@@ -29,7 +29,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth }) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [renderUtil]);
 
   const handleCredentialChange = async (e) => {
     try {
