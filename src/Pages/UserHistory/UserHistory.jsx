@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Navigation from "../../Coponents/Navigation/Navigation";
 import Table from "../../Coponents/Table/Table";
-import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import { useSelector } from "react-redux";
 import { getIssuancesByUserCredential } from "../../Api/Service/IssuanceService";
 import "./UserHistory.css";
+import Loader from "../../Coponents/Loader/Loader";
 
 function UserHistory() {
   const columns = [
@@ -46,17 +46,31 @@ function UserHistory() {
     loadIssuances();
   }, []);
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
   return (
     <>
-      <Navigation />
-      <div className="pages-outer-container">
-        <div className="user-history-inner-container">
-          <h3 className="issuance-history">Issuance History</h3>
-        </div>
-        <div className="user-history-table">
-          <Table columns={columns} data={issuances} />
-        </div>
-      </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Navigation />
+          <div className="pages-outer-container">
+            <div className="user-history-inner-container">
+              <h3 className="issuance-history">Issuance History</h3>
+            </div>
+            <div className="user-history-table">
+              <Table columns={columns} data={issuances} />
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

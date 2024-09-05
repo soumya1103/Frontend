@@ -25,6 +25,16 @@
   color: #003060;
 }
 
+.icon:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon:disabled:hover {
+  color: #e55b13;
+  opacity: 0.6;
+}
+
 .pagination span {
   font-size: 1rem;
   font-weight: bold;

@@ -17,11 +17,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="pagination-container">
       <div className="pagination">
-        <button onClick={handlePrevious} className="icon" size={25}>
+        <button onClick={handlePrevious} disabled={currentPage === 0} className="icon" size={25}>
           Prev
         </button>
         <span>{`${currentPage + 1} of ${totalPages}`}</span>
-        <button onClick={handleNext} className="icon" size={25}>
+        <button onClick={handleNext} disabled={currentPage === totalPages - 1} className="icon" size={25}>
           Next
         </button>
       </div>

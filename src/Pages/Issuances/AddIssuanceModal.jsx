@@ -97,13 +97,13 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
           ))}
         </select>
         <Input label="Book Author" value={bookAuthor} name="bookAuthor" type="text" readOnly={true} />
-        <Input label="Return Date" name="returnDate" type="datetime-local" onChange={handleChange} value={issuanceData.returnDate || ""} />
         <label className="form-field-label">Issuance Type</label>
         <select className="form-field-input" name="issuanceType" onChange={handleChange} value={issuanceData.issuanceType || ""}>
           <option value="">Select Type</option>
           <option value="Remote">Remote</option>
           <option value="Inhouse">Inhouse</option>
         </select>
+        <Input label="Return Date" name="returnDate" type="datetime-local" onChange={handleChange} value={issuanceData.returnDate || ""} />
       </div>
       <div className="form-submit-btn">
         <Button onClick={handleAddIssuance}>Add</Button>

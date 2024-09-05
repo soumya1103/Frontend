@@ -22,8 +22,7 @@
 }
 
 .sidebar-inner-container h3:hover {
-  text-decoration: underline;
-  text-decoration-color: #e55b13;
+  transform: scale(1.1);
 }
 
 .sidebar-icon.active h3 {

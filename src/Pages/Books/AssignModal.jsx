@@ -32,13 +32,13 @@ const AssignModal = ({
         </select>
         <Input label="User Name" name="userName" value={user?.userName} type="text" readOnly={true} />
         <Input label="Book Title" name="bookTitle" value={bookData?.bookTitle} type="text" readOnly={true} />
-        <Input label="Return Date" name="returnDate" value={returnDate} type="datetime-local" onChange={(e) => onReturnDateChange(e.target.value)} />
         <label className="form-field-label">Issuance Type</label>
         <select className="form-field-input" value={issuanceType} onChange={(e) => onIssuanceTypeChange(e.target.value)}>
           <option value="">Select Type</option>
           <option value="Remote">Remote</option>
           <option value="Inhouse">Inhouse</option>
         </select>
+        <Input label="Return Date" name="returnDate" value={returnDate} type="datetime-local" onChange={(e) => onReturnDateChange(e.target.value)} />
       </div>
       <div className="form-submit-btn">
         <Button onClick={onSubmit}>Issue</Button>

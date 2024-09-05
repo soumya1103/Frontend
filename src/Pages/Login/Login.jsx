@@ -58,28 +58,6 @@ const Login = () => {
     }, 2000);
   }, []);
 
-  // const [errors, setErrors] = useState();
-
-  // const validateLogin = () => {
-  //   let isValid = true;
-  //   const newErrors = { username: "", password: "" };
-  //   if (!validateEmailOrMobile(username)) {
-  //     newErrors.username = "Enter a valid email or 10-digit mobile number.";
-  //     isValid = false;
-  //   }
-  //   if (!validatePassword(password)) {
-  //     newErrors.password = "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.";
-  //     isValid = false;
-  //   }
-  //   if (!isValid) {
-  //     setErrors(newErrors);
-  //   }
-  //   return isValid;
-  // };
-  // if (!validateLogin()) {
-  //   return;
-  // }
-
   return (
     <>
       {loading ? (
