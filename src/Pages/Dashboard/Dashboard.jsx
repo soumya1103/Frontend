@@ -11,6 +11,7 @@ import { countCategory } from "../../Api/Service/CategoryService";
 import { countUser } from "../../Api/Service/UserService";
 import { countByType } from "../../Api/Service/IssuanceService";
 import { useSelector } from "react-redux";
+import Loader from "../../Coponents/Loader/Loader";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);
@@ -72,35 +73,49 @@ function Dashboard() {
     inHouseUserCount();
   }, []);
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
   return (
-    <div className="dashboard-outer-container">
-      <div className="dashboard-inner-container">
-        <div className="dashboard-card">
-          <img src={bookDashboard} alt="book" width="20%" />
-          <h3>{totalBooks}</h3>
-          <h4>Total Books</h4>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="dashboard-outer-container">
+          <div className="dashboard-inner-container">
+            <div className="dashboard-card">
+              <img src={bookDashboard} alt="book" width="20%" />
+              <h3>{totalBooks}</h3>
+              <h4>Total Books</h4>
+            </div>
+            <div className="dashboard-card">
+              <img src={categoryDashboard} alt="category" width="20%" />
+              <h3>{totalCategories}</h3>
+              <h4>Total Categories</h4>
+            </div>
+            <div className="dashboard-card">
+              <img src={userDashboard} alt="user" width="20%" />
+              <h3>{totalUsers}</h3>
+              <h4>Total Users</h4>
+            </div>
+            <div className="dashboard-card">
+              <img src={inhouseUserDashboard} alt="inhouse-user" width="20%" />
+              <h3>{totalInHouseUsers}</h3>
+              <h4>Total Inhouse Users</h4>
+            </div>
+          </div>
+          <div className="dashboard-table-container">
+            <h2>Books</h2>
+            <Table columns={booksColumns} data={booksData} />
+          </div>
         </div>
-        <div className="dashboard-card">
-          <img src={categoryDashboard} alt="category" width="20%" />
-          <h3>{totalCategories}</h3>
-          <h4>Total Categories</h4>
-        </div>
-        <div className="dashboard-card">
-          <img src={userDashboard} alt="user" width="20%" />
-          <h3>{totalUsers}</h3>
-          <h4>Total Users</h4>
-        </div>
-        <div className="dashboard-card">
-          <img src={inhouseUserDashboard} alt="inhouse-user" width="20%" />
-          <h3>{totalInHouseUsers}</h3>
-          <h4>Total Inhouse Users</h4>
-        </div>
-      </div>
-      <div className="dashboard-table-container">
-        <h2>Books</h2>
-        <Table columns={booksColumns} data={booksData} />
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

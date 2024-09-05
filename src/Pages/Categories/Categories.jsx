@@ -9,6 +9,7 @@ import { getAllCategories, deleteCategory, categorySearch } from "../../Api/Serv
 import "../Pages.css";
 import CategoryOperations from "./CategoryOperations";
 import { useSelector } from "react-redux";
+import Loader from "../../Coponents/Loader/Loader";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -119,33 +120,47 @@ function Categories() {
     }
   };
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
   return (
-    <div className="pages-outer-container">
-      <div className="pages-inner-container">
-        <SearchBar placeholder="Search Category" handleOnChange={handleOnChange} handleSearch={handleSearch} />
-        <Button onClick={handleAddCategoryClick}>Add Category</Button>
-      </div>
-      <div className="pages-table">
-        {searchData.length !== 0 ? (
-          <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
-        ) : (
-          <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
-        )}
-      </div>
-      {showModal && (
-        <CategoryModal
-          isEdit={isEdit}
-          categoryData={categoryData}
-          categoryToEdit={categoryToEdit}
-          onClose={handleModalClose}
-          reloadCategories={loadCategories}
-          auth={auth}
-        />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="pages-outer-container">
+          <div className="pages-inner-container">
+            <SearchBar placeholder="Search Category" handleOnChange={handleOnChange} handleSearch={handleSearch} />
+            <Button onClick={handleAddCategoryClick}>Add Category</Button>
+          </div>
+          <div className="pages-table">
+            {searchData.length !== 0 ? (
+              <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+            ) : (
+              <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
+            )}
+          </div>
+          {showModal && (
+            <CategoryModal
+              isEdit={isEdit}
+              categoryData={categoryData}
+              categoryToEdit={categoryToEdit}
+              onClose={handleModalClose}
+              reloadCategories={loadCategories}
+              auth={auth}
+            />
+          )}
+          {showConfirmationModal && (
+            <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleConfirmDelete} />
+          )}
+        </div>
       )}
-      {showConfirmationModal && (
-        <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleConfirmDelete} />
-      )}
-    </div>
+    </>
   );
 }
 

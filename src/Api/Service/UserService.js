@@ -59,3 +59,11 @@ export const countUser = async (token) => {
     },
   });
 };
+
+export const userSearch = async (keyword, token) => {
+  return await app.get(`/lms/users/search/${keyword}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};

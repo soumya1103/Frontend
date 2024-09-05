@@ -8,6 +8,7 @@ import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import AddIssuanceModal from "./AddIssuanceModal";
 import EditIssuanceModal from "./EditIssuanceModal";
 import { useSelector } from "react-redux";
+import Loader from "../../Coponents/Loader/Loader";
 
 function Issuances() {
   const columns = [
@@ -78,8 +79,6 @@ function Issuances() {
     } else {
       try {
         const response = await issuanceSearch(keyword, auth?.token);
-        console.log(response.data);
-
         const issuanceList = response.data.map((issuance, index) => ({
           ...issuance,
           sNo: index + 1 + page * size,
@@ -105,30 +104,44 @@ function Issuances() {
     }
   };
 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
   return (
-    <div className="pages-outer-container">
-      <div className="pages-inner-container">
-        <SearchBar placeholder="Search Issuance" handleOnChange={handleOnChange} handleSearch={handleSearch} />
-        <Button onClick={() => setShowAddModal(true)}>Add Issuance</Button>
-      </div>
-      <div className="pages-table">
-        {searchData.length !== 0 ? (
-          <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
-        ) : (
-          <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={issuances} onPageChange={setPage} />
-        )}
-      </div>
-      <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} auth={auth} />
-      {currentIssuance && (
-        <EditIssuanceModal
-          auth={auth}
-          show={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          issuance={currentIssuance}
-          reloadIssuances={loadIssuances}
-        />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="pages-outer-container">
+          <div className="pages-inner-container">
+            <SearchBar placeholder="Search Issuance" handleOnChange={handleOnChange} handleSearch={handleSearch} />
+            <Button onClick={() => setShowAddModal(true)}>Add Issuance</Button>
+          </div>
+          <div className="pages-table">
+            {searchData.length !== 0 ? (
+              <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+            ) : (
+              <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={issuances} onPageChange={setPage} />
+            )}
+          </div>
+          <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} auth={auth} />
+          {currentIssuance && (
+            <EditIssuanceModal
+              auth={auth}
+              show={showEditModal}
+              onClose={() => setShowEditModal(false)}
+              issuance={currentIssuance}
+              reloadIssuances={loadIssuances}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
 

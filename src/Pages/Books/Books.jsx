@@ -5,7 +5,7 @@ import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import BookModal from "./BookModal";
 import AssignModal from "./AssignModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import { addBook, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
+import { addBook, bookSearch, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { getAllCategories, getAllCategoriesNp } from "../../Api/Service/CategoryService";
 import { getUserByRole, getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { addIssuance, getIssuancesByBookId } from "../../Api/Service/IssuanceService";
@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import BookIssuanceHistory from "./BookIssuanceHistory";
 import Operation from "../../Coponents/Operation/Operation";
 import Table from "../../Coponents/Table/Table";
+import Loader from "../../Coponents/Loader/Loader";
 
 function Books() {
   const [books, setBooks] = useState([]);
@@ -238,49 +239,111 @@ function Books() {
     { header: "Action", accessor: "operation" },
   ];
 
+  const [keyword, setKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
+
+  const handleSearch = async () => {
+    if (keyword.trim() === "") {
+      loadBooks();
+      setSearchData([]);
+    } else {
+      try {
+        const response = await bookSearch(keyword, auth?.token);
+        console.log(response.data);
+
+        const booksData = response.data.map((book, index) => ({
+          ...book,
+          sNo: index + 1 + page * size,
+          operation: (
+            <Operation
+              widthE="100%"
+              widthD="80%"
+              showExtra={true}
+              isBooksPage={true}
+              onClickAssignUser={() => handleAssignUser(book)}
+              onClickEdit={() => handleEditIcon(book)}
+              onClickDelete={() => handleDeleteIcon(book.bookId)}
+              onClickBookHistory={() => handleShowIssuance(book.bookId)}
+            />
+          ),
+        }));
+        setSearchData(booksData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleOnChange = (e) => {
+    const value = e.target.value;
+    setKeyword(value);
+    if (value.trim() === "") {
+      loadBooks();
+      setSearchData([]);
+    }
+  };
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
   return (
-    <div className="pages-outer-container">
-      <div className="pages-inner-container">
-        <SearchBar placeholder="Search Books" onSearch={(query) => console.log("Searching for:", query)} />
-        <Button
-          onClick={() => {
-            setShowBookModal(true);
-            setIsEdit(false);
-          }}
-        >
-          Add Books
-        </Button>
-      </div>
-      <div className="pages-table">
-        <Table show={true} currentPage={page} totalPages={totalPages} onPageChange={setPage} columns={columns} data={books} />
-      </div>
-      <BookIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
-      <BookModal
-        show={showBookModal}
-        onClose={handleCloseBookModal}
-        isEdit={isEdit}
-        bookData={bookData}
-        categories={categories}
-        onCategoryChange={handleCategoryChange}
-        onInputChange={handleChange}
-        onSubmit={isEdit ? onSumbitEditHandler : onSumbitAddHandler}
-      />
-      <AssignModal
-        show={showAssignModal}
-        onClose={handleCloseAssignModal}
-        userCredential={userCredential}
-        user={user}
-        bookData={bookData}
-        returnDate={returnDate}
-        issuanceType={issuanceType}
-        users={users}
-        onCredentialChange={handleCredentialChange}
-        onReturnDateChange={setReturnDate}
-        onIssuanceTypeChange={setIssuanceType}
-        onSubmit={onSubmitAddIssuanceHandler}
-      />
-      <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
-    </div>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="pages-outer-container">
+          <div className="pages-inner-container">
+            <SearchBar placeholder="Search Books" handleOnChange={handleOnChange} handleSearch={handleSearch} />
+            <Button
+              onClick={() => {
+                setShowBookModal(true);
+                setIsEdit(false);
+              }}
+            >
+              Add Books
+            </Button>
+          </div>
+          <div className="pages-table">
+            {searchData.length !== 0 ? (
+              <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+            ) : (
+              <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={books} onPageChange={setPage} />
+            )}
+          </div>
+          <BookIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
+          <BookModal
+            show={showBookModal}
+            onClose={handleCloseBookModal}
+            isEdit={isEdit}
+            bookData={bookData}
+            categories={categories}
+            onCategoryChange={handleCategoryChange}
+            onInputChange={handleChange}
+            onSubmit={isEdit ? onSumbitEditHandler : onSumbitAddHandler}
+          />
+          <AssignModal
+            show={showAssignModal}
+            onClose={handleCloseAssignModal}
+            userCredential={userCredential}
+            user={user}
+            bookData={bookData}
+            returnDate={returnDate}
+            issuanceType={issuanceType}
+            users={users}
+            onCredentialChange={handleCredentialChange}
+            onReturnDateChange={setReturnDate}
+            onIssuanceTypeChange={setIssuanceType}
+            onSubmit={onSubmitAddIssuanceHandler}
+          />
+          <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
+        </div>
+      )}
+    </>
   );
 }
 

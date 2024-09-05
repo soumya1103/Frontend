@@ -51,3 +51,11 @@ export const getBookByTitle = async (bookTitle, token) => {
     },
   });
 };
+
+export const bookSearch = async (keyword, token) => {
+  return await app.get(`/lms/books/search/${keyword}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+};

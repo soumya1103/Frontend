@@ -5,13 +5,14 @@ import SearchBar from "../../Coponents/SearchBar/SearchBar";
 import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import { addUser, deleteUser, getUserByRole, updateUser } from "../../Api/Service/UserService";
+import { addUser, deleteUser, getUserByRole, updateUser, userSearch } from "../../Api/Service/UserService";
 import { getAllBooks, getAllBooksNp, getBookByTitle } from "../../Api/Service/BookService";
 import { addIssuance, getIssuancesByUserId } from "../../Api/Service/IssuanceService";
 import Operation from "../../Coponents/Operation/Operation";
 import { useSelector } from "react-redux";
 import UserIssuanceHistory from "./UserIssuanceHistory";
 import Table from "../../Coponents/Table/Table";
+import Loader from "../../Coponents/Loader/Loader";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -39,6 +40,16 @@ function Users() {
   const size = 9;
 
   const auth = useSelector((state) => state.auth);
+
+  const [keyword, setKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     loadUsers();
@@ -76,6 +87,48 @@ function Users() {
     }
   };
 
+  const handleSearch = async () => {
+    if (keyword.trim() === "") {
+      loadUsers();
+      setSearchData([]);
+    } else {
+      try {
+        const response = await userSearch(keyword, auth?.token);
+        console.log(response.data);
+
+        const usersData = response.data.map((user, index) => ({
+          ...user,
+          sNo: index + 1 + page * size,
+          operation: (
+            <Operation
+              widthE="50%"
+              widthD="45%"
+              showExtra={true}
+              isBooksPage={false}
+              isHistory={true}
+              onClickAssignBook={() => handleAssignBook(user)}
+              onClickEdit={() => handleEditIcon(user)}
+              onClickDelete={() => handleDeleteIcon(user.userId)}
+              onClickUserHistory={() => handleShowIssuance(user.userId)}
+            />
+          ),
+        }));
+        setSearchData(usersData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleOnChange = (e) => {
+    const value = e.target.value;
+    setKeyword(value);
+    if (value.trim() === "") {
+      loadUsers();
+      setSearchData([]);
+    }
+  };
+
   const fetchBooks = async () => {
     try {
       const response = await getAllBooksNp(auth?.token);
@@ -83,10 +136,6 @@ function Users() {
     } catch (error) {
       console.error("Error fetching books:", error);
     }
-  };
-
-  const handleSearch = (query) => {
-    console.log("Searching for:", query);
   };
 
   const handleChange = (e) => {
@@ -221,41 +270,51 @@ function Users() {
   ];
 
   return (
-    <div className="pages-outer-container">
-      <div className="pages-inner-container">
-        <SearchBar placeholder="Search User" onSearch={handleSearch} />
-        <Button onClick={handleClick}>Add User</Button>
-      </div>
-      <div className="pages-table">
-        <Table show={true} currentPage={page} totalPages={totalPages} onPageChange={setPage} columns={columns} data={users} />
-      </div>
-      <UserIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
-      <UserModal
-        show={showUserModal}
-        onClose={handleCloseUserModal}
-        isEdit={isEdit}
-        userData={userData}
-        onChange={handleChange}
-        onSubmit={isEdit ? updateUsers : addUsers}
-      />
-      <AssignBookModal
-        show={showAssignModal}
-        onClose={handleCloseAssignModal}
-        bookTitle={bookTitle}
-        books={books}
-        book={book}
-        userData={userData}
-        returnDate={returnDate}
-        issuanceType={issuanceType}
-        onBookChange={handleBookChange}
-        onReturnDateChange={setReturnDate}
-        onIssuanceTypeChange={setIssuanceType}
-        onSubmit={addIssuances}
-      />
-      {showConfirmationModal && (
-        <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="pages-outer-container">
+          <div className="pages-inner-container">
+            <SearchBar placeholder="Search User" handleOnChange={handleOnChange} handleSearch={handleSearch} />
+            <Button onClick={handleClick}>Add User</Button>
+          </div>
+          <div className="pages-table">
+            {searchData.length !== 0 ? (
+              <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+            ) : (
+              <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={users} onPageChange={setPage} />
+            )}
+          </div>
+          <UserIssuanceHistory show={showIssuanceModal} onClose={handleCloseIssuanceModal} data={issuances} />
+          <UserModal
+            show={showUserModal}
+            onClose={handleCloseUserModal}
+            isEdit={isEdit}
+            userData={userData}
+            onChange={handleChange}
+            onSubmit={isEdit ? updateUsers : addUsers}
+          />
+          <AssignBookModal
+            show={showAssignModal}
+            onClose={handleCloseAssignModal}
+            bookTitle={bookTitle}
+            books={books}
+            book={book}
+            userData={userData}
+            returnDate={returnDate}
+            issuanceType={issuanceType}
+            onBookChange={handleBookChange}
+            onReturnDateChange={setReturnDate}
+            onIssuanceTypeChange={setIssuanceType}
+            onSubmit={addIssuances}
+          />
+          {showConfirmationModal && (
+            <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
