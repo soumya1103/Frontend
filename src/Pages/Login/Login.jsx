@@ -10,7 +10,7 @@ import { loginUser } from "../../Redux/Authentication/AuthenticationAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../Coponents/Loader/Loader";
 import Error from "../../Coponents/Error/Error";
-import { validationPatterns } from "../../Validations/Constant";
+import { validationPatterns, validTLDs } from "../../Validations/Constant";
 
 const Login = () => {
   const [selectedRole, setSelectedRole] = useState("admin");
@@ -46,13 +46,16 @@ const Login = () => {
 
   const validateCredential = () => {
     if (selectedRole === "admin") {
-      // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!validationPatterns.email.test(userCredential)) {
         setCredentialError("Please enter a valid email.");
         return false;
       }
+      const emailTLD = userCredential.substring(userCredential.lastIndexOf("."));
+      if (!validTLDs.includes(emailTLD)) {
+        setCredentialError(`Email must end with a valid domain`);
+        return false;
+      }
     } else {
-      // const phonePattern = /^\d{10}$/;
       if (!validationPatterns.mobile.test(userCredential)) {
         setCredentialError("Please enter a valid 10-digit phone number.");
         return false;
@@ -85,6 +88,11 @@ const Login = () => {
         console.log("Login failed!", error);
       }
     }
+  };
+
+  const handleInputChange = (setter, errorSetter) => (e) => {
+    setter(e.target.value);
+    errorSetter("");
   };
 
   const [loading, setLoading] = useState(true);
@@ -121,9 +129,9 @@ const Login = () => {
                     <input
                       placeholder="Email"
                       value={userCredential}
-                      type="email"
+                      type="text"
                       name="userCredential"
-                      onChange={(e) => setUserCredential(e.target.value)}
+                      onChange={handleInputChange(setUserCredential, setCredentialError)}
                       onBlur={validateCredential}
                     />
                     {credentialError && <Error error={credentialError} />}
@@ -133,7 +141,7 @@ const Login = () => {
                 {selectedRole === "user" && (
                   <>
                     <input
-                      onChange={(e) => setUserCredential(e.target.value)}
+                      onChange={handleInputChange(setUserCredential, setCredentialError)}
                       placeholder="Phone Number"
                       value={userCredential}
                       type="tel"
@@ -149,7 +157,7 @@ const Login = () => {
                   value={password}
                   type="password"
                   name="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleInputChange(setPassword, setPasswordError)}
                   onBlur={validatePassword}
                 />
                 {passwordError && <Error error={passwordError} />}

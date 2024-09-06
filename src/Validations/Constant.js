@@ -7,3 +7,5 @@ export const validationPatterns = {
   anyChar: /[^A-Za-z0-9]/,
   alphabet: /^[a-zA-Z\s]*$/,
 };
+
+export const validTLDs = [".com", ".org", ".net", ".in"];

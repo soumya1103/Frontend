@@ -1,20 +1,10 @@
 import React from "react";
 import "./Form.css";
+import Error from "../Error/Error";
 
-function Input({
-  label,
-  name,
-  min,
-  max,
-  type,
-  value,
-  onChange,
-  readOnly,
-  className,
-  maxLength,
-}) {
+function Input({ label, name, min, max, type, value, onChange, readOnly, className, maxLength, error = "" }) {
   return (
-    <>
+    <div className="form-content">
       <label className="form-field-label">{label}</label>
       <input
         className={`form-field-input ${className}`}
@@ -29,7 +19,9 @@ function Input({
         placeholder={label}
         maxLength={maxLength}
       />
-    </>
+      <span></span>
+      {error !== "" ? <Error error={error} /> : ""}
+    </div>
   );
 }
 
