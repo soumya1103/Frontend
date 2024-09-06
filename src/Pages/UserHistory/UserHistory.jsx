@@ -28,9 +28,8 @@ function UserHistory() {
 
   const loadIssuances = async () => {
     try {
-      console.log(auth);
-
       const response = await getIssuancesByUserCredential(auth.userCredential, auth?.token);
+
       const issuanceList = response.data.map((issuance) => ({
         ...issuance,
         issueDate: formatDate(issuance.issueDate),
@@ -76,3 +75,19 @@ function UserHistory() {
 }
 
 export default UserHistory;
+// const [name, setName] = useState();
+
+//   const findUserName = async () => {
+//     try {
+//       const response = await getUsersByCredential(auth.userCredential, auth?.token);
+//       setName(response.data.userName);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   if (historyName !== null) {
+//     setName(historyName);
+//   } else {
+//     findUserName();
+//   }

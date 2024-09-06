@@ -7,7 +7,7 @@ function ConfirmationModal({ show, onClose, onConfirm }) {
   return (
     <Modal show={show} onClose={onClose} height="120px" width="300px">
       <div className="confirmation-modal-content">
-        <p>Are you sure you want to delete?</p>
+        <p>Are you sure you want to delete? All the data will also be deleted.</p>
         <div className="confirmation-modal-actions">
           <Button onClick={onConfirm}>Yes</Button>
           <Button onClick={onClose}>No</Button>

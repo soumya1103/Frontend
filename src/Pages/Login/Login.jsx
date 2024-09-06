@@ -9,6 +9,8 @@ import { login } from "../../Api/Service/Login";
 import { loginUser } from "../../Redux/Authentication/AuthenticationAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../Coponents/Loader/Loader";
+import Error from "../../Coponents/Error/Error";
+import { validationPatterns } from "../../Validations/Constant";
 
 const Login = () => {
   const [selectedRole, setSelectedRole] = useState("admin");
@@ -20,6 +22,9 @@ const Login = () => {
 
   const [userCredential, setUserCredential] = useState("");
   const [password, setPassword] = useState("");
+
+  const [credentialError, setCredentialError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     if (auth && auth.token) {
@@ -39,14 +44,46 @@ const Login = () => {
     setSelectedRole("user");
   };
 
+  const validateCredential = () => {
+    if (selectedRole === "admin") {
+      // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!validationPatterns.email.test(userCredential)) {
+        setCredentialError("Please enter a valid email.");
+        return false;
+      }
+    } else {
+      // const phonePattern = /^\d{10}$/;
+      if (!validationPatterns.mobile.test(userCredential)) {
+        setCredentialError("Please enter a valid 10-digit phone number.");
+        return false;
+      }
+    }
+    setCredentialError("");
+    return true;
+  };
+
+  const validatePassword = () => {
+    if (password.length < 1) {
+      setPasswordError("Password can not be empty.");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const { data } = await login(userCredential, password);
-      dispatch(loginUser(data));
-      window.localStorage.setItem("authtoken", data.token);
-    } catch (error) {
-      console.log("Login failed!", error);
+    const isCredentialValid = validateCredential();
+    const isPasswordValid = validatePassword();
+
+    if (isCredentialValid && isPasswordValid) {
+      try {
+        const { data } = await login(userCredential, password);
+        dispatch(loginUser(data));
+        window.localStorage.setItem("authtoken", data.token);
+      } catch (error) {
+        console.log("Login failed!", error);
+      }
     }
   };
 
@@ -80,35 +117,42 @@ const Login = () => {
               </div>
               <form className="login-form" onSubmit={handleLogin}>
                 {selectedRole === "admin" && (
-                  <input
-                    placeholder="Email"
-                    value={userCredential}
-                    type="email"
-                    name="userCredential"
-                    onChange={(e) => setUserCredential(e.target.value)}
-                    required
-                  />
+                  <>
+                    <input
+                      placeholder="Email"
+                      value={userCredential}
+                      type="email"
+                      name="userCredential"
+                      onChange={(e) => setUserCredential(e.target.value)}
+                      onBlur={validateCredential}
+                    />
+                    {credentialError && <Error error={credentialError} />}
+                  </>
                 )}
 
                 {selectedRole === "user" && (
-                  <input
-                    onChange={(e) => setUserCredential(e.target.value)}
-                    placeholder="Phone Number"
-                    value={userCredential}
-                    required
-                    type="tel"
-                    name="userCredential"
-                  />
+                  <>
+                    <input
+                      onChange={(e) => setUserCredential(e.target.value)}
+                      placeholder="Phone Number"
+                      value={userCredential}
+                      type="tel"
+                      name="userCredential"
+                      onBlur={validateCredential}
+                    />
+                    {credentialError && <Error error={credentialError} />}
+                  </>
                 )}
                 <br />
                 <input
-                  required
                   placeholder="Password"
                   value={password}
                   type="password"
                   name="password"
                   onChange={(e) => setPassword(e.target.value)}
+                  onBlur={validatePassword}
                 />
+                {passwordError && <Error error={passwordError} />}
                 <br />
                 <div className="login-button">
                   <Button type="submit">Login</Button>

@@ -5,7 +5,7 @@ import "./Error.css";
 function Error({ error }) {
   return (
     <div className="error-container">
-      <img src={danger} alt="danger" width="3%" />
+      <img src={danger} alt="danger" width="4%" />
       <p className="error-text">{error}</p>
     </div>
   );

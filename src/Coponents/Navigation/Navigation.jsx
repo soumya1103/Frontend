@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../Images/icon.png";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import "./Navigation.css";
 import { useSelector } from "react-redux";
+import { getUsersByCredential } from "../../Api/Service/UserService";
 
 function Navigation() {
   const auth = useSelector((state) => state.auth);
-  const name = auth?.userName;
+  // const name = auth?.userName;
+
+  const [name, setName] = useState();
+
+  const findUserName = async () => {
+    try {
+      const response = await getUsersByCredential(auth.userCredential, auth?.token);
+      setName(response.data.userName);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    findUserName();
+  }, []);
 
   return (
     <div className="navigation-container">
