@@ -7,13 +7,12 @@ import { getUsersByCredential } from "../../Api/Service/UserService";
 
 function Navigation() {
   const auth = useSelector((state) => state.auth);
-  // const name = auth?.userName;
 
   const [name, setName] = useState();
 
   const findUserName = async () => {
     try {
-      const response = await getUsersByCredential(auth.userCredential, auth?.token);
+      const response = await getUsersByCredential(auth.userCredential);
       setName(response.data.userName);
     } catch (error) {
       console.log(error);
