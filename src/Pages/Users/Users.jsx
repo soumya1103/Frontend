@@ -91,7 +91,7 @@ function Users() {
     if (keyword.trim() === "") {
       loadUsers();
       setSearchData([]);
-    } else {
+    } else if (keyword.length >= 3) {
       try {
         const response = await userSearch(keyword, auth?.token);
         console.log(response.data);
@@ -147,6 +147,10 @@ function Users() {
       const response = await addUser(userData, auth?.token);
       console.log("User added successfully:", response.data);
       setUsers([...users, response.data]);
+      setUserData({
+        userCredential: "",
+        userName: "",
+      });
       handleCloseUserModal();
       await loadUsers();
     } catch (error) {
@@ -159,6 +163,10 @@ function Users() {
       const response = await updateUser(userData, userToEdit, auth?.token);
       console.log("User updated successfully:", response.data);
       setUsers(users.map((user) => (user.userId === userToEdit ? response.data : user)));
+      setUserData({
+        userCredential: "",
+        userName: "",
+      });
       handleCloseUserModal();
       await loadUsers();
     } catch (error) {

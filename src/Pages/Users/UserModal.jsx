@@ -1,34 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "../../Coponents/Modal/Modal";
 import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
 
 const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
-  const handlePhoneNumberChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "userCredential" && value.length > 10) {
-      return;
+  const [formData, setFormData] = useState(userData);
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.userCredential || formData.userCredential.length !== 10) {
+      newErrors.userCredential = "Phone number must be exactly 10 digits.";
     }
+
+    if (!formData.userName || formData.userName.trim() === "") {
+      newErrors.userName = "User name is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+
     onChange(e);
   };
 
+  const handleSubmit = () => {
+    if (validate()) {
+      onSubmit();
+    }
+  };
+
+  const modalDimensions = errors.userCredential || errors.userName ? { height: "290px", width: "400px" } : { height: "210px", width: "400px" };
+
   return (
-    <Modal show={show} onClose={onClose} height={isEdit ? "210px" : "250px"} width="400px">
+    <Modal show={show} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
       <p className="form-title">{isEdit ? "Edit User" : "Add User"}</p>
-      <div className="form-content">
+      <div>
         <Input
           label="Phone Number"
           name="userCredential"
           value={userData.userCredential}
           type="number"
           className="no-spinner"
-          onChange={handlePhoneNumberChange}
+          onChange={handleInputChange}
           maxLength={10}
+          error={errors.userCredential}
         />
-        <Input label="User Name" name="userName" value={userData.userName} type="text" onChange={onChange} />
+        <Input label="User Name" name="userName" value={userData.userName} type="text" onChange={handleInputChange} error={errors.userName} />
       </div>
       <div className="form-submit-btn">
-        <Button onClick={onSubmit}>{isEdit ? "Update" : "Add"}</Button>
+        <Button onClick={handleSubmit}>{isEdit ? "Update" : "Add"}</Button>
       </div>
     </Modal>
   );

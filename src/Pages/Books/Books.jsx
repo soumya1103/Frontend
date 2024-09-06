@@ -141,6 +141,14 @@ function Books() {
     try {
       await updateBook(bookData, bookId, auth?.token);
       await loadBooks();
+      setBookData({
+        categoryId: "",
+        categoryName: "",
+        bookTitle: "",
+        bookAuthor: "",
+        bookRating: "",
+        bookCount: "",
+      });
       handleCloseBookModal();
     } catch (error) {
       console.error("Error updating book", error);
@@ -151,6 +159,14 @@ function Books() {
     try {
       await addBook(bookData, auth?.token);
       await loadBooks();
+      setBookData({
+        categoryId: "",
+        categoryName: "",
+        bookTitle: "",
+        bookAuthor: "",
+        bookRating: "",
+        bookCount: "",
+      });
       handleCloseBookModal();
     } catch (error) {
       console.error("Error adding book", error);
