@@ -160,12 +160,6 @@ function Books() {
   const addIssuances = async (issuanceData) => {
     try {
       await addIssuance(issuanceData, auth?.token);
-      // const updatedBookData = {
-      //   ...bookData,
-      //   bookCount: bookData.bookCount - 1,
-      // };
-      // await updateBook(updatedBookData, bookId, auth?.token);
-
       handleCloseAssignModal();
     } catch (error) {
       console.error("Error adding issuance", error);
@@ -264,7 +258,7 @@ function Books() {
     if (keyword.trim() === "") {
       loadBooks();
       setSearchData([]);
-    } else {
+    } else if (keyword.length >= 3) {
       try {
         const response = await bookSearch(keyword, auth?.token);
         console.log(response.data);

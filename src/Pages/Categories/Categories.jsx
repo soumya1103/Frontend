@@ -80,7 +80,7 @@ function Categories() {
     if (keyword.trim() === "") {
       loadCategories();
       setSearchData([]);
-    } else {
+    } else if (keyword.length >= 3) {
       try {
         const response = await categorySearch(keyword, auth?.token);
         const categoriesData = response.data.map((category, index) => ({
