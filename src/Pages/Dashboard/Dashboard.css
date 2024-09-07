@@ -64,10 +64,6 @@
 }
 
 /* Portrait Tablet */
-@media (min-width: 641px) {
-}
-
-/* Portrait Tablet */
 @media (max-width: 1024px) {
   .dashboard-outer-container {
     padding: 10% 5%;
@@ -94,5 +90,16 @@
   .dashboard-table-container h2 {
     font-size: 1.4rem;
     margin-bottom: 5%;
+  }
+}
+
+@media (max-width: 1420px) and (min-width: 1025px) {
+  .dashboard-inner-container {
+    grid-template-columns: 22% 22% 22% 22%;
+  }
+
+  .dashboard-card {
+    width: 100%;
+    padding: 5% 0%;
   }
 }

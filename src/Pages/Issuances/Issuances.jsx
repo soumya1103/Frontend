@@ -50,7 +50,7 @@ function Issuances() {
   const getPageSizeBasedOnWidth = () => {
     const width = window.innerWidth;
     if (width > 1024) {
-      return 9;
+      return 6;
     } else if (width <= 1024) {
       return 9;
     }

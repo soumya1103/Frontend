@@ -13,3 +13,9 @@
     grid-template-columns: 25% 75%;
   }
 }
+
+@media (max-width: 1420px) and (min-width: 1025px) {
+  .dashboard-hoc-container {
+    grid-template-columns: 20% 80%;
+  }
+}
