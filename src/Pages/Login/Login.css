@@ -72,19 +72,6 @@ html {
   transition: 0.4s;
 }
 
-/* 
-font-family: "Roboto Slab", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-   */
-
-/* 
-font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
- */
-
 .selected-button {
   color: #e55b13 !important;
   text-decoration: underline;
@@ -120,4 +107,39 @@ font-family: "Roboto", sans-serif;
   display: flex;
   justify-content: center;
   margin-top: 5%;
+}
+
+@media (max-width: 1024px) {
+  .login-container-inner {
+    grid-template-columns: auto;
+    padding: 5%;
+  }
+
+  .login-img {
+    margin: 0 auto;
+  }
+
+  .login-left-container {
+    padding-top: 8%;
+  }
+
+  .login-heading {
+    font-size: 2.2rem;
+  }
+
+  .login-heading-container img {
+    width: 10%;
+  }
+
+  .login-button {
+    margin-top: 5%;
+    margin-bottom: 5%;
+  }
+
+  .login-heading-container {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
 }

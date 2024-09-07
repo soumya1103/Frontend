@@ -167,7 +167,7 @@ const Login = () => {
                 </div>
               </form>
             </div>
-            <img src={loginImg} alt="login-image" style={{ width: "70%" }} />
+            <img src={loginImg} alt="login-image" style={{ width: "70%" }} className="login-img" />
           </div>
         </div>
       )}
