@@ -34,7 +34,6 @@ function Issuances() {
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 6;
 
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
@@ -47,6 +46,28 @@ function Issuances() {
     const formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     return `${formattedDate} ${formattedTime}`;
   };
+
+  const getPageSizeBasedOnWidth = () => {
+    const width = window.innerWidth;
+    if (width > 1024) {
+      return 9;
+    } else if (width <= 1024) {
+      return 9;
+    }
+  };
+
+  const [size, setSize] = useState(getPageSizeBasedOnWidth());
+
+  const handleResize = () => {
+    const newSize = getPageSizeBasedOnWidth();
+    setSize(newSize);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const loadIssuances = async () => {
     try {
@@ -80,7 +101,7 @@ function Issuances() {
     if (keyword.trim() === "") {
       loadIssuances();
       setSearchData([]);
-    } else {
+    } else if (keyword.length >= 3) {
       try {
         const response = await issuanceSearch(keyword, auth?.token);
         const issuanceList = response.data.map((issuance, index) => ({

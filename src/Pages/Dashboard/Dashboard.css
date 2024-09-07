@@ -62,3 +62,37 @@
   color: #a47551;
   font-size: 1.4rem;
 }
+
+/* Portrait Tablet */
+@media (min-width: 641px) {
+}
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .dashboard-outer-container {
+    padding: 10% 5%;
+  }
+
+  .dashboard-inner-container {
+    grid-template-columns: 47% 47%;
+    row-gap: 15%;
+  }
+
+  .dashboard-card {
+    width: 100%;
+    padding: 5% 0%;
+  }
+
+  .dashboard-card img {
+    width: 15%;
+  }
+
+  .dashboard-table-container {
+    margin-top: 15%;
+  }
+
+  .dashboard-table-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 5%;
+  }
+}

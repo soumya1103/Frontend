@@ -30,3 +30,20 @@
   background-color: #f6eee0;
   text-align: left;
 }
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .table-container-wrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .table-container {
+    width: 100%;
+    min-width: 1000px;
+  }
+
+  .table-container-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+}

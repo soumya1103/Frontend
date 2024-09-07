@@ -44,9 +44,30 @@ function Books() {
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 7;
 
   const auth = useSelector((state) => state.auth);
+
+  const getPageSizeBasedOnWidth = () => {
+    const width = window.innerWidth;
+    if (width > 1024) {
+      return 7;
+    } else if (width <= 1024) {
+      return 10;
+    }
+  };
+
+  const [size, setSize] = useState(getPageSizeBasedOnWidth());
+
+  const handleResize = () => {
+    const newSize = getPageSizeBasedOnWidth();
+    setSize(newSize);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     loadBooks();

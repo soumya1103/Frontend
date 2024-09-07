@@ -28,9 +28,30 @@ function Categories() {
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 7;
 
   const auth = useSelector((state) => state.auth);
+
+  const getPageSizeBasedOnWidth = () => {
+    const width = window.innerWidth;
+    if (width > 1024) {
+      return 8;
+    } else if (width <= 1024) {
+      return 14;
+    }
+  };
+
+  const [size, setSize] = useState(getPageSizeBasedOnWidth());
+
+  const handleResize = () => {
+    const newSize = getPageSizeBasedOnWidth();
+    setSize(newSize);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     loadCategories();
@@ -145,6 +166,13 @@ function Categories() {
               <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
             )}
           </div>
+          {/* <div className="pages-table">
+            {searchData.length !== 0 ? (
+              <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
+            ) : (
+              <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
+            )}
+          </div> */}
           {showModal && (
             <CategoryModal
               isEdit={isEdit}

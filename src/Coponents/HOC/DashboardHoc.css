@@ -4,7 +4,12 @@
 }
 
 .dashboard-hoc-right-container {
-  /* background-color: #faf5ec; */
-  /* background-color: #fbf7f0; */
   background-color: #fcfaf6;
+}
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .dashboard-hoc-container {
+    grid-template-columns: 25% 75%;
+  }
 }

@@ -1,5 +1,4 @@
 .sidebar-container {
-  /* background-color: #f6eee0; */
   background-color: #faf5ec;
   padding: 10% 5% 5% 22%;
   height: 84vh;
@@ -67,4 +66,20 @@
 
 .sidebar-logout-btn :hover {
   color: #003060;
+}
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .sidebar-container {
+    padding: 18% 5% 5% 15%;
+    height: 88vh;
+  }
+
+  .sidebar-logout-btn img {
+    margin-top: 28%;
+  }
+
+  .sidebar-logout-btn h3 {
+    margin-top: 40%;
+  }
 }

@@ -40,3 +40,10 @@
   font-weight: bold;
   color: #a47551;
 }
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .pagination {
+    margin-top: 7%;
+  }
+}

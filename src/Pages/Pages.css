@@ -18,3 +18,21 @@
 .pages-table::-webkit-scrollbar {
   display: none;
 }
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .pages-outer-container {
+    padding: 8% 5%;
+  }
+
+  .pages-inner-container {
+    grid-template-columns: 40% 25%;
+    margin-bottom: 6%;
+  }
+
+  .pages-table {
+    margin-top: 2%;
+    width: 100%;
+    overflow-x: auto;
+  }
+}

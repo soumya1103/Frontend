@@ -30,7 +30,7 @@ const AssignBookModal = ({
 
   const getCurrentTime = () => {
     const now = new Date();
-    return now.toISOString().slice(11, 16); // Get 'HH:MM' for time input
+    return now.toISOString().slice(11, 16);
   };
 
   useEffect(() => {

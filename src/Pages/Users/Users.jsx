@@ -37,13 +37,34 @@ function Users() {
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const size = 9;
 
   const auth = useSelector((state) => state.auth);
 
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const getPageSizeBasedOnWidth = () => {
+    const width = window.innerWidth;
+    if (width > 1024) {
+      return 9;
+    } else if (width <= 1024) {
+      return 14;
+    }
+  };
+
+  const [size, setSize] = useState(getPageSizeBasedOnWidth());
+
+  const handleResize = () => {
+    const newSize = getPageSizeBasedOnWidth();
+    setSize(newSize);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -117,6 +138,7 @@ function Users() {
       } catch (error) {
         console.log(error);
       }
+    } else if (keyword.length < 3 && keyword.length > 0) {
     }
   };
 
