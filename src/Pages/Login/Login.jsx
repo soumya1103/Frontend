@@ -12,6 +12,7 @@ import Loader from "../../Coponents/Loader/Loader";
 import Error from "../../Coponents/Error/Error";
 import { validationPatterns, validTLDs } from "../../Validations/Constant";
 import Toast from "../../Coponents/Toast/Toast";
+import danger from "../../Images/danger.svg";
 
 const Login = () => {
   const [selectedRole, setSelectedRole] = useState("admin");
@@ -146,7 +147,12 @@ const Login = () => {
                       onChange={handleInputChange(setUserCredential, setCredentialError)}
                       onBlur={validateCredential}
                     />
-                    {credentialError && <Error error={credentialError} />}
+                    {credentialError && (
+                      <div className="login-error-container">
+                        <img src={danger} alt="danger" width="3%" />
+                        <p className="login-error-text">{credentialError}</p>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -160,7 +166,12 @@ const Login = () => {
                       name="userCredential"
                       onBlur={validateCredential}
                     />
-                    {credentialError && <Error error={credentialError} />}
+                    {credentialError && (
+                      <div className="login-error-container">
+                        <img src={danger} alt="danger" width="3%" />
+                        <p className="login-error-text">{credentialError}</p>
+                      </div>
+                    )}
                   </>
                 )}
                 <br />
@@ -172,7 +183,12 @@ const Login = () => {
                   onChange={handleInputChange(setPassword, setPasswordError)}
                   onBlur={validatePassword}
                 />
-                {passwordError && <Error error={passwordError} />}
+                {passwordError && (
+                  <div className="login-error-container">
+                    <img src={danger} alt="danger" width="3%" />
+                    <p className="login-error-text">{passwordError}</p>
+                  </div>
+                )}
                 <br />
                 <div className="login-button">
                   <Button type="submit">Login</Button>

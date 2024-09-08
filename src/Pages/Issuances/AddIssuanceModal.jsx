@@ -6,24 +6,45 @@ import { addIssuance } from "../../Api/Service/IssuanceService";
 import { getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import Error from "../../Coponents/Error/Error";
+import Toast from "../../Coponents/Toast/Toast";
 
 function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) {
-  const [issuanceData, setIssuanceData] = useState({
+  const initialIssuanceData = {
     userId: "",
     bookId: "",
     returnDate: "",
     status: "",
     issuanceType: "",
-  });
+  };
+
+  const [issuanceData, setIssuanceData] = useState(initialIssuanceData);
   const [userName, setUserName] = useState("");
   const [bookAuthor, setBookAuthor] = useState("");
   const [users, setUsers] = useState([]);
   const [books, setBooks] = useState([]);
-
   const [errors, setErrors] = useState({});
   const [currentDate, setCurrentDate] = useState("");
   const [time, setTime] = useState("");
   const [issuanceType, setIssuanceType] = useState("");
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
+
+  const resetForm = () => {
+    setIssuanceData(initialIssuanceData);
+    setUserName("");
+    setBookAuthor("");
+    setIssuanceType("");
+    setTime("");
+    setErrors({});
+  };
+
+  useEffect(() => {
+    if (show) {
+      resetForm();
+    }
+  }, [show]);
 
   const fetchData = async () => {
     const usersResponse = await getUserByRoleNp(auth?.token);
@@ -77,15 +98,13 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
 
   const handleIssuanceTypeChange = (e) => {
     const { value } = e.target;
-    setIssuanceData({ ...issuanceData, issuanceType: value });
     setIssuanceType(value);
+    setIssuanceData((prev) => ({
+      ...prev,
+      issuanceType: value,
+      returnDate: value === "Inhouse" ? `${currentDate}T${time}` : "",
+    }));
     setErrors((prev) => ({ ...prev, issuanceType: "" }));
-    if (value === "Inhouse") {
-      setIssuanceData({
-        ...issuanceData,
-        returnDate: `${currentDate}T${time}`,
-      });
-    }
   };
 
   const handleReturnDateChange = (e) => {
@@ -106,7 +125,13 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
   const handleAddIssuance = async () => {
     if (validate()) {
       try {
-        await addIssuance(issuanceData, auth?.token);
+        const response = await addIssuance(issuanceData, auth?.token);
+        if (response?.status === 200 || response?.status === 201) {
+          setToastMessage("Issuance added successfully!");
+          setShowToast(true);
+          setToastType("success");
+        }
+
         const issuedBook = books.find((book) => book.bookId === issuanceData.bookId);
         if (issuedBook) {
           const updatedBookData = {
@@ -117,8 +142,11 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
         }
         onClose();
         reloadIssuances();
+        resetForm();
       } catch (error) {
-        console.log(error);
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
       }
     }
   };
@@ -129,71 +157,79 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
       : { height: "470px", width: "400px" };
 
   return (
-    <Modal show={show} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
-      <p className="form-title">Add Issuance</p>
-      <div>
-        <div className="form-content">
-          <label className="form-field-label">Phone No.</label>
-          <select className="form-field-input" name="userCredential" onChange={handleCredentialChange}>
-            <option value="">Select Phone No.</option>
-            {users.map((user) => (
-              <option key={user.userId} value={user.userCredential}>
-                {user.userCredential}
-              </option>
-            ))}
-          </select>
-          <diV></diV>
-          {errors.userId && <Error error={errors.userId} />}
+    <>
+      <Modal
+        show={show}
+        onClose={() => {
+          resetForm();
+          onClose();
+        }}
+        height={modalDimensions.height}
+        width={modalDimensions.width}
+      >
+        <p className="form-title">Add Issuance</p>
+        <div>
+          <div className="form-content">
+            <label className="form-field-label">Phone No.</label>
+            <select className="form-field-input" name="userCredential" onChange={handleCredentialChange}>
+              <option value="">Select Phone No.</option>
+              {users.map((user) => (
+                <option key={user.userId} value={user.userCredential}>
+                  {user.userCredential}
+                </option>
+              ))}
+            </select>
+            {errors.userId && <Error error={errors.userId} />}
+          </div>
+
+          <Input label="User Name" value={userName} name="userName" type="text" readOnly={true} />
+
+          <div className="form-content">
+            <label className="form-field-label">Book Title</label>
+            <select className="form-field-input" name="bookTitle" onChange={handleBookChange}>
+              <option value="">Select Book</option>
+              {books.map((book) => (
+                <option key={book.bookId} value={book.bookTitle} disabled={book.bookCount === 0}>
+                  {book.bookTitle}
+                </option>
+              ))}
+            </select>
+            {errors.bookId && <Error error={errors.bookId} />}
+          </div>
+
+          <Input label="Book Author" value={bookAuthor} name="bookAuthor" type="text" readOnly={true} />
+
+          <div className="form-content">
+            <label className="form-field-label">Issuance Type</label>
+            <select className="form-field-input" name="issuanceType" onChange={handleIssuanceTypeChange} value={issuanceType}>
+              <option value="">Select Type</option>
+              <option value="Remote">Remote</option>
+              <option value="Inhouse">Inhouse</option>
+            </select>
+            {errors.issuanceType && <Error error={errors.issuanceType} />}
+          </div>
+          {issuanceType === "Inhouse" ? (
+            <>
+              <Input label="Return Date" value={currentDate} readOnly={true} />
+              <Input label="Return Time" type="time" value={time} onChange={handleTimeChange} />
+            </>
+          ) : (
+            <Input
+              label="Return Date"
+              type="datetime-local"
+              value={issuanceData.returnDate}
+              min={`${currentDate}T${time}`}
+              onChange={handleReturnDateChange}
+              error={errors.returnDate}
+            />
+          )}
         </div>
-
-        <Input label="User Name" value={userName} name="userName" type="text" readOnly={true} />
-
-        <div className="form-content">
-          <label className="form-field-label">Book Title</label>
-          <select className="form-field-input" name="bookTitle" onChange={handleBookChange}>
-            <option value="">Select Book</option>
-            {books.map((book) => (
-              <option key={book.bookId} value={book.bookTitle} disabled={book.bookCount === 0}>
-                {book.bookTitle}
-              </option>
-            ))}
-          </select>
-          <diV></diV>
-          {errors.bookId && <Error error={errors.bookId} />}
+        <div className="form-submit-btn">
+          <Button onClick={handleAddIssuance}>Add</Button>
         </div>
-
-        <Input label="Book Author" value={bookAuthor} name="bookAuthor" type="text" readOnly={true} />
-
-        <div className="form-content">
-          <label className="form-field-label">Issuance Type</label>
-          <select className="form-field-input" name="issuanceType" onChange={handleIssuanceTypeChange} value={issuanceType || ""}>
-            <option value="">Select Type</option>
-            <option value="Remote">Remote</option>
-            <option value="Inhouse">Inhouse</option>
-          </select>
-          <diV></diV>
-          {errors.issuanceType && <Error error={errors.issuanceType} />}
-        </div>
-        {issuanceType === "Inhouse" ? (
-          <>
-            <Input label="Return Date" value={currentDate} readOnly={true} />
-            <Input label="Return Time" type="time" value={time} onChange={handleTimeChange} />
-          </>
-        ) : (
-          <Input
-            label="Return Date"
-            type="datetime-local"
-            value={issuanceData.returnDate}
-            min={`${currentDate}T${time}`}
-            onChange={handleReturnDateChange}
-            error={errors.returnDate}
-          />
-        )}
-      </div>
-      <div className="form-submit-btn">
-        <Button onClick={handleAddIssuance}>Add</Button>
-      </div>
-    </Modal>
+      </Modal>
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
+    </>
   );
 }
 

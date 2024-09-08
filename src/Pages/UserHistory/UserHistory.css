@@ -6,13 +6,17 @@
 
 .user-history-inner-container {
   display: grid;
-  grid-template-columns: 28% 14%;
+  /* grid-template-columns: 10% 20%; */
   text-align: left;
-  justify-content: space-between;
   align-items: center;
 }
 
 .user-history-table {
   overflow: hidden;
   margin-top: 1%;
+}
+
+.giphy-embed {
+  background: none;
+  border: none;
 }

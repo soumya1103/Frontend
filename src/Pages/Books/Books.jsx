@@ -294,14 +294,10 @@ function Books() {
           setToastMessage("Book deleted successfully!");
           setShowToast(true);
           setToastType("success");
-        } else if (response?.status === 400) {
-          setToastMessage("Book can't be deleted as it is already issued to a user!");
-          setShowToast(true);
-          setToastType("error");
         }
         await loadBooks();
       } catch (error) {
-        setToastMessage("There was an error processing the request!");
+        setToastMessage("Book can't be deleted as it is already issued to a user!");
         setShowToast(true);
         setToastType("error");
       } finally {

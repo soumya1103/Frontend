@@ -9,6 +9,7 @@ import AddIssuanceModal from "./AddIssuanceModal";
 import EditIssuanceModal from "./EditIssuanceModal";
 import { useSelector } from "react-redux";
 import Loader from "../../Coponents/Loader/Loader";
+import Toast from "../../Coponents/Toast/Toast";
 
 function Issuances() {
   const columns = [
@@ -37,6 +38,10 @@ function Issuances() {
 
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
 
   const auth = useSelector((state) => state.auth);
 
@@ -117,6 +122,10 @@ function Issuances() {
       } catch (error) {
         console.log(error);
       }
+    } else if (keyword.length < 3 && keyword.length > 0) {
+      setToastMessage("Atleast 3 characters are required!");
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -173,6 +182,7 @@ function Issuances() {
           )}
         </div>
       )}
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>
   );
 }

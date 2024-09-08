@@ -62,6 +62,7 @@ function UserHistory() {
           <Navigation />
           <div className="pages-outer-container">
             <div className="user-history-inner-container">
+              {/* <iframe src="https://giphy.com/embed/nOBbIHGKD2HQs" title="book-gif" width="100%" className="giphy-embed"></iframe> */}
               <h3 className="issuance-history">Issuance History</h3>
             </div>
             <div className="user-history-table">
