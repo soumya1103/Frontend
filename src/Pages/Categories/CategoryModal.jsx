@@ -50,12 +50,12 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
         setToastMessage(isEdit ? "Category updated successfully!" : "Category added successfully!");
         setShowToast(true);
         setToastType("success");
+        reloadCategories();
       } else {
         setToastMessage("There was an error processing the request!");
         setShowToast(true);
         setToastType("error");
       }
-      reloadCategories();
       onClose();
     }
   };

@@ -109,6 +109,22 @@ html {
   margin-top: 5%;
 }
 
+.login-error-container {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  margin-top: 2%;
+}
+
+.login-error-text {
+  color: red;
+  margin: 0;
+  font-size: 1rem;
+  margin-left: 1%;
+  text-align: center;
+}
+
 @media (max-width: 1024px) {
   .login-container-inner {
     grid-template-columns: auto;

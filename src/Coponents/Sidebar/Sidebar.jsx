@@ -58,7 +58,7 @@ function Sidebar() {
         <h3>Logout</h3>
       </button>
       {showConfirmationModal && (
-        <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleLogout} />
+        <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleLogout} isLogout={true} />
       )}
     </div>
   );

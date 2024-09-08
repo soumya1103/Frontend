@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../Redux/Authentication/AuthenticationAction";
 import { logout } from "../../Api/Service/Login";
 import Button from "../Button/Button";
+import ConfirmationModal from "../Modal/ConfirmationModal";
 
 const ProfileButton = ({ name }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
   const dropdownRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -16,9 +19,13 @@ const ProfileButton = ({ name }) => {
   const handleLogout = () => {
     logout();
     dispatch(logoutUser());
+    setShowConfirmationModal(false);
     navigate("/login");
   };
 
+  const handleLogoutBtn = () => {
+    setShowConfirmationModal(true);
+  };
   const getFirstLetter = () => {
     const firstLetter = name ? name.charAt(0) : "";
     return firstLetter.toUpperCase();
@@ -54,10 +61,13 @@ const ProfileButton = ({ name }) => {
       {showDropdown && (
         <div className="dropdown-menu">
           <p>{name}</p>
-          <Button onClick={handleLogout} className="logout-btn">
+          <Button onClick={handleLogoutBtn} className="logout-btn">
             Logout
           </Button>
         </div>
+      )}
+      {showConfirmationModal && (
+        <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleLogout} isLogout={true} />
       )}
     </div>
   );
