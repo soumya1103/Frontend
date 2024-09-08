@@ -2,7 +2,6 @@
   visibility: hidden;
   min-width: 250px;
   margin: 0 auto;
-  background-color: #333;
   color: #fff;
   text-align: center;
   border-radius: 5px;
@@ -10,7 +9,10 @@
   position: fixed;
   z-index: 1;
   left: 50%;
-  bottom: 30px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  top: 30px;
   font-size: 17px;
   transform: translateX(-50%);
 }
@@ -29,4 +31,12 @@
   90% {
     opacity: 1;
   }
+}
+
+.success {
+  background: #28a745;
+}
+
+.error {
+  background: #dc3545;
 }

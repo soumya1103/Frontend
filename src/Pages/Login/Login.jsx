@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../Coponents/Loader/Loader";
 import Error from "../../Coponents/Error/Error";
 import { validationPatterns, validTLDs } from "../../Validations/Constant";
+import Toast from "../../Coponents/Toast/Toast";
 
 const Login = () => {
   const [selectedRole, setSelectedRole] = useState("admin");
@@ -25,6 +26,10 @@ const Login = () => {
 
   const [credentialError, setCredentialError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
 
   useEffect(() => {
     if (auth && auth.token) {
@@ -81,11 +86,18 @@ const Login = () => {
 
     if (isCredentialValid && isPasswordValid) {
       try {
-        const { data } = await login(userCredential, password);
-        dispatch(loginUser(data));
-        window.localStorage.setItem("authtoken", data.token);
+        const response = await login(userCredential, password);
+        if (response?.status === 200 || response?.status === 201) {
+          setToastMessage("Logged in successfully!");
+          setShowToast(true);
+          setToastType("success");
+        }
+        dispatch(loginUser(response.data));
+        window.localStorage.setItem("authtoken", response.data.token);
       } catch (error) {
-        console.log("Login failed!", error);
+        setToastMessage("Login failed!");
+        setShowToast(true);
+        setToastType("error");
       }
     }
   };
@@ -171,6 +183,7 @@ const Login = () => {
           </div>
         </div>
       )}
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>
   );
 };

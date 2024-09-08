@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Sidebar.css";
 import dashboard from "../../Images/dashboard-image.svg";
 import categories from "../../Images/categories-image.svg";
@@ -10,15 +10,22 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../Api/Service/Login";
 import { logoutUser } from "../../Redux/Authentication/AuthenticationAction";
+import ConfirmationModal from "../Modal/ConfirmationModal";
 
 function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
+  const handleLogoutIcon = () => {
+    setShowConfirmationModal(true);
+  };
 
   const handleLogout = () => {
     logout();
     dispatch(logoutUser());
+    setShowConfirmationModal(false);
     navigate("/login");
   };
 
@@ -46,10 +53,13 @@ function Sidebar() {
           <h3>Issuances</h3>
         </Link>
       </div>
-      <button className="sidebar-logout-btn" onClick={handleLogout}>
+      <button className="sidebar-logout-btn" onClick={handleLogoutIcon}>
         <img src={logoutImg} alt="logout" width="12%" />
         <h3>Logout</h3>
       </button>
+      {showConfirmationModal && (
+        <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleLogout} />
+      )}
     </div>
   );
 }

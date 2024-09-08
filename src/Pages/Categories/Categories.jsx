@@ -10,6 +10,7 @@ import "../Pages.css";
 import CategoryOperations from "./CategoryOperations";
 import { useSelector } from "react-redux";
 import Loader from "../../Coponents/Loader/Loader";
+import Toast from "../../Coponents/Toast/Toast";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -29,12 +30,16 @@ function Categories() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
+
   const auth = useSelector((state) => state.auth);
 
   const getPageSizeBasedOnWidth = () => {
     const width = window.innerWidth;
     if (width > 1024) {
-      return 8;
+      return 7;
     } else if (width <= 1024) {
       return 14;
     }
@@ -114,6 +119,10 @@ function Categories() {
       } catch (error) {
         console.log(error);
       }
+    } else if (keyword.length < 3 && keyword.length > 0) {
+      setToastMessage("Atleast 3 characters are required!");
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -129,11 +138,17 @@ function Categories() {
   const handleConfirmDelete = async () => {
     if (categoryToDelete) {
       try {
-        await deleteCategory(categoryToDelete, auth?.token);
-        console.log("Category deleted successfully");
+        const response = await deleteCategory(categoryToDelete, auth?.token);
+        if (response?.status === 200 || response?.status === 201) {
+          setToastMessage("Category deleted successfully!");
+          setShowToast(true);
+          setToastType("success");
+        }
         await loadCategories();
       } catch (error) {
-        console.error("There was an error deleting the category!", error);
+        setToastMessage("There was an error deleting the category!");
+        setShowToast(true);
+        setToastType("error");
       } finally {
         setShowConfirmationModal(false);
         setCategoryToDelete(null);
@@ -166,13 +181,6 @@ function Categories() {
               <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
             )}
           </div>
-          {/* <div className="pages-table">
-            {searchData.length !== 0 ? (
-              <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
-            ) : (
-              <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={categories} onPageChange={setPage} />
-            )}
-          </div> */}
           {showModal && (
             <CategoryModal
               isEdit={isEdit}
@@ -186,6 +194,7 @@ function Categories() {
           {showConfirmationModal && (
             <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleConfirmDelete} />
           )}
+          <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
         </div>
       )}
     </>

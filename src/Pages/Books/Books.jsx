@@ -14,6 +14,7 @@ import BookIssuanceHistory from "./BookIssuanceHistory";
 import Operation from "../../Coponents/Operation/Operation";
 import Table from "../../Coponents/Table/Table";
 import Loader from "../../Coponents/Loader/Loader";
+import Toast from "../../Coponents/Toast/Toast";
 
 function Books() {
   const [books, setBooks] = useState([]);
@@ -46,6 +47,10 @@ function Books() {
   const [totalPages, setTotalPages] = useState(0);
 
   const auth = useSelector((state) => state.auth);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
 
   const getPageSizeBasedOnWidth = () => {
     const width = window.innerWidth;
@@ -160,7 +165,16 @@ function Books() {
 
   const updateBooks = async (bookData, bookId) => {
     try {
-      await updateBook(bookData, bookId, auth?.token);
+      const response = await updateBook(bookData, bookId, auth?.token);
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage("Book updated successfully!");
+        setShowToast(true);
+        setToastType("success");
+      } else {
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
+      }
       await loadBooks();
       setBookData({
         categoryId: "",
@@ -178,7 +192,16 @@ function Books() {
 
   const addBooks = async (bookData) => {
     try {
-      await addBook(bookData, auth?.token);
+      const response = await addBook(bookData);
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage("Book added successfully!");
+        setShowToast(true);
+        setToastType("success");
+      } else {
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
+      }
       await loadBooks();
       setBookData({
         categoryId: "",
@@ -196,7 +219,16 @@ function Books() {
 
   const addIssuances = async (issuanceData) => {
     try {
-      await addIssuance(issuanceData, auth?.token);
+      const response = await addIssuance(issuanceData, auth?.token);
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage("Book issued successfully!");
+        setShowToast(true);
+        setToastType("success");
+      } else {
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
+      }
       handleCloseAssignModal();
     } catch (error) {
       console.error("Error adding issuance", error);
@@ -257,10 +289,21 @@ function Books() {
   const handleConfirmDelete = async () => {
     if (bookToDelete) {
       try {
-        await deleteBook(bookToDelete, auth?.token);
+        const response = await deleteBook(bookToDelete, auth?.token);
+        if (response?.status === 200 || response?.status === 201) {
+          setToastMessage("Book deleted successfully!");
+          setShowToast(true);
+          setToastType("success");
+        } else if (response?.status === 400) {
+          setToastMessage("Book can't be deleted as it is already issued to a user!");
+          setShowToast(true);
+          setToastType("error");
+        }
         await loadBooks();
       } catch (error) {
-        console.error("Error deleting book", error);
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
       } finally {
         handleCloseConfirmationModal();
       }
@@ -320,6 +363,10 @@ function Books() {
       } catch (error) {
         console.log(error);
       }
+    } else if (keyword.length < 3 && keyword.length > 0) {
+      setToastMessage("Atleast 3 characters are required!");
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -392,6 +439,7 @@ function Books() {
           <ConfirmationModal show={showConfirmationModal} onClose={handleCloseConfirmationModal} onConfirm={handleConfirmDelete} />
         </div>
       )}
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>
   );
 }
