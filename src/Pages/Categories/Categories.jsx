@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
-import Button from "../../Coponents/Button/Button";
-import Table from "../../Coponents/Table/Table";
-import SearchBar from "../../Coponents/SearchBar/SearchBar";
-import CategoryModal from "./CategoryModal";
-import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import { getAllCategories, deleteCategory, categorySearch } from "../../Api/Service/CategoryService";
-import "../Pages.css";
-import CategoryOperations from "./CategoryOperations";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { categorySearch, deleteCategory, getAllCategories } from "../../Api/Service/CategoryService";
+import Button from "../../Coponents/Button/Button";
+import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
 import Loader from "../../Coponents/Loader/Loader";
+import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
+import SearchBar from "../../Coponents/SearchBar/SearchBar";
+import Table from "../../Coponents/Table/Table";
 import Toast from "../../Coponents/Toast/Toast";
+import "../Pages.css";
+import CategoryModal from "./CategoryModal";
+import CategoryOperations from "./CategoryOperations";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -33,6 +33,13 @@ function Categories() {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
+
+  const [columns] = useState([
+    { header: "S.No.", accessor: "sNo" },
+    { header: "Name", accessor: "categoryName" },
+    { header: "Icon", accessor: "categoryIcon" },
+    { header: "Action", accessor: "operation" },
+  ]);
 
   const auth = useSelector((state) => state.auth);
 
@@ -64,7 +71,7 @@ function Categories() {
 
   const loadCategories = async () => {
     try {
-      const response = await getAllCategories(page, size, auth?.token);
+      const response = await getAllCategories(page, size);
 
       const categoriesData = response.data.content.map((category, index) => ({
         ...category,
@@ -108,7 +115,7 @@ function Categories() {
       setSearchData([]);
     } else if (keyword.length >= 3) {
       try {
-        const response = await categorySearch(keyword, auth?.token);
+        const response = await categorySearch(keyword);
         const categoriesData = response.data.map((category, index) => ({
           ...category,
           sNo: index + 1 + page * size,
@@ -117,7 +124,9 @@ function Categories() {
         }));
         setSearchData(categoriesData);
       } catch (error) {
-        console.log(error);
+        setToastMessage("Atleast 3 characters are required!");
+        setShowToast(true);
+        setToastType("error");
       }
     } else if (keyword.length < 3 && keyword.length > 0) {
       setToastMessage("Atleast 3 characters are required!");
@@ -138,7 +147,7 @@ function Categories() {
   const handleConfirmDelete = async () => {
     if (categoryToDelete) {
       try {
-        const response = await deleteCategory(categoryToDelete, auth?.token);
+        const response = await deleteCategory(categoryToDelete);
         if (response?.status === 200 || response?.status === 201) {
           setToastMessage("Category deleted successfully!");
           setShowToast(true);
@@ -169,7 +178,7 @@ function Categories() {
       {loading ? (
         <Loader />
       ) : (
-        <div className="pages-outer-container">
+        <div data-testid="category-container" className="pages-outer-container">
           <div className="pages-inner-container">
             <SearchBar placeholder="Search Category" handleOnChange={handleOnChange} handleSearch={handleSearch} />
             <Button onClick={handleAddCategoryClick}>Add Category</Button>
@@ -183,6 +192,7 @@ function Categories() {
           </div>
           {showModal && (
             <CategoryModal
+              data-testid="category-modal"
               isEdit={isEdit}
               categoryData={categoryData}
               categoryToEdit={categoryToEdit}
@@ -192,7 +202,12 @@ function Categories() {
             />
           )}
           {showConfirmationModal && (
-            <ConfirmationModal show={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} onConfirm={handleConfirmDelete} />
+            <ConfirmationModal
+              data-testid="confirmation-modal"
+              show={showConfirmationModal}
+              onClose={() => setShowConfirmationModal(false)}
+              onConfirm={handleConfirmDelete}
+            />
           )}
           <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
         </div>
@@ -200,12 +215,5 @@ function Categories() {
     </>
   );
 }
-
-const columns = [
-  { header: "S.No.", accessor: "sNo" },
-  { header: "Name", accessor: "categoryName" },
-  { header: "Icon", accessor: "categoryIcon" },
-  { header: "Action", accessor: "operation" },
-];
 
 export default DashboardHoc(Categories);

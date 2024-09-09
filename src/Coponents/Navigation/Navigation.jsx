@@ -14,9 +14,7 @@ function Navigation() {
     try {
       const response = await getUsersByCredential(auth.userCredential);
       setName(response.data.userName);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
