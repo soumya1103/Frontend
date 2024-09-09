@@ -5,9 +5,12 @@ import Error from "../Error/Error";
 function Input({ label, name, min, max, type, value, onChange, readOnly, className, maxLength, error = "" }) {
   return (
     <div className="form-content">
-      <label className="form-field-label">{label}</label>
+      <label htmlFor={name} className="form-field-label">
+        {label}
+      </label>
       <input
         className={`form-field-input ${className}`}
+        id={name}
         name={name}
         type={type}
         value={value}

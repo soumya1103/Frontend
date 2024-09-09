@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import UserIssuanceHistory from "./UserIssuanceHistory";
 import Table from "../../Coponents/Table/Table";
 import Loader from "../../Coponents/Loader/Loader";
+import Toast from "../../Coponents/Toast/Toast";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -43,7 +44,11 @@ function Users() {
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
+
   const getPageSizeBasedOnWidth = () => {
     const width = window.innerWidth;
     if (width > 1024) {
@@ -139,6 +144,9 @@ function Users() {
         console.log(error);
       }
     } else if (keyword.length < 3 && keyword.length > 0) {
+      setToastMessage("Atleast 3 characters are required!");
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -167,7 +175,15 @@ function Users() {
   const addUsers = async () => {
     try {
       const response = await addUser(userData, auth?.token);
-      console.log("User added successfully:", response.data);
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage("User added successfully!");
+        setShowToast(true);
+        setToastType("success");
+      } else {
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
+      }
       setUsers([...users, response.data]);
       setUserData({
         userCredential: "",
@@ -183,7 +199,15 @@ function Users() {
   const updateUsers = async () => {
     try {
       const response = await updateUser(userData, userToEdit, auth?.token);
-      console.log("User updated successfully:", response.data);
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage("User updated successfully!");
+        setShowToast(true);
+        setToastType("success");
+      } else {
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
+      }
       setUsers(users.map((user) => (user.userId === userToEdit ? response.data : user)));
       setUserData({
         userCredential: "",
@@ -207,7 +231,17 @@ function Users() {
         },
         auth?.token
       );
-      console.log("Issuance added successfully:");
+
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage("Book issued to user successfully!");
+        setShowToast(true);
+        setToastType("success");
+      } else {
+        setToastMessage("There was an error processing the request!");
+        setShowToast(true);
+        setToastType("error");
+      }
+
       const addedBookTitle = response.data.bookTitle;
 
       const { data } = await getBookByTitle(addedBookTitle, auth?.token);
@@ -241,12 +275,18 @@ function Users() {
     try {
       console.log(userToDelete);
       if (userToDelete) {
-        await deleteUser(userToDelete, auth?.token);
-        console.log("User deleted successfully");
+        const response = await deleteUser(userToDelete, auth?.token);
+        if (response?.status === 200 || response?.status === 201) {
+          setToastMessage("User deleted successfully!");
+          setShowToast(true);
+          setToastType("success");
+        }
         await loadUsers();
       }
     } catch (error) {
-      console.error("Error deleting user:", error);
+      setToastMessage("User can't be deleted as a book is issued!");
+      setShowToast(true);
+      setToastType("error");
     } finally {
       setShowConfirmationModal(false);
       setUserToDelete(null);
@@ -352,6 +392,7 @@ function Users() {
           )}
         </div>
       )}
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>
   );
 }

@@ -87,7 +87,8 @@ const Login = () => {
 
     if (isCredentialValid && isPasswordValid) {
       try {
-        const response = await login(userCredential, password);
+        const encodedPassword = btoa(password);
+        const response = await login(userCredential, encodedPassword);
         if (response?.status === 200 || response?.status === 201) {
           setToastMessage("Logged in successfully!");
           setShowToast(true);

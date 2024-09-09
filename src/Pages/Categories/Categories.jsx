@@ -41,7 +41,7 @@ function Categories() {
     if (width > 1024) {
       return 7;
     } else if (width <= 1024) {
-      return 14;
+      return 12;
     }
   };
 
