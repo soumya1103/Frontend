@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../../Coponents/Modal/Modal";
 import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
@@ -6,6 +6,13 @@ import Button from "../../Coponents/Button/Button";
 const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
   const [formData, setFormData] = useState(userData);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (show) {
+      setFormData(userData || {});
+      setErrors({});
+    }
+  }, [show, userData]);
 
   const validate = () => {
     const newErrors = {};
@@ -39,8 +46,17 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
 
   const handleSubmit = () => {
     if (validate()) {
-      onSubmit();
+      onSubmit(formData);
+      resetForm();
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      userCredential: "",
+      userName: "",
+    });
+    setErrors({});
   };
 
   const modalDimensions = errors.userCredential || errors.userName ? { height: "290px", width: "400px" } : { height: "210px", width: "400px" };
@@ -52,14 +68,14 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
         <Input
           label="Phone Number"
           name="userCredential"
-          value={userData.userCredential}
+          value={formData.userCredential || ""}
           type="number"
           className="no-spinner"
           onChange={handleInputChange}
           maxLength={10}
           error={errors.userCredential}
         />
-        <Input label="User Name" name="userName" value={userData.userName} type="text" onChange={handleInputChange} error={errors.userName} />
+        <Input label="User Name" name="userName" value={formData.userName || ""} type="text" onChange={handleInputChange} error={errors.userName} />
       </div>
       <div className="form-submit-btn">
         <Button onClick={handleSubmit}>{isEdit ? "Update" : "Add"}</Button>

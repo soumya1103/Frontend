@@ -6,6 +6,7 @@ export const validationPatterns = {
   number: /[0-9]/,
   anyChar: /[^A-Za-z0-9]/,
   alphabet: /^[a-zA-Z\s]*$/,
+  decimalPattern: /^\d+(\.\d+)?$/,
 };
 
 export const validTLDs = [".com", ".org", ".net", ".in"];

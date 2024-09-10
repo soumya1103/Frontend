@@ -21,22 +21,47 @@ const AssignModal = ({
   const [errors, setErrors] = useState({});
   const [type, setType] = useState();
   const [currentDate, setCurrentDate] = useState("");
+  const [tomorrowDate, setTomorrowDate] = useState("");
   const [time, setTime] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
 
   const getCurrentDate = () => {
     const now = new Date();
     return now.toISOString().split("T")[0];
   };
 
-  const getCurrentTime = () => {
+  const getCurrentDatePlusOne = () => {
     const now = new Date();
-    return now.toISOString().slice(11, 16); // Get 'HH:MM' for time input
+    now.setDate(now.getDate() + 1);
+    return now.toISOString().split("T")[0];
+  };
+
+  const getCurrentTimeIST = () => {
+    const now = new Date();
+    const istOffset = 5 * 60 + 30;
+    const istTime = new Date(now.getTime() + istOffset * 60 * 1000);
+    return istTime.toISOString().slice(11, 16);
+  };
+
+  const getCurrentTimeISTFiveSec = () => {
+    const now = new Date();
+    const istOffset = 5 * 60 + 30;
+    const istTime = new Date(now.getTime() + istOffset * 60 * 1000 + 5 * 1000);
+    return istTime.toISOString().slice(11, 16);
   };
 
   useEffect(() => {
     setCurrentDate(getCurrentDate());
-    setTime(getCurrentTime());
+    setCurrentTime(getCurrentTimeIST());
+    setTomorrowDate(getCurrentDatePlusOne());
   }, []);
+
+  useEffect(() => {
+    if (issuanceType === "Inhouse") {
+      setTime(getCurrentTimeISTFiveSec());
+      onReturnDateChange(`${getCurrentDate()}T${getCurrentTimeIST()}`);
+    }
+  }, [issuanceType]);
 
   const validate = () => {
     const newErrors = {};
@@ -49,8 +74,14 @@ const AssignModal = ({
       newErrors.issuanceType = "Issuance type is required.";
     }
 
-    if (!returnDate) {
-      newErrors.returnDate = "Return date is required.";
+    if (issuanceType === "Inhouse") {
+      if (!time || time < currentTime) {
+        newErrors.returnDate = "Return time cannot be before the current time.";
+      }
+    } else if (issuanceType === "Remote") {
+      if (!returnDate) {
+        newErrors.returnDate = "Return date is required.";
+      }
     }
 
     setErrors(newErrors);
@@ -77,8 +108,8 @@ const AssignModal = ({
 
     if (value === "Inhouse") {
       setCurrentDate(getCurrentDate());
-      setTime(getCurrentTime());
-      onReturnDateChange(`${getCurrentDate()}T${getCurrentTime()}`);
+      setTime(getCurrentTimeISTFiveSec());
+      onReturnDateChange(`${getCurrentDate()}T${getCurrentTimeIST()}`);
     }
   };
 
@@ -152,6 +183,7 @@ const AssignModal = ({
               name="returnTime"
               value={time}
               type="time"
+              min={currentTime}
               onChange={(e) => handleTimeChange(e.target.value)}
               error={errors.returnDate}
             />
@@ -162,7 +194,7 @@ const AssignModal = ({
             name="returnDate"
             value={returnDate}
             type="datetime-local"
-            min={`${currentDate}T${getCurrentTime()}`}
+            min={`${tomorrowDate}T${getCurrentTimeIST()}`}
             onChange={(e) => handleDateTimeChange(e.target.value)}
             error={errors.returnDate}
           />

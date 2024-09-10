@@ -61,9 +61,9 @@ const ProfileButton = ({ name }) => {
       {showDropdown && (
         <div className="dropdown-menu">
           <p>{name}</p>
-          <Button onClick={handleLogoutBtn} className="logout-btn">
+          <button onClick={handleLogoutBtn} className="logout-btn">
             Logout
-          </Button>
+          </button>
         </div>
       )}
       {showConfirmationModal && (

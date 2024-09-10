@@ -6,7 +6,7 @@ import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
 import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
 import { addUser, deleteUser, getUserByRole, updateUser, userSearch } from "../../Api/Service/UserService";
-import { getAllBooks, getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/BookService";
+import { getAllBooks, getAllBooksNp, getBookById, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { addIssuance, getIssuancesByUserId } from "../../Api/Service/IssuanceService";
 import Operation from "../../Coponents/Operation/Operation";
 import { useSelector } from "react-redux";
@@ -114,12 +114,14 @@ function Users() {
   };
 
   const handleSearch = async () => {
-    if (keyword.trim() === "") {
+    const trimmedKeyword = keyword.trim();
+
+    if (trimmedKeyword === "") {
       loadUsers();
       setSearchData([]);
-    } else if (keyword.length >= 3) {
+    } else if (trimmedKeyword.length >= 3) {
       try {
-        const response = await userSearch(keyword, auth?.token);
+        const response = await userSearch(trimmedKeyword);
         console.log(response.data);
 
         const usersData = response.data.map((user, index) => ({
@@ -141,9 +143,11 @@ function Users() {
         }));
         setSearchData(usersData);
       } catch (error) {
-        console.log(error);
+        setToastMessage(error.response.data.message);
+        setShowToast(true);
+        setToastType("error");
       }
-    } else if (keyword.length < 3 && keyword.length > 0) {
+    } else if (trimmedKeyword.length < 3 && trimmedKeyword.length > 0) {
       setToastMessage("Atleast 3 characters are required!");
       setShowToast(true);
       setToastType("error");
@@ -174,85 +178,87 @@ function Users() {
 
   const addUsers = async () => {
     try {
-      const response = await addUser(userData, auth?.token);
+      const trimmedUserData = {
+        ...userData,
+        userCredential: userData.userCredential.trim(),
+        userName: userData.userName.trim(),
+      };
+      const response = await addUser(trimmedUserData);
       if (response?.status === 200 || response?.status === 201) {
         setToastMessage("User added successfully!");
         setShowToast(true);
         setToastType("success");
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
       }
       setUsers([...users, response.data]);
       setUserData({
         userCredential: "",
         userName: "",
       });
-      handleCloseUserModal();
       await loadUsers();
     } catch (error) {
-      console.error("Error adding user:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
+      handleCloseUserModal();
     }
   };
 
   const updateUsers = async () => {
     try {
-      const response = await updateUser(userData, userToEdit, auth?.token);
+      const trimmedUserData = {
+        ...userData,
+        userCredential: userData.userCredential.trim(),
+        userName: userData.userName.trim(),
+      };
+      const response = await updateUser(trimmedUserData, userToEdit);
       if (response?.status === 200 || response?.status === 201) {
         setToastMessage("User updated successfully!");
         setShowToast(true);
         setToastType("success");
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
       }
       setUsers(users.map((user) => (user.userId === userToEdit ? response.data : user)));
       setUserData({
         userCredential: "",
         userName: "",
       });
-      handleCloseUserModal();
       await loadUsers();
     } catch (error) {
-      console.error("Error updating user:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
+      handleCloseUserModal();
     }
   };
 
   const addIssuances = async () => {
     try {
-      const response = await addIssuance(
-        {
-          userId,
-          bookId: book.bookId,
-          returnDate,
-          issuanceType,
-        },
-        auth?.token
-      );
+      const response = await addIssuance({
+        userId,
+        bookId: book.bookId,
+        returnDate,
+        issuanceType,
+      });
 
       if (response?.status === 200 || response?.status === 201) {
         setToastMessage("Book issued to user successfully!");
         setShowToast(true);
         setToastType("success");
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
+
+        const { data } = await getBookById(book.bookId);
+        console.log(data);
+
+        const updatedBooks = { ...data, bookCount: data.bookCount - 1 };
+
+        await updateBook(updatedBooks, updatedBooks.bookId, auth?.token);
       }
-
-      const addedBookTitle = response.data.bookTitle;
-
-      const { data } = await getBookByTitle(addedBookTitle, auth?.token);
-
-      const updatedBooks = { ...data, bookCount: data.bookCount - 1 };
-
-      await updateBook(updatedBooks, updatedBooks.bookId, auth?.token);
-
-      handleCloseAssignModal();
     } catch (error) {
-      console.error("Error adding issuance:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
+      handleCloseAssignModal();
     }
   };
 

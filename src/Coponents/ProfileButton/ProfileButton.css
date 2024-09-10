@@ -43,4 +43,21 @@
   display: block;
   margin: 0 auto;
   margin-bottom: 8%;
+  border-radius: 5px;
+  background-color: #e55b13;
+  border: none;
+  color: #fff;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  padding: 1.5% 6%;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  transition: all 0.8s ease;
+  background-color: #003060;
 }

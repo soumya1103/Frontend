@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../../Coponents/Modal/Modal";
 import Input from "../../Coponents/Input/Input";
 import Button from "../../Coponents/Button/Button";
@@ -7,6 +7,13 @@ import Error from "../../Coponents/Error/Error";
 const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChange, onInputChange, onSubmit }) => {
   const [formData, setFormData] = useState(bookData);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (show) {
+      setFormData(bookData || {});
+      setErrors({});
+    }
+  }, [bookData, show]);
 
   const validate = () => {
     const errors = {};
@@ -27,8 +34,16 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
       errors.bookRating = "Book rating must be between 1 and 5.";
     }
 
+    if (!Number.isInteger(Number(formData.bookRating))) {
+      errors.bookRating = "Book rating cannot be in decimal form.";
+    }
+
     if (formData.bookCount < 1) {
       errors.bookCount = "Book count cannot be negative or zero.";
+    }
+
+    if (!Number.isInteger(Number(formData.bookCount))) {
+      errors.bookCount = "Book count cannot be in decimal form.";
     }
 
     setErrors(errors);
@@ -38,9 +53,11 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    const newValue = name === "bookRating" || name === "bookCount" ? (isNaN(parseInt(value, 10)) ? "" : parseInt(value, 10)) : value;
+
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: newValue,
     }));
 
     setErrors((prevErrors) => ({
@@ -69,7 +86,19 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
   const handleSubmit = () => {
     if (validate()) {
       onSubmit();
+      resetForm();
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      categoryId: "",
+      bookTitle: "",
+      bookAuthor: "",
+      bookRating: "",
+      bookCount: "",
+    });
+    setErrors({});
   };
 
   const modalDimensions =
@@ -78,12 +107,20 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
       : { height: "382px", width: "400px" };
 
   return (
-    <Modal show={show} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
+    <Modal
+      show={show}
+      onClose={() => {
+        onClose();
+        resetForm();
+      }}
+      height={modalDimensions.height}
+      width={modalDimensions.width}
+    >
       <p className="form-title">{isEdit ? "Edit Book" : "Add Book"}</p>
       <div>
         <div className="form-content">
           <label className="form-field-label">Category Name</label>
-          <select className="form-field-input" value={bookData.categoryId} onChange={handleCategoryChange}>
+          <select className="form-field-input" value={formData.categoryId} onChange={handleCategoryChange}>
             <option value="">Select Category</option>
             {categories.map((category) => (
               <option key={category.categoryId} value={category.categoryId}>
@@ -94,12 +131,12 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
           <div></div>
           {errors.categoryId && <Error error={errors.categoryId} />}
         </div>
-        <Input label="Book Title" name="bookTitle" value={bookData.bookTitle} type="text" onChange={handleInputChange} error={errors.bookTitle} />
-        <Input label="Book Author" name="bookAuthor" value={bookData.bookAuthor} type="text" onChange={handleInputChange} error={errors.bookAuthor} />
+        <Input label="Book Title" name="bookTitle" value={formData.bookTitle} type="text" onChange={handleInputChange} error={errors.bookTitle} />
+        <Input label="Book Author" name="bookAuthor" value={formData.bookAuthor} type="text" onChange={handleInputChange} error={errors.bookAuthor} />
         <Input
           label="Book Rating"
           name="bookRating"
-          value={bookData.bookRating}
+          value={formData.bookRating}
           type="number"
           min="1"
           max="5"
@@ -109,7 +146,7 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
         <Input
           label="Book Count"
           name="bookCount"
-          value={bookData.bookCount}
+          value={formData.bookCount}
           type="number"
           min={isEdit ? "0" : "1"}
           onChange={handleInputChange}

@@ -41,8 +41,6 @@ function Categories() {
     { header: "Action", accessor: "operation" },
   ]);
 
-  const auth = useSelector((state) => state.auth);
-
   const getPageSizeBasedOnWidth = () => {
     const width = window.innerWidth;
     if (width > 1024) {
@@ -92,12 +90,12 @@ function Categories() {
       categoryIcon: category.categoryIcon,
     });
     setIsEdit(true);
-    setCategoryToEdit(category.categoryName);
+    setCategoryToEdit(category.categoryId);
     setShowModal(true);
   };
 
-  const handleDeleteIcon = (categoryName) => {
-    setCategoryToDelete(categoryName);
+  const handleDeleteIcon = (categoryId) => {
+    setCategoryToDelete(categoryId);
     setShowConfirmationModal(true);
   };
 
@@ -110,25 +108,36 @@ function Categories() {
   };
 
   const handleSearch = async () => {
-    if (keyword.trim() === "") {
+    const trimmedKeyword = keyword.trim();
+    console.log(trimmedKeyword);
+
+    if (trimmedKeyword === "") {
       loadCategories();
       setSearchData([]);
-    } else if (keyword.length >= 3) {
+    } else if (trimmedKeyword.length >= 3) {
       try {
-        const response = await categorySearch(keyword);
-        const categoriesData = response.data.map((category, index) => ({
-          ...category,
-          sNo: index + 1 + page * size,
-          categoryIcon: <img src={category.categoryIcon} alt={category.categoryName} width="13%" />,
-          operation: <CategoryOperations category={category} onEdit={handleEditIcon} onDelete={handleDeleteIcon} />,
-        }));
-        setSearchData(categoriesData);
+        const response = await categorySearch(trimmedKeyword);
+        console.log(response.data);
+
+        if (response.data.length === 0) {
+          setToastMessage("No data found!");
+          setShowToast(true);
+          setToastType("error");
+        } else {
+          const categoriesData = response.data.map((category, index) => ({
+            ...category,
+            sNo: index + 1 + page * size,
+            categoryIcon: <img src={category.categoryIcon} alt={category.categoryName} width="13%" />,
+            operation: <CategoryOperations category={category} onEdit={handleEditIcon} onDelete={handleDeleteIcon} />,
+          }));
+          setSearchData(categoriesData);
+        }
       } catch (error) {
-        setToastMessage("Atleast 3 characters are required!");
+        setToastMessage("Error finding items!");
         setShowToast(true);
         setToastType("error");
       }
-    } else if (keyword.length < 3 && keyword.length > 0) {
+    } else if (trimmedKeyword.length < 3 && trimmedKeyword.length > 0) {
       setToastMessage("Atleast 3 characters are required!");
       setShowToast(true);
       setToastType("error");
@@ -148,14 +157,12 @@ function Categories() {
     if (categoryToDelete) {
       try {
         const response = await deleteCategory(categoryToDelete);
-        if (response?.status === 200 || response?.status === 201) {
-          setToastMessage("Category deleted successfully!");
-          setShowToast(true);
-          setToastType("success");
-        }
+        setToastMessage(response.data.message);
+        setShowToast(true);
+        setToastType("success");
         await loadCategories();
       } catch (error) {
-        setToastMessage("There was an error deleting the category!");
+        setToastMessage(error.response.data.message);
         setShowToast(true);
         setToastType("error");
       } finally {
@@ -198,7 +205,6 @@ function Categories() {
               categoryToEdit={categoryToEdit}
               onClose={handleModalClose}
               reloadCategories={loadCategories}
-              auth={auth}
             />
           )}
           {showConfirmationModal && (

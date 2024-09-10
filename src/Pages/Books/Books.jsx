@@ -165,15 +165,17 @@ function Books() {
 
   const updateBooks = async (bookData, bookId) => {
     try {
-      const response = await updateBook(bookData, bookId, auth?.token);
+      const trimmedBookData = {
+        ...bookData,
+        bookTitle: bookData.bookTitle.trim(),
+        bookAuthor: bookData.bookAuthor.trim(),
+      };
+
+      const response = await updateBook(trimmedBookData, bookId);
       if (response?.status === 200 || response?.status === 201) {
         setToastMessage("Book updated successfully!");
         setShowToast(true);
         setToastType("success");
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
       }
       await loadBooks();
       setBookData({
@@ -184,23 +186,27 @@ function Books() {
         bookRating: "",
         bookCount: "",
       });
-      handleCloseBookModal();
     } catch (error) {
-      console.error("Error updating book", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
+      handleCloseBookModal();
     }
   };
 
   const addBooks = async (bookData) => {
     try {
-      const response = await addBook(bookData);
+      const trimmedBookData = {
+        ...bookData,
+        bookTitle: bookData.bookTitle.trim(),
+        bookAuthor: bookData.bookAuthor.trim(),
+      };
+      const response = await addBook(trimmedBookData);
       if (response?.status === 200 || response?.status === 201) {
         setToastMessage("Book added successfully!");
         setShowToast(true);
         setToastType("success");
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
       }
       await loadBooks();
       setBookData({
@@ -211,9 +217,12 @@ function Books() {
         bookRating: "",
         bookCount: "",
       });
-      handleCloseBookModal();
     } catch (error) {
-      console.error("Error adding book", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
+      handleCloseBookModal();
     }
   };
 
@@ -229,9 +238,10 @@ function Books() {
         setShowToast(true);
         setToastType("error");
       }
-      handleCloseAssignModal();
     } catch (error) {
       console.error("Error adding issuance", error);
+    } finally {
+      handleCloseAssignModal();
     }
   };
 
@@ -289,19 +299,18 @@ function Books() {
   const handleConfirmDelete = async () => {
     if (bookToDelete) {
       try {
-        const response = await deleteBook(bookToDelete, auth?.token);
-        if (response?.status === 200 || response?.status === 201) {
-          setToastMessage("Book deleted successfully!");
-          setShowToast(true);
-          setToastType("success");
-        }
+        const response = await deleteBook(bookToDelete);
+        setToastMessage(response.data.message);
+        setShowToast(true);
+        setToastType("success");
         await loadBooks();
       } catch (error) {
-        setToastMessage("Book can't be deleted as it is already issued to a user!");
+        setToastMessage(error.response.data.message);
         setShowToast(true);
         setToastType("error");
       } finally {
-        handleCloseConfirmationModal();
+        setShowConfirmationModal(false);
+        setBookToDelete(null);
       }
     }
   };
@@ -331,35 +340,46 @@ function Books() {
   const [searchData, setSearchData] = useState([]);
 
   const handleSearch = async () => {
-    if (keyword.trim() === "") {
+    const trimmedKeyword = keyword.trim();
+    console.log(trimmedKeyword);
+
+    if (trimmedKeyword === "") {
       loadBooks();
       setSearchData([]);
-    } else if (keyword.length >= 3) {
+    } else if (trimmedKeyword.length >= 3) {
       try {
-        const response = await bookSearch(keyword, auth?.token);
+        const response = await bookSearch(trimmedKeyword);
         console.log(response.data);
 
-        const booksData = response.data.map((book, index) => ({
-          ...book,
-          sNo: index + 1 + page * size,
-          operation: (
-            <Operation
-              widthE="100%"
-              widthD="80%"
-              showExtra={true}
-              isBooksPage={true}
-              onClickAssignUser={() => handleAssignUser(book)}
-              onClickEdit={() => handleEditIcon(book)}
-              onClickDelete={() => handleDeleteIcon(book.bookId)}
-              onClickBookHistory={() => handleShowIssuance(book.bookId)}
-            />
-          ),
-        }));
-        setSearchData(booksData);
+        if (response.data.length === 0) {
+          setToastMessage("No data found!");
+          setShowToast(true);
+          setToastType("error");
+        } else {
+          const booksData = response.data.map((book, index) => ({
+            ...book,
+            sNo: index + 1 + page * size,
+            operation: (
+              <Operation
+                widthE="100%"
+                widthD="80%"
+                showExtra={true}
+                isBooksPage={true}
+                onClickAssignUser={() => handleAssignUser(book)}
+                onClickEdit={() => handleEditIcon(book)}
+                onClickDelete={() => handleDeleteIcon(book.bookId)}
+                onClickBookHistory={() => handleShowIssuance(book.bookId)}
+              />
+            ),
+          }));
+          setSearchData(booksData);
+        }
       } catch (error) {
-        console.log(error);
+        setToastMessage("Error finding items!");
+        setShowToast(true);
+        setToastType("error");
       }
-    } else if (keyword.length < 3 && keyword.length > 0) {
+    } else if (trimmedKeyword.length < 3 && trimmedKeyword.length > 0) {
       setToastMessage("Atleast 3 characters are required!");
       setShowToast(true);
       setToastType("error");

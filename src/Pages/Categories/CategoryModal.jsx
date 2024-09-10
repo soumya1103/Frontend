@@ -33,6 +33,7 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
@@ -40,22 +41,32 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
   };
 
   const handleSubmit = async () => {
-    if (validate()) {
-      if (isEdit) {
-        response = await updateCategory(formData, categoryToEdit, auth?.token);
-      } else {
-        response = await addCategory(formData, auth?.token);
+    try {
+      if (validate()) {
+        const trimmedFormData = {
+          ...formData,
+          categoryName: formData.categoryName.trim(),
+          categoryIcon: formData.categoryIcon.trim(),
+        };
+
+        if (isEdit) {
+          response = await updateCategory(trimmedFormData, categoryToEdit);
+        } else {
+          response = await addCategory(trimmedFormData);
+        }
+
+        if (response?.status === 200 || response?.status === 201) {
+          setToastMessage(isEdit ? "Category updated successfully!" : "Category added successfully!");
+          setToastType("success");
+          setShowToast(true);
+          reloadCategories();
+        }
       }
-      if (response?.status === 200 || response?.status === 201) {
-        setToastMessage(isEdit ? "Category updated successfully!" : "Category added successfully!");
-        setShowToast(true);
-        setToastType("success");
-        reloadCategories();
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
-      }
+    } catch (error) {
+      setToastMessage(error?.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
       onClose();
     }
   };
