@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
-import Button from "../../Coponents/Button/Button";
-import SearchBar from "../../Coponents/SearchBar/SearchBar";
+import DashboardHoc from "../../Component/HOC/DashboardHoc";
+import Button from "../../Component/Button/Button";
+import SearchBar from "../../Component/SearchBar/SearchBar";
 import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
-import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
+import ConfirmationModal from "../../Component/Modal/ConfirmationModal";
 import { addUser, deleteUser, getUserByRole, updateUser, userSearch } from "../../Api/Service/UserService";
 import { getAllBooks, getAllBooksNp, getBookById, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { addIssuance, getIssuancesByUserId } from "../../Api/Service/IssuanceService";
-import Operation from "../../Coponents/Operation/Operation";
+import Operation from "../../Component/Operation/Operation";
 import { useSelector } from "react-redux";
 import UserIssuanceHistory from "./UserIssuanceHistory";
-import Table from "../../Coponents/Table/Table";
-import Loader from "../../Coponents/Loader/Loader";
-import Toast from "../../Coponents/Toast/Toast";
+import Table from "../../Component/Table/Table";
+import Loader from "../../Component/Loader/Loader";
+import Toast from "../../Component/Toast/Toast";
 
 function Users() {
   const [users, setUsers] = useState([]);

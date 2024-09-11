@@ -2,16 +2,16 @@ import React, { useEffect } from "react";
 import icon from "../../Images/icon.png";
 import loginImg from "../../Images/login-image.png";
 import "./Login.css";
-import Button from "../../Coponents/Button/Button";
+import Button from "../../Component/Button/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../Api/Service/Login";
 import { loginUser } from "../../Redux/Authentication/AuthenticationAction";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../Coponents/Loader/Loader";
-import Error from "../../Coponents/Error/Error";
+import Loader from "../../Component/Loader/Loader";
+import Error from "../../Component/Error/Error";
 import { validationPatterns, validTLDs } from "../../Validations/Constant";
-import Toast from "../../Coponents/Toast/Toast";
+import Toast from "../../Component/Toast/Toast";
 import danger from "../../Images/danger.svg";
 
 const Login = () => {

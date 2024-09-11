@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
+import DashboardHoc from "../../Component/HOC/DashboardHoc";
 import "./Dashboard.css";
 import bookDashboard from "../../Images/book-dashboard.png";
 import categoryDashboard from "../../Images/categories-dashboard.png";
 import userDashboard from "../../Images/users-dashboard.png";
 import inhouseUserDashboard from "../../Images/inhouse-users-dashboard.png";
-import Table from "../../Coponents/Table/Table";
+import Table from "../../Component/Table/Table";
 import { getAllBooksNp } from "../../Api/Service/BookService";
 import { countCategory } from "../../Api/Service/CategoryService";
 import { countUser } from "../../Api/Service/UserService";
 import { countByType } from "../../Api/Service/IssuanceService";
 import { useSelector } from "react-redux";
-import Loader from "../../Coponents/Loader/Loader";
+import Loader from "../../Component/Loader/Loader";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);

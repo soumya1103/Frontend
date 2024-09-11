@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
-import Button from "../../Coponents/Button/Button";
-import SearchBar from "../../Coponents/SearchBar/SearchBar";
+import DashboardHoc from "../../Component/HOC/DashboardHoc";
+import Button from "../../Component/Button/Button";
+import SearchBar from "../../Component/SearchBar/SearchBar";
 import BookModal from "./BookModal";
 import AssignModal from "./AssignModal";
-import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
+import ConfirmationModal from "../../Component/Modal/ConfirmationModal";
 import { addBook, bookSearch, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { getAllCategories, getAllCategoriesNp } from "../../Api/Service/CategoryService";
 import { getUserByRole, getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { addIssuance, getIssuancesByBookId } from "../../Api/Service/IssuanceService";
 import { useSelector } from "react-redux";
 import BookIssuanceHistory from "./BookIssuanceHistory";
-import Operation from "../../Coponents/Operation/Operation";
-import Table from "../../Coponents/Table/Table";
-import Loader from "../../Coponents/Loader/Loader";
-import Toast from "../../Coponents/Toast/Toast";
+import Operation from "../../Component/Operation/Operation";
+import Table from "../../Component/Table/Table";
+import Loader from "../../Component/Loader/Loader";
+import Toast from "../../Component/Toast/Toast";
 
 function Books() {
   const [books, setBooks] = useState([]);
@@ -154,7 +154,14 @@ function Books() {
 
   const handleAssignUser = async (book) => {
     setBookData({ bookTitle: book.bookTitle, bookCount: book.bookCount });
-    setShowAssignModal(true);
+    if (book.bookCount === 0) {
+      setShowAssignModal(false);
+      setToastMessage("Book count is 0 can't assign book.");
+      setShowToast(true);
+      setToastType("error");
+    } else {
+      setShowAssignModal(true);
+    }
     try {
       const response = await getBookByTitle(book.bookTitle, auth?.token);
       setBookId(response.data.bookId);
@@ -233,13 +240,11 @@ function Books() {
         setToastMessage("Book issued successfully!");
         setShowToast(true);
         setToastType("success");
-      } else {
-        setToastMessage("There was an error processing the request!");
-        setShowToast(true);
-        setToastType("error");
       }
     } catch (error) {
-      console.error("Error adding issuance", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     } finally {
       handleCloseAssignModal();
     }
@@ -279,10 +284,12 @@ function Books() {
         bookCount: bookData.bookCount - 1,
       };
 
-      await updateBook(updatedBookData, bookId, auth?.token);
+      await updateBook(updatedBookData, bookId);
       await loadBooks();
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 

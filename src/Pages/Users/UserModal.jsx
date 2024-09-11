@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../../Coponents/Modal/Modal";
-import Input from "../../Coponents/Input/Input";
-import Button from "../../Coponents/Button/Button";
+import Modal from "../../Component/Modal/Modal";
+import Input from "../../Component/Input/Input";
+import Button from "../../Component/Button/Button";
 
 const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
   const [formData, setFormData] = useState(userData);

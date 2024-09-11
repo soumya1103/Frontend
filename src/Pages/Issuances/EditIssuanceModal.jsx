@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../../Coponents/Modal/Modal";
-import Input from "../../Coponents/Input/Input";
-import Button from "../../Coponents/Button/Button";
+import Modal from "../../Component/Modal/Modal";
+import Input from "../../Component/Input/Input";
+import Button from "../../Component/Button/Button";
 import { updateIssuance } from "../../Api/Service/IssuanceService";
 import { getUsersByCredential } from "../../Api/Service/UserService";
 import { getBookByTitle, updateBook } from "../../Api/Service/BookService";
-import Error from "../../Coponents/Error/Error";
-import Toast from "../../Coponents/Toast/Toast";
+import Error from "../../Component/Error/Error";
+import Toast from "../../Component/Toast/Toast";
 
 function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, render }) {
   const [issuanceData, setIssuanceData] = useState({});
@@ -23,6 +23,34 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
+
+  // const [tomorrowDate, setTomorrowDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
+
+  // const getCurrentDate = () => {
+  //   const now = new Date();
+  //   return now.toISOString().split("T")[0];
+  // };
+
+  // const getCurrentDatePlusOne = () => {
+  //   const now = new Date();
+  //   now.setDate(now.getDate() + 1);
+  //   return now.toISOString().split("T")[0];
+  // };
+
+  // const getCurrentTimeIST = () => {
+  //   const now = new Date();
+  //   const istOffset = 5 * 60 + 30;
+  //   const istTime = new Date(now.getTime() + istOffset * 60 * 1000);
+  //   return istTime.toISOString().slice(11, 16);
+  // };
+
+  // const getCurrentTimeISTFiveSec = () => {
+  //   const now = new Date();
+  //   const istOffset = 5 * 60 + 30;
+  //   const istTime = new Date(now.getTime() + istOffset * 60 * 1000 + 5 * 1000);
+  //   return istTime.toISOString().slice(11, 16);
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +84,17 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
     const newErrors = {};
     if (!issuanceData.returnDate) newErrors.returnDate = "Return date is required.";
     if (!issuanceData.status) newErrors.status = "Status is required.";
+    if (issuanceData.issuanceType === "Inhouse") {
+      if (!time || time?.length < 1) {
+        newErrors.returnDate = "Return time is required!";
+      } else if (time < currentTime) {
+        newErrors.returnDate = "Return time cannot be before the current time.";
+      }
+    } else if (issuanceData.issuanceType === "Remote") {
+      if (!issuanceData.returnDate) {
+        newErrors.returnDate = "Return date is required.";
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -72,12 +111,18 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
 
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
-    setTime(selectedTime);
-    setIssuanceData({
-      ...issuanceData,
-      returnDate: `${currentDate}T${selectedTime}`,
-    });
-    setErrors((prev) => ({ ...prev, returnDate: "" }));
+    if (selectedTime < issueTime) {
+      setToastMessage("Time selected is prior to return time.");
+      setShowToast(true);
+      setToastType("error");
+    } else {
+      setTime(selectedTime);
+      setIssuanceData({
+        ...issuanceData,
+        returnDate: `${currentDate}T${selectedTime}`,
+      });
+      setErrors((prev) => ({ ...prev, returnDate: "" }));
+    }
   };
 
   const updateBookCount = async (newStatus) => {
@@ -130,6 +175,22 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString();
+    return formattedDate;
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    const formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    return formattedTime;
+  };
+
+  const issueTime = formatTime(issuanceData.issueDate);
+  const issDate = formatDate(issuanceData.returnDate);
+  const returnTime = formatTime(issuanceData.returnDate);
+
   const modalDimensions =
     errors.returnDate || errors.status
       ? { height: "520px", width: "430px" }
@@ -149,8 +210,8 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
 
           {issuanceType === "Inhouse" ? (
             <>
-              <Input label="Return Date" value={currentDate} readOnly={true} />
-              <Input label="Return Time" type="time" value={time} onChange={handleTimeChange} />
+              <Input label="Return Date" value={issDate || ""} readOnly={true} />
+              <Input label="Return Time" name="returnTime" type="time" value={returnTime} onChange={handleTimeChange} />
             </>
           ) : (
             <Input

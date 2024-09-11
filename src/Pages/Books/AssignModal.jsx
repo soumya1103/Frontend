@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Modal from "../../Coponents/Modal/Modal";
-import Input from "../../Coponents/Input/Input";
-import Button from "../../Coponents/Button/Button";
-import Error from "../../Coponents/Error/Error";
+import Modal from "../../Component/Modal/Modal";
+import Input from "../../Component/Input/Input";
+import Button from "../../Component/Button/Button";
+import Error from "../../Component/Error/Error";
 
 const AssignModal = ({
   show,

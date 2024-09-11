@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Modal from "../../Coponents/Modal/Modal";
-import Input from "../../Coponents/Input/Input";
-import Button from "../../Coponents/Button/Button";
+import Modal from "../../Component/Modal/Modal";
+import Input from "../../Component/Input/Input";
+import Button from "../../Component/Button/Button";
 import { addIssuance } from "../../Api/Service/IssuanceService";
 import { getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/BookService";
-import Error from "../../Coponents/Error/Error";
-import Toast from "../../Coponents/Toast/Toast";
+import Error from "../../Component/Error/Error";
+import Toast from "../../Component/Toast/Toast";
 
 function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) {
   const initialIssuanceData = {
@@ -30,6 +30,46 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
+
+  const [tomorrowDate, setTomorrowDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    return now.toISOString().split("T")[0];
+  };
+
+  const getCurrentDatePlusOne = () => {
+    const now = new Date();
+    now.setDate(now.getDate() + 1);
+    return now.toISOString().split("T")[0];
+  };
+
+  const getCurrentTimeIST = () => {
+    const now = new Date();
+    const istOffset = 5 * 60 + 30;
+    const istTime = new Date(now.getTime() + istOffset * 60 * 1000);
+    return istTime.toISOString().slice(11, 16);
+  };
+
+  const getCurrentTimeISTFiveSec = () => {
+    const now = new Date();
+    const istOffset = 5 * 60 + 30;
+    const istTime = new Date(now.getTime() + istOffset * 60 * 1000 + 5 * 1000);
+    return istTime.toISOString().slice(11, 16);
+  };
+
+  useEffect(() => {
+    setCurrentDate(getCurrentDate());
+    setCurrentTime(getCurrentTimeIST());
+    setTomorrowDate(getCurrentDatePlusOne());
+  }, []);
+
+  useEffect(() => {
+    if (issuanceData.issuanceType === "Inhouse") {
+      setTime(getCurrentTimeISTFiveSec());
+    }
+  }, [issuanceData.issuanceType]);
 
   const resetForm = () => {
     setIssuanceData(initialIssuanceData);
@@ -58,18 +98,24 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
     fetchData();
   }, [renderUtil]);
 
-  useEffect(() => {
-    const now = new Date();
-    setCurrentDate(now.toISOString().split("T")[0]);
-    setTime(now.toTimeString().slice(0, 5));
-  }, []);
-
   const validate = () => {
     const newErrors = {};
     if (!issuanceData.userId) newErrors.userId = "User is required.";
     if (!issuanceData.bookId) newErrors.bookId = "Book is required.";
     if (!issuanceData.issuanceType) newErrors.issuanceType = "Issuance type is required.";
-    if (!issuanceData.returnDate) newErrors.returnDate = "Return date is required.";
+
+    if (issuanceData.issuanceType === "Inhouse") {
+      if (!time || time?.length < 1) {
+        newErrors.returnDate = "Return time is required!";
+      } else if (time < currentTime) {
+        newErrors.returnDate = "Return time cannot be before the current time.";
+      }
+    } else if (issuanceData.issuanceType === "Remote") {
+      if (!issuanceData.returnDate) {
+        newErrors.returnDate = "Return date is required.";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -112,14 +158,13 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
     setErrors((prev) => ({ ...prev, returnDate: "" }));
   };
 
-  const handleTimeChange = (e) => {
-    const selectedTime = e.target.value;
-    setTime(selectedTime);
+  const handleTimeChange = (value) => {
+    setTime(value);
     setIssuanceData({
       ...issuanceData,
-      returnDate: `${currentDate}T${selectedTime}`,
+      returnDate: `${currentDate}T${value}`,
     });
-    setErrors((prev) => ({ ...prev, returnDate: "" }));
+    // setErrors((prev) => ({ ...prev, returnDate: "" }));
   };
 
   const handleAddIssuance = async () => {
@@ -144,7 +189,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
         reloadIssuances();
         resetForm();
       } catch (error) {
-        setToastMessage("There was an error processing the request!");
+        setToastMessage("Return time and issued time can't be same.");
         setShowToast(true);
         setToastType("error");
       }
@@ -179,6 +224,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
                 </option>
               ))}
             </select>
+            <div></div>
             {errors.userId && <Error error={errors.userId} />}
           </div>
 
@@ -194,6 +240,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
                 </option>
               ))}
             </select>
+            <div></div>
             {errors.bookId && <Error error={errors.bookId} />}
           </div>
 
@@ -206,19 +253,28 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
               <option value="Remote">Remote</option>
               <option value="Inhouse">Inhouse</option>
             </select>
+            <div></div>
             {errors.issuanceType && <Error error={errors.issuanceType} />}
           </div>
           {issuanceType === "Inhouse" ? (
             <>
               <Input label="Return Date" value={currentDate} readOnly={true} />
-              <Input label="Return Time" type="time" value={time} onChange={handleTimeChange} />
+              <Input
+                label="Return Time"
+                name="returnTime"
+                type="time"
+                value={time}
+                min={currentTime}
+                onChange={(e) => handleTimeChange(e.target.value)}
+                error={errors.returnDate}
+              />
             </>
           ) : (
             <Input
               label="Return Date"
               type="datetime-local"
               value={issuanceData.returnDate}
-              min={`${currentDate}T${time}`}
+              min={`${tomorrowDate}T${getCurrentTimeIST()}`}
               onChange={handleReturnDateChange}
               error={errors.returnDate}
             />

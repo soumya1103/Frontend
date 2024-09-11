@@ -1,6 +1,6 @@
 import React from "react";
-import Table from "../../Coponents/Table/Table";
-import Modal from "../../Coponents/Modal/Modal";
+import Table from "../../Component/Table/Table";
+import Modal from "../../Component/Modal/Modal";
 
 const BookIssuanceHistory = ({ data, show, onClose }) => {
   const columns = [

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Navigation from "../../Coponents/Navigation/Navigation";
-import Table from "../../Coponents/Table/Table";
+import Navigation from "../../Component/Navigation/Navigation";
+import Table from "../../Component/Table/Table";
 import { useSelector } from "react-redux";
 import { getIssuancesByUserCredential } from "../../Api/Service/IssuanceService";
 import "./UserHistory.css";
-import Loader from "../../Coponents/Loader/Loader";
+import Loader from "../../Component/Loader/Loader";
 
 function UserHistory() {
   const columns = [

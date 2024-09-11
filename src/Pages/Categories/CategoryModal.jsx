@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Modal from "../../Coponents/Modal/Modal";
-import Input from "../../Coponents/Input/Input";
-import Button from "../../Coponents/Button/Button";
+import Modal from "../../Component/Modal/Modal";
+import Input from "../../Component/Input/Input";
+import Button from "../../Component/Button/Button";
 import { addCategory, updateCategory } from "../../Api/Service/CategoryService";
-import Toast from "../../Coponents/Toast/Toast";
+import Toast from "../../Component/Toast/Toast";
 
 function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCategories, auth }) {
   const [formData, setFormData] = useState(categoryData);

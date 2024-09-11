@@ -6,7 +6,7 @@ const Table = ({ show = false, columns, data, onPageChange, currentPage, totalPa
   return (
     <>
       <div className="table-container-wrapper">
-        <table className="table-container">
+        <table className="table-container" role="table">
           <thead>
             <tr>
               {columns.map((column) => (

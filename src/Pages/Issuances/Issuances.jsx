@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import SearchBar from "../../Coponents/SearchBar/SearchBar";
-import Button from "../../Coponents/Button/Button";
-import Table from "../../Coponents/Table/Table";
+import SearchBar from "../../Component/SearchBar/SearchBar";
+import Button from "../../Component/Button/Button";
+import Table from "../../Component/Table/Table";
 import { getIssuances, issuanceSearch } from "../../Api/Service/IssuanceService";
-import Operation from "../../Coponents/Operation/Operation";
-import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
+import Operation from "../../Component/Operation/Operation";
+import DashboardHoc from "../../Component/HOC/DashboardHoc";
 import AddIssuanceModal from "./AddIssuanceModal";
 import EditIssuanceModal from "./EditIssuanceModal";
 import { useSelector } from "react-redux";
-import Loader from "../../Coponents/Loader/Loader";
-import Toast from "../../Coponents/Toast/Toast";
+import Loader from "../../Component/Loader/Loader";
+import Toast from "../../Component/Toast/Toast";
 
 function Issuances() {
   const columns = [
@@ -89,13 +89,22 @@ function Issuances() {
       setIssuances(issuanceList);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error("There was an error fetching the issuance data!", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
   const handleEditIssuanceIcon = (issuance) => {
     setCurrentIssuance(issuance);
-    setShowEditModal(true);
+    if (issuance.status === "Returned") {
+      setShowEditModal(false);
+      setToastMessage("Issuance can't be edited as the book is returned.");
+      setShowToast(true);
+      setToastType("error");
+    } else {
+      setShowEditModal(true);
+    }
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from "react";
-import Modal from "../../Coponents/Modal/Modal";
-import Button from "../../Coponents/Button/Button";
+import Modal from "../../Component/Modal/Modal";
+import Button from "../../Component/Button/Button";
 import "./ConfirmationModal.css";
 
 function ConfirmationModal({ show, onClose, onConfirm, isLogout = false }) {
