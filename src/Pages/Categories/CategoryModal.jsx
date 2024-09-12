@@ -75,7 +75,7 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
 
   return (
     <>
-      <Modal show={true} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
+      <Modal role="dialog" show={true} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
         <p className="form-title">{isEdit ? "Edit Category" : "Add Category"}</p>
         <div>
           <Input

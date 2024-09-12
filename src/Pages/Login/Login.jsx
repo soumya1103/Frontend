@@ -97,7 +97,9 @@ const Login = () => {
         dispatch(loginUser(response.data));
         window.localStorage.setItem("authtoken", response.data.token);
       } catch (error) {
-        setToastMessage("Login failed!");
+        console.log(error.response.data.message);
+
+        setToastMessage(error.response.data.message);
         setShowToast(true);
         setToastType("error");
       }

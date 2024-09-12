@@ -21,17 +21,17 @@ function Operation({
 }) {
   return (
     <div className="operation-container">
-      <button onClick={() => onClickEdit()}>
+      <button role="button" aria-label="edit" onClick={() => onClickEdit()}>
         <img src={editIcon} alt="edit" title="Edit" className="operation-img" width={widthE} />
       </button>
       {!isIssuance && (
-        <button onClick={() => onClickDelete()}>
+        <button role="button" aria-label="delete" onClick={() => onClickDelete()}>
           <img src={deleteIcon} alt="delete" title="Delete" className="operation-img" width={widthD} />
         </button>
       )}
       {showExtra && (
         <>
-          <button onClick={isBooksPage ? () => onClickAssignUser() : () => onClickAssignBook()}>
+          <button role="button" aria-label="assign-user" onClick={isBooksPage ? () => onClickAssignUser() : () => onClickAssignBook()}>
             <img
               src={isBooksPage ? assignUserIcon : assignBookIcon}
               alt={isBooksPage ? "assign user" : "assign book"}
@@ -40,7 +40,7 @@ function Operation({
               width={widthD}
             />
           </button>
-          <button onClick={isBooksPage ? () => onClickBookHistory() : () => onClickUserHistory()}>
+          <button role="button" aria-label="assign-book" onClick={isBooksPage ? () => onClickBookHistory() : () => onClickUserHistory()}>
             <img src={historyIcon} alt="history" title="History" className="operation-img" width={widthD} />
           </button>
         </>

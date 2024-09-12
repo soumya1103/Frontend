@@ -19,6 +19,10 @@
   display: none;
 }
 
+select option:disabled {
+  color: red;
+}
+
 /* Portrait Tablet */
 @media (max-width: 1024px) {
   .pages-outer-container {
