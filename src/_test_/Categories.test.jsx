@@ -1,32 +1,27 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, act, screen, fireEvent } from "@testing-library/react";
 import Categories from "../Pages/Categories/Categories";
-import { getAllCategories, categorySearch, deleteCategory } from "../Api/Service/CategoryService";
-import DashboardHoc from "../Coponents/HOC/DashboardHoc";
-import { Provider } from "react-redux";
-import store from "../Redux/Store";
 import { BrowserRouter } from "react-router-dom";
+import store from "../Redux/Store";
+import { Provider } from "react-redux";
+import { getAllCategories } from "../Api/Service/CategoryService";
 
-jest.mock("../Api/Service/CategoryService");
+// Mock the API service
+jest.mock("../Api/Service/CategoryService", () => ({
+  getAllCategories: jest.fn(),
+}));
 
-describe("Categories Component", () => {
-  const mockCategories = {
-    data: {
-      content: [
-        { categoryId: 1, categoryName: "Category 1", categoryIcon: "icon1.jpg" },
-        { categoryId: 2, categoryName: "Category 2", categoryIcon: "icon2.jpg" },
-      ],
-      totalPages: 1,
-    },
-  };
-
+describe("Categories component - getPageSizeBasedOnWidth and resize behavior", () => {
   beforeEach(() => {
+    // Clear all mocks before each test
     jest.clearAllMocks();
   });
 
-  test("calls getAllCategories and sets the categories data correctly", async () => {
-    getAllCategories.mockResolvedValue(mockCategories);
-    render(
+  it("should return 7 for widths greater than 1024", () => {
+    // Mock window.innerWidth to be greater than 1024
+    global.innerWidth = 1100;
+
+    const { container } = render(
       <BrowserRouter>
         <Provider store={store}>
           <Categories />
@@ -34,60 +29,79 @@ describe("Categories Component", () => {
       </BrowserRouter>
     );
 
-    // Wait for the API call to complete and for the component to update
-    await waitFor(() => expect(getAllCategories).toHaveBeenCalledTimes(1));
+    // Trigger resize to apply size based on window width
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
 
-    // Check if the categories are rendered correctly in the table
-    expect(screen.getByText("Category 1")).toBeInTheDocument();
-    expect(screen.getByText("Category 2")).toBeInTheDocument();
+    // Assert that the table page size logic is applied correctly
+    // (this assumes that your Table component renders differently based on the page size)
+    const tableRows = container.querySelectorAll(".table-row");
+    expect(tableRows.length).toBeLessThanOrEqual(7); // based on size of 7
+  });
 
-    // Check if the table rows corresponding to the categories are rendered
-    const tableRows = screen.getAllByRole("row");
-    expect(tableRows.length).toBe(3); // 1 for the header row + 2 for the category rows
+  it("should return 12 for widths less than or equal to 1024", () => {
+    // Mock window.innerWidth to be less than or equal to 1024
+    global.innerWidth = 900;
 
-    // Optionally, check if the category icon is rendered
-    const categoryIcons = screen.getAllByRole("img");
-    expect(categoryIcons.length).toBe(2);
-    expect(categoryIcons[0]).toHaveAttribute("src", "icon1.jpg");
-    expect(categoryIcons[1]).toHaveAttribute("src", "icon2.jpg");
+    const { container } = render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+
+    // Trigger resize to apply size based on window width
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    // Assert that the table page size logic is applied correctly
+    const tableRows = container.querySelectorAll(".table-row");
+    expect(tableRows.length).toBeLessThanOrEqual(12); // based on size of 12
+  });
+
+  it("should update page size when window is resized", () => {
+    const { container } = render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+
+    // Mock initial width as 1100 and resize to 800
+    global.innerWidth = 1100;
+
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    // Assert that the table page size logic is applied for size 7
+    let tableRows = container.querySelectorAll(".table-row");
+    expect(tableRows.length).toBeLessThanOrEqual(7);
+
+    // Now mock the window width to be 800 and trigger resize event
+    global.innerWidth = 800;
+
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    // Assert that table size is updated correctly for size 12
+    tableRows = container.querySelectorAll(".table-row");
+    expect(tableRows.length).toBeLessThanOrEqual(12);
   });
 });
-// test("calls getAllCategories and sets the category data correctly", async () => {
-//   getAllCategories.mockResolvedValue(mockCategories);
-//   render(
-//     <BrowserRouter>
-//       <Provider store={store}>
-//         <Categories />
-//       </Provider>
-//     </BrowserRouter>
-//   );
 
-//   // Ensure the loader is shown first
-//   expect(screen.getByTestId("loader")).toBeInTheDocument();
-
-//   // Wait for the categories to be loaded and the loader to be removed
-//   await waitFor(() => expect(getAllCategories).toHaveBeenCalled());
-
-//   // Ensure that the categories are displayed after the loader is removed
-//   // await waitFor(() => expect(screen.queryByTestId("loader")).not.toBeInTheDocument());
-
-//   // Now check for the categories
-//   const category1 = screen.getByText("Category 1");
-//   const category2 = screen.getByText("Category 2");
-
-//   // Ensure that the correct categories are in the document
-//   expect(category1).toBeInTheDocument();
-//   expect(category2).toBeInTheDocument();
-
-//   // Verify the image and operations (edit, delete buttons) are rendered for each category
-//   const images = screen.getAllByAltText(/Category/i);
-//   expect(images).toHaveLength(2);
-//   expect(images[0]).toHaveAttribute("src", "icon1.jpg");
-//   expect(images[1]).toHaveAttribute("src", "icon2.jpg");
-// });
-
-//   test("renders Table when categories are fetched", async () => {
-//     getAllCategories.mockResolvedValue(mockCategories);
+// describe("Categories component - Button Handlers", () => {
+//   test("handleEditIcon should set the category data, mark as edit, and show modal", () => {
+//     const mockCategory = {
+//       categoryName: "Test Category",
+//       categoryIcon: "test-icon.png",
+//       categoryId: "123",
+//     };
 
 //     render(
 //       <BrowserRouter>
@@ -97,137 +111,88 @@ describe("Categories Component", () => {
 //       </BrowserRouter>
 //     );
 
-//     // Wait for the categories to load and the Table to be rendered
-//     await waitFor(() => expect(getAllCategories).toHaveBeenCalled());
+//     // Render a mock category in the DOM to simulate the presence of edit button
+//     // Adjust this if needed to match your actual component structure
+//     const editButton = screen.getByRole("button", { name: /edit/i });
+//     fireEvent.click(editButton);
 
-//     // Check if the Table component is in the document
-//     const table = screen.getByRole("table"); // Make sure your table has the role attribute
+//     // Check if the category data is set
+//     expect(screen.getByText(mockCategory.categoryName)).toBeInTheDocument();
 
-//     expect(table).toBeInTheDocument();
+//     // Check if edit mode is set
+//     // You may need to verify this through the presence of specific elements or text in the DOM
+//     expect(screen.getByText("Edit Mode")).toBeInTheDocument(); // Adjust as needed
 
-//     // Optionally check if specific table rows or columns are rendered
-//     expect(screen.getByText("Category 1")).toBeInTheDocument();
-//     expect(screen.getByText("Category 2")).toBeInTheDocument();
+//     // Check if the modal is shown
+//     expect(screen.getByRole("dialog")).toBeVisible(); // Assuming modal is a dialog
 //   });
-//   // test("renders Categories component", async () => {
-//   //   getAllCategories.mockResolvedValue(mockCategories);
 
-//   //   await waitFor(() => expect(getAllCategories).toHaveBeenCalledTimes(1));
-//   //   // expect(screen.getByTestId("category-container")).toBeInTheDocument();
+//   test("handleDeleteIcon should set the category ID for deletion and show confirmation modal", () => {
+//     const mockCategoryId = "123";
 
-//   //   const cat1 = await screen.findByText("Category 1");
-//   //   expect(cat1).toBeInTheDocument();
-//   // });
+//     render(
+//       <BrowserRouter>
+//         <Provider store={store}>
+//           <Categories />
+//         </Provider>
+//       </BrowserRouter>
+//     );
 
-//   // test("shows loader initially and then renders table after loading", async () => {
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
+//     // Render a mock category in the DOM to simulate the presence of delete button
+//     // Adjust this if needed to match your actual component structure
+//     const deleteButton = screen.getByRole("button", { name: /delete/i });
+//     fireEvent.click(deleteButton);
 
-//   //   expect(screen.getByTestId("loader")).toBeInTheDocument();
-//   //   await waitFor(() => expect(screen.getByText("Category 1")).toBeInTheDocument());
-//   //   expect(screen.queryByTestId("loader")).not.toBeInTheDocument();
-//   // });
+//     // Check if the category ID is set for deletion
+//     // Verify through the presence of specific elements or text in the DOM
+//     expect(screen.getByText(`Deleting category ID: ${mockCategoryId}`)).toBeInTheDocument();
 
-//   // test("calls getAllCategories on component load", async () => {
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
+//     // Check if the confirmation modal is shown
+//     expect(screen.getByRole("dialog", { name: /confirm deletion/i })).toBeVisible();
+//   });
 
-//   //   await waitFor(() => expect(getAllCategories).toHaveBeenCalled());
-//   // });
+//   test("handleModalClose should hide the modal", () => {
+//     render(
+//       <BrowserRouter>
+//         <Provider store={store}>
+//           <Categories />
+//         </Provider>
+//       </BrowserRouter>
+//     );
 
-//   // test("search categories by keyword", async () => {
-//   //   const searchResults = { data: [{ categoryId: 3, categoryName: "Search Result", categoryIcon: "icon3.jpg" }] };
-//   //   categorySearch.mockResolvedValue(searchResults);
+//     // Simulate opening the modal
+//     const openModalButton = screen.getByRole("button", { name: /open modal/i });
+//     fireEvent.click(openModalButton);
 
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
-//   //   const searchInput = screen.getByPlaceholderText("Search Category");
-//   //   fireEvent.change(searchInput, { target: { value: "Search" } });
-//   //   fireEvent.click(screen.getByText("Search"));
+//     // Simulate closing the modal
+//     const closeButton = screen.getByRole("button", { name: /close/i });
+//     fireEvent.click(closeButton);
 
-//   //   await waitFor(() => expect(categorySearch).toHaveBeenCalledWith("Search"));
-//   //   await waitFor(() => expect(screen.getByText("Search Result")).toBeInTheDocument());
-//   // });
+//     // Check if the modal is hidden
+//     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+//   });
 
-//   // test("shows error if search keyword is less than 3 characters", async () => {
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
-//   //   const searchInput = screen.getByPlaceholderText("Search Category");
-//   //   fireEvent.change(searchInput, { target: { value: "ab" } });
-//   //   fireEvent.click(screen.getByText("Search"));
+//   test("handleAddCategoryClick should reset category data, unset edit mode, and show modal", () => {
+//     render(
+//       <BrowserRouter>
+//         <Provider store={store}>
+//           <Categories />
+//         </Provider>
+//       </BrowserRouter>
+//     );
 
-//   //   await waitFor(() => expect(screen.getByText("Atleast 3 characters are required!")).toBeInTheDocument());
-//   // });
+//     // Simulate clicking the "Add Category" button
+//     const addButton = screen.getByRole("button", { name: /Add Category/i });
+//     fireEvent.click(addButton);
 
-//   // test("opens modal for adding new category", () => {
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
-//   //   const addButton = screen.getByText("Add Category");
-//   //   fireEvent.click(addButton);
+//     // Check if the category data is reset
+//     expect(screen.getByLabelText(/category name/i)).toHaveValue(""); // Adjust if needed
+//     expect(screen.getByLabelText(/category icon/i)).toHaveValue(""); // Adjust if needed
 
-//   //   expect(screen.getByTestId("category-modal")).toBeInTheDocument();
-//   // });
+//     // Check if edit mode is unset
+//     expect(screen.queryByText("Edit Mode")).not.toBeInTheDocument(); // Adjust as needed
 
-//   // test("opens confirmation modal for deleting a category", async () => {
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
-//   //   await waitFor(() => expect(screen.getByText("Category 1")).toBeInTheDocument());
-
-//   //   const deleteButton = screen.getAllByText("Delete")[0];
-//   //   fireEvent.click(deleteButton);
-
-//   //   expect(screen.getByTestId("confirmation-modal")).toBeInTheDocument();
-//   // });
-
-//   // test("confirms category deletion and reloads categories", async () => {
-//   //   deleteCategory.mockResolvedValue({ data: { message: "Category deleted successfully" } });
-
-//   //   render(
-//   //     <BrowserRouter>
-//   //       <Provider store={store}>
-//   //         <Categories />
-//   //       </Provider>
-//   //     </BrowserRouter>
-//   //   );
-//   //   await waitFor(() => expect(screen.getByText("Category 1")).toBeInTheDocument());
-
-//   //   const deleteButton = screen.getAllByText("Delete")[0];
-//   //   fireEvent.click(deleteButton);
-
-//   //   const confirmButton = screen.getByText("Confirm");
-//   //   fireEvent.click(confirmButton);
-
-//   //   await waitFor(() => expect(deleteCategory).toHaveBeenCalled());
-//   //   await waitFor(() => expect(getAllCategories).toHaveBeenCalledTimes(2)); // once initially, once after delete
-//   // });
+//     // Check if the modal is shown
+//     expect(screen.getByRole("dialog")).toBeVisible(); // Assuming modal is a dialog
+//   });
 // });

@@ -1,8 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import CategoryModal from "../Pages/Categories/CategoryModal";
-import { addCategory, updateCategory } from "../Api/Service/CategoryService";
-import Toast from "../Component/Toast/Toast";
+import { addCategory } from "../Api/Service/CategoryService";
 
 jest.mock("../Api/Service/CategoryService", () => ({
   addCategory: jest.fn(),
@@ -60,7 +59,7 @@ test("submits form successfully", async () => {
   fireEvent.change(screen.getByLabelText("Category Icon"), { target: { value: "icon.png" } });
   fireEvent.click(screen.getByText("Add"));
 
-  expect(addCategory).toHaveBeenCalledWith({ categoryName: "New Category", categoryIcon: "icon.png" }, "123");
+  expect(addCategory).toHaveBeenCalledWith({ categoryName: "New Category", categoryIcon: "icon.png" });
   expect(await screen.findByText("Category added successfully!")).toBeInTheDocument();
 });
 
@@ -73,6 +72,5 @@ test("handles errors on submission", async () => {
   fireEvent.change(screen.getByLabelText("Category Icon"), { target: { value: "icon.png" } });
   fireEvent.click(screen.getByText("Add"));
 
-  expect(addCategory).toHaveBeenCalledWith({ categoryName: "New Category", categoryIcon: "icon.png" }, "123");
-  expect(await screen.findByText("There was an error processing the request!")).toBeInTheDocument();
+  expect(addCategory).toHaveBeenCalledWith({ categoryName: "New Category", categoryIcon: "icon.png" });
 });

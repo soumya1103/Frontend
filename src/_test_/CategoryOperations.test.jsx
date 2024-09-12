@@ -6,6 +6,7 @@ describe("CategoryOperations Component", () => {
   const mockOnEdit = jest.fn();
   const mockOnDelete = jest.fn();
   const mockCategory = {
+    categoryId: 1,
     categoryName: "Test Category",
   };
 
@@ -40,6 +41,6 @@ describe("CategoryOperations Component", () => {
     fireEvent.click(deleteButton);
 
     // Check if onDelete was called with the correct category name
-    expect(mockOnDelete).toHaveBeenCalledWith(mockCategory.categoryName);
+    expect(mockOnDelete).toHaveBeenCalledWith(mockCategory.categoryId);
   });
 });

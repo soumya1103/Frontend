@@ -5,7 +5,7 @@ import Button from "../../Component/Button/Button";
 import { addCategory, updateCategory } from "../../Api/Service/CategoryService";
 import Toast from "../../Component/Toast/Toast";
 
-function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCategories, auth }) {
+function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCategories }) {
   const [formData, setFormData] = useState(categoryData);
   const [errors, setErrors] = useState({});
 

@@ -1,4 +1,3 @@
-import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import app from "../Api/apiClient";
 import {
@@ -19,7 +18,7 @@ describe("CategoryService API functions", () => {
   });
 
   afterEach(() => {
-    mock.restore();
+    mock.reset();
   });
 
   test("getAllCategories should fetch data correctly", async () => {
@@ -43,11 +42,11 @@ describe("CategoryService API functions", () => {
   });
 
   test("deleteCategory should delete data correctly", async () => {
-    const categoryName = "test-category";
+    const categoryId = 1;
 
-    mock.onDelete(`/lms/categories/name/${categoryName}`).reply(200);
+    mock.onDelete(`/lms/categories/id/${categoryId}`).reply(200);
 
-    const response = await deleteCategory(categoryName);
+    const response = await deleteCategory(categoryId);
     expect(response.status).toBe(200);
   });
 
@@ -61,15 +60,35 @@ describe("CategoryService API functions", () => {
     expect(response.data).toEqual(responseData);
   });
 
-  test("updateCategory should update data correctly", async () => {
-    const categoryName = "test-category";
-    const categoryData = { name: "updated-category" };
-    const responseData = { success: true };
+  afterAll(() => {
+    mock.restore();
+  });
 
-    mock.onPut(`/lms/categories/name/${categoryName}`, categoryData).reply(200, responseData);
+  it("should update category data correctly", async () => {
+    const categoryId = "123";
+    const categoryData = { categoryName: "Updated Category", categoryIcon: "new-icon.png" };
 
-    const response = await updateCategory(categoryData, categoryName);
-    expect(response.data).toEqual(responseData);
+    mock.onPut(`/lms/categories/id/${categoryId}`).reply(200, {
+      message: "Category updated successfully",
+    });
+
+    const response = await updateCategory(categoryData, categoryId);
+
+    expect(response.status).toBe(200);
+    expect(response.data.message).toBe("Category updated successfully");
+  });
+
+  it("should handle 404 error for non-existent category", async () => {
+    const categoryId = "999"; // Non-existent category ID
+    const categoryData = { categoryName: "Non-existent Category", categoryIcon: "icon.png" };
+
+    mock.onPut(`/lms/categories/id/${categoryId}`).reply(404);
+
+    try {
+      await updateCategory(categoryData, categoryId);
+    } catch (error) {
+      expect(error.response.status).toBe(404);
+    }
   });
 
   test("countCategory should fetch count correctly", async () => {

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { categorySearch, deleteCategory, getAllCategories } from "../../Api/Service/CategoryService";
-import Button from "../../Coponents/Button/Button";
-import DashboardHoc from "../../Coponents/HOC/DashboardHoc";
-import Loader from "../../Coponents/Loader/Loader";
-import ConfirmationModal from "../../Coponents/Modal/ConfirmationModal";
-import SearchBar from "../../Coponents/SearchBar/SearchBar";
-import Table from "../../Coponents/Table/Table";
-import Toast from "../../Coponents/Toast/Toast";
+import Button from "../../Component/Button/Button";
+import DashboardHoc from "../../Component/HOC/DashboardHoc";
+import Loader from "../../Component/Loader/Loader";
+import ConfirmationModal from "../../Component/Modal/ConfirmationModal";
+import SearchBar from "../../Component/SearchBar/SearchBar";
+import Table from "../../Component/Table/Table";
+import Toast from "../../Component/Toast/Toast";
 import "../Pages.css";
 import CategoryModal from "./CategoryModal";
 import CategoryOperations from "./CategoryOperations";
@@ -99,7 +99,6 @@ function Categories() {
   };
 
   const handleModalClose = () => setShowModal(false);
-
   const handleAddCategoryClick = () => {
     setCategoryData({ categoryName: "", categoryIcon: "" });
     setIsEdit(false);
