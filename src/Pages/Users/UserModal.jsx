@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "../../Component/Modal/Modal";
 import Input from "../../Component/Input/Input";
 import Button from "../../Component/Button/Button";
+import { validationPatterns } from "../../Validations/Constant";
 
 const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
   const [formData, setFormData] = useState(userData);
@@ -23,6 +24,10 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
 
     if (!formData.userName || formData.userName.trim() === "") {
       newErrors.userName = "User name is required.";
+    }
+
+    if (!validationPatterns.alphabet.test(formData.userName)) {
+      newErrors.userName = "Only alphabets allowed.";
     }
 
     setErrors(newErrors);

@@ -3,6 +3,7 @@ import Modal from "../../Component/Modal/Modal";
 import Input from "../../Component/Input/Input";
 import Button from "../../Component/Button/Button";
 import Error from "../../Component/Error/Error";
+import { validationPatterns } from "../../Validations/Constant";
 
 const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChange, onInputChange, onSubmit }) => {
   const [formData, setFormData] = useState(bookData);
@@ -28,6 +29,10 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
 
     if (!formData.bookAuthor || formData.bookAuthor.trim().length === 0) {
       errors.bookAuthor = "Book author is required.";
+    }
+
+    if (!validationPatterns.alphabet.test(formData.bookAuthor)) {
+      errors.bookAuthor = "Only alphabets allowed.";
     }
 
     if (formData.bookRating < 1 || formData.bookRating > 5) {

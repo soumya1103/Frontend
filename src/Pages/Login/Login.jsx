@@ -25,7 +25,8 @@ const Login = () => {
   const [userCredential, setUserCredential] = useState("");
   const [password, setPassword] = useState("");
 
-  const [credentialError, setCredentialError] = useState("");
+  const [credentialEmailError, setCredentialEmailError] = useState("");
+  const [credentialPhoneError, setCredentialPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
   const [toastMessage, setToastMessage] = useState("");
@@ -50,24 +51,30 @@ const Login = () => {
     setSelectedRole("user");
   };
 
-  const validateCredential = () => {
+  const validateCredentialEmail = () => {
     if (selectedRole === "admin") {
       if (!validationPatterns.email.test(userCredential)) {
-        setCredentialError("Please enter a valid email.");
+        setCredentialEmailError("Please enter a valid email.");
         return false;
       }
       const emailTLD = userCredential.substring(userCredential.lastIndexOf("."));
       if (!validTLDs.includes(emailTLD)) {
-        setCredentialError(`Email must end with a valid domain`);
-        return false;
-      }
-    } else {
-      if (!validationPatterns.mobile.test(userCredential)) {
-        setCredentialError("Please enter a valid 10-digit phone number.");
+        setCredentialEmailError(`Email must end with a valid domain`);
         return false;
       }
     }
-    setCredentialError("");
+    setCredentialEmailError("");
+    return true;
+  };
+
+  const validateCredentialPhone = () => {
+    if (selectedRole === "user") {
+      if (!validationPatterns.mobile.test(userCredential)) {
+        setCredentialPhoneError("Please enter a valid 10-digit phone number.");
+        return false;
+      }
+    }
+    setCredentialPhoneError("");
     return true;
   };
 
@@ -82,10 +89,11 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const isCredentialValid = validateCredential();
+    const isCredentialEmailValid = validateCredentialEmail();
+    const isCredentialPhoneValid = validateCredentialPhone();
     const isPasswordValid = validatePassword();
 
-    if (isCredentialValid && isPasswordValid) {
+    if (selectedRole === "admin" ? isCredentialEmailValid && isPasswordValid : isCredentialPhoneValid && isPasswordValid) {
       try {
         const encodedPassword = btoa(password);
         const response = await login(userCredential, encodedPassword);
@@ -147,13 +155,13 @@ const Login = () => {
                       value={userCredential}
                       type="text"
                       name="userCredential"
-                      onChange={handleInputChange(setUserCredential, setCredentialError)}
-                      onBlur={validateCredential}
+                      onChange={handleInputChange(setUserCredential, setCredentialEmailError)}
+                      onBlur={validateCredentialEmail}
                     />
-                    {credentialError && (
+                    {credentialEmailError && (
                       <div className="login-error-container">
                         <img src={danger} alt="danger" width="3%" />
-                        <p className="login-error-text">{credentialError}</p>
+                        <p className="login-error-text">{credentialEmailError}</p>
                       </div>
                     )}
                   </>
@@ -162,17 +170,17 @@ const Login = () => {
                 {selectedRole === "user" && (
                   <>
                     <input
-                      onChange={handleInputChange(setUserCredential, setCredentialError)}
+                      onChange={handleInputChange(setUserCredential, setCredentialPhoneError)}
                       placeholder="Phone Number"
                       value={userCredential}
                       type="tel"
                       name="userCredential"
-                      onBlur={validateCredential}
+                      onBlur={validateCredentialPhone}
                     />
-                    {credentialError && (
+                    {credentialPhoneError && (
                       <div className="login-error-container">
                         <img src={danger} alt="danger" width="3%" />
-                        <p className="login-error-text">{credentialError}</p>
+                        <p className="login-error-text">{credentialPhoneError}</p>
                       </div>
                     )}
                   </>

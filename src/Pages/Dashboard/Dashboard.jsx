@@ -12,6 +12,7 @@ import { countUser } from "../../Api/Service/UserService";
 import { countByType } from "../../Api/Service/IssuanceService";
 import { useSelector } from "react-redux";
 import Loader from "../../Component/Loader/Loader";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);
@@ -88,26 +89,34 @@ function Dashboard() {
       ) : (
         <div className="dashboard-outer-container">
           <div className="dashboard-inner-container">
-            <div className="dashboard-card">
-              <img src={bookDashboard} alt="book" width="20%" />
-              <h3>{totalBooks}</h3>
-              <h4>Total Books</h4>
-            </div>
-            <div className="dashboard-card">
-              <img src={categoryDashboard} alt="category" width="20%" />
-              <h3>{totalCategories}</h3>
-              <h4>Total Categories</h4>
-            </div>
-            <div className="dashboard-card">
-              <img src={userDashboard} alt="user" width="20%" />
-              <h3>{totalUsers}</h3>
-              <h4>Total Users</h4>
-            </div>
-            <div className="dashboard-card">
-              <img src={inhouseUserDashboard} alt="inhouse-user" width="20%" />
-              <h3>{totalInHouseUsers}</h3>
-              <h4>Total Inhouse Users</h4>
-            </div>
+            <Link to="/books" style={{ textDecoration: "none" }}>
+              <div className="dashboard-card">
+                <img src={bookDashboard} alt="book" width="20%" />
+                <h3>{totalBooks}</h3>
+                <h4>Total Books</h4>
+              </div>
+            </Link>
+            <Link to="/categories" style={{ textDecoration: "none" }}>
+              <div className="dashboard-card">
+                <img src={categoryDashboard} alt="category" width="20%" />
+                <h3>{totalCategories}</h3>
+                <h4>Total Categories</h4>
+              </div>
+            </Link>
+            <Link to="/users" style={{ textDecoration: "none" }}>
+              <div className="dashboard-card">
+                <img src={userDashboard} alt="user" width="20%" />
+                <h3>{totalUsers}</h3>
+                <h4>Total Users</h4>
+              </div>
+            </Link>
+            <Link to="/issuances" style={{ textDecoration: "none" }}>
+              <div className="dashboard-card">
+                <img src={inhouseUserDashboard} alt="inhouse-user" width="20%" />
+                <h3>{totalInHouseUsers}</h3>
+                <h4>Total Inhouse Users</h4>
+              </div>
+            </Link>
           </div>
           <div className="dashboard-table-container">
             <h2>Books</h2>

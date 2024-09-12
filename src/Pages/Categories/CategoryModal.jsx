@@ -2,17 +2,11 @@ import React, { useState } from "react";
 import Modal from "../../Component/Modal/Modal";
 import Input from "../../Component/Input/Input";
 import Button from "../../Component/Button/Button";
-import { addCategory, updateCategory } from "../../Api/Service/CategoryService";
-import Toast from "../../Component/Toast/Toast";
+import { validationPatterns } from "../../Validations/Constant";
 
-function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCategories }) {
+function CategoryModal({ isEdit, categoryData, onInputChange, onSubmit, onClose }) {
   const [formData, setFormData] = useState(categoryData);
   const [errors, setErrors] = useState({});
-
-  const [toastMessage, setToastMessage] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [toastType, setToastType] = useState("");
-  let response;
 
   const validate = () => {
     const newErrors = {};
@@ -25,49 +19,36 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
       newErrors.categoryIcon = "Category icon is required.";
     }
 
-    setErrors(newErrors);
+    if (!validationPatterns.alphabet.test(formData.categoryName)) {
+      newErrors.categoryName = "Only alphabets are allowed.";
+    }
 
+    if (validationPatterns.specialChar.test(formData.categoryName)) {
+      newErrors.categoryName = "No special characters are allowed.";
+    }
+
+    setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prevData) => ({
+      ...prevData,
+    }));
 
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
     }));
+
+    onInputChange(e);
   };
 
-  const handleSubmit = async () => {
-    try {
-      if (validate()) {
-        const trimmedFormData = {
-          ...formData,
-          categoryName: formData.categoryName.trim(),
-          categoryIcon: formData.categoryIcon.trim(),
-        };
-
-        if (isEdit) {
-          response = await updateCategory(trimmedFormData, categoryToEdit);
-        } else {
-          response = await addCategory(trimmedFormData);
-        }
-
-        if (response?.status === 200 || response?.status === 201) {
-          setToastMessage(isEdit ? "Category updated successfully!" : "Category added successfully!");
-          setToastType("success");
-          setShowToast(true);
-          reloadCategories();
-        }
-      }
-    } catch (error) {
-      setToastMessage(error?.response.data.message);
-      setShowToast(true);
-      setToastType("error");
-    } finally {
-      onClose();
+  const handleSubmit = () => {
+    if (validate()) {
+      onSubmit();
     }
   };
 
@@ -75,7 +56,7 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
 
   return (
     <>
-      <Modal role="dialog" show={true} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
+      <Modal role="dialog" show={true} onClose={() => onClose()} height={modalDimensions.height} width={modalDimensions.width}>
         <p className="form-title">{isEdit ? "Edit Category" : "Add Category"}</p>
         <div>
           <Input
@@ -83,7 +64,7 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
             name="categoryName"
             type="text"
             value={formData.categoryName}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={errors.categoryName}
           />
           <Input
@@ -91,14 +72,13 @@ function CategoryModal({ isEdit, categoryData, categoryToEdit, onClose, reloadCa
             name="categoryIcon"
             type="text"
             value={formData.categoryIcon}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={errors.categoryIcon}
           />
         </div>
         <div className="form-submit-btn">
           <Button onClick={handleSubmit}>{isEdit ? "Update" : "Add"}</Button>
         </div>
-        <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
       </Modal>
     </>
   );

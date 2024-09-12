@@ -9,6 +9,7 @@ import Table from "../../Component/Table/Table";
 import Toast from "../../Component/Toast/Toast";
 import "../Pages.css";
 import CategoryModal from "./CategoryModal";
+import { addCategory, updateCategory } from "../../Api/Service/CategoryService";
 import CategoryOperations from "./CategoryOperations";
 
 function Categories() {
@@ -170,6 +171,10 @@ function Categories() {
     }
   };
 
+  const handleChange = (e) => {
+    setCategoryData({ ...categoryData, [e.target.name]: e.target.value });
+  };
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -177,6 +182,37 @@ function Categories() {
       setLoading(false);
     }, 2000);
   }, []);
+
+  let response;
+
+  const handleSubmit = async () => {
+    try {
+      const trimmedFormData = {
+        ...categoryData,
+        categoryName: categoryData.categoryName.trim(),
+        categoryIcon: categoryData.categoryIcon.trim(),
+      };
+
+      if (isEdit) {
+        response = await updateCategory(trimmedFormData, categoryToEdit);
+      } else {
+        response = await addCategory(trimmedFormData);
+      }
+
+      if (response?.status === 200 || response?.status === 201) {
+        setToastMessage(isEdit ? "Category updated successfully!" : "Category added successfully!");
+        setToastType("success");
+        setShowToast(true);
+        loadCategories();
+      }
+    } catch (error) {
+      setToastMessage(error?.response.data.message);
+      setShowToast(true);
+      setToastType("error");
+    } finally {
+      handleModalClose();
+    }
+  };
 
   return (
     <>
@@ -200,9 +236,9 @@ function Categories() {
               data-testid="category-modal"
               isEdit={isEdit}
               categoryData={categoryData}
-              categoryToEdit={categoryToEdit}
               onClose={handleModalClose}
-              reloadCategories={loadCategories}
+              onInputChange={handleChange}
+              onSubmit={handleSubmit}
             />
           )}
           {showConfirmationModal && (

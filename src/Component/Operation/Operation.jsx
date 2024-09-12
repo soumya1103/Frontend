@@ -35,7 +35,7 @@ function Operation({
             <img
               src={isBooksPage ? assignUserIcon : assignBookIcon}
               alt={isBooksPage ? "assign user" : "assign book"}
-              title={isBooksPage ? "Assign User" : "Assign Book"}
+              title="Issue Book"
               className="operation-img"
               width={widthD}
             />
