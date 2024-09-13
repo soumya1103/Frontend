@@ -1,4 +1,4 @@
-import { CURRENT_USER, LOGIN } from "../Api Constants/LoginApiConstants";
+import { CURRENT_USER, LOGIN } from "../ApiConstants";
 import app from "../apiClient";
 
 export const login = async (userCredential, password) => {

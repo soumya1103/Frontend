@@ -1,14 +1,5 @@
 import app from "../apiClient";
-import {
-  ADD_BOOK,
-  BOOK_SEARCH,
-  DELETE_BOOK,
-  GET_ALL_BOOKS,
-  GET_ALL_BOOKS_NP,
-  GET_BOOK_BY_ID,
-  GET_BOOK_BY_TITLE,
-  UPDATE_BOOK,
-} from "../Api Constants/BookApiConstants";
+import { ADD_BOOK, BOOK_SEARCH, DELETE_BOOK, GET_ALL_BOOKS, GET_ALL_BOOKS_NP, GET_BOOK_BY_ID, GET_BOOK_BY_TITLE, UPDATE_BOOK } from "../ApiConstants";
 
 export const getAllBooks = async (page, size) => {
   return await app.get(GET_ALL_BOOKS, {

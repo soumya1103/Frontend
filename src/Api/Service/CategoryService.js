@@ -7,7 +7,7 @@ import {
   UPDATE_CATEGORY,
   COUNT_CATEGORY,
   CATEGORY_SEARCH,
-} from "../Api Constants/CategoryApiConstants";
+} from "../ApiConstants";
 
 export const getAllCategories = async (page, size) => {
   return await app.get(GET_ALL_CATEGORIES, {

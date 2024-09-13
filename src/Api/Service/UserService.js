@@ -7,7 +7,7 @@ import {
   GET_USERS_BY_CREDENTIAL,
   UPDATE_USER,
   USER_SEARCH,
-} from "../Api Constants/UserApiConstants";
+} from "../ApiConstants";
 import app from "../apiClient";
 
 export const getUserByRole = async (page, size) => {

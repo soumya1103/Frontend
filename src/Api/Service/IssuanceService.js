@@ -7,7 +7,8 @@ import {
   GET_ISSUANCES_BY_CREDENTIAL,
   GET_ISSUANCES_BY_USER_ID,
   ISSUANCE_SEARCH,
-} from "../Api Constants/IssuanceApiConstant";
+} from "../ApiConstants";
+
 import app from "../apiClient";
 
 export const getIssuances = async (page, size) => {
