@@ -224,7 +224,7 @@ function Categories() {
             <SearchBar placeholder="Search Category" handleOnChange={handleOnChange} handleSearch={handleSearch} />
             <Button onClick={handleAddCategoryClick}>Add Category</Button>
           </div>
-          <div className="pages-table">
+          <div data-testid="pages-table-container" className="pages-table">
             {searchData.length !== 0 ? (
               <Table currentPage={page} totalPages={totalPages} columns={columns} data={searchData} onPageChange={setPage} />
             ) : (
