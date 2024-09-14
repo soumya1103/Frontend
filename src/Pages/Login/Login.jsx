@@ -45,10 +45,18 @@ const Login = () => {
 
   const handleAdminClick = () => {
     setSelectedRole("admin");
+    setUserCredential("");
+    setCredentialEmailError("");
+    setPassword("");
+    setPasswordError("");
   };
 
   const handleUserClick = () => {
     setSelectedRole("user");
+    setPasswordError("");
+    setUserCredential("");
+    setCredentialPhoneError("");
+    setPassword("");
   };
 
   const validateCredentialEmail = () => {
