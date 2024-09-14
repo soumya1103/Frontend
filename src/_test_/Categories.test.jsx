@@ -4,10 +4,14 @@ import Categories from "../Pages/Categories/Categories";
 import { BrowserRouter } from "react-router-dom";
 import store from "../Redux/Store";
 import { Provider } from "react-redux";
-import { getAllCategories, categorySearch } from "../Api/Service/CategoryService";
+import { addCategory, getAllCategories, categorySearch } from "../Api/Service/CategoryService";
 
 jest.mock("../Api/Service/CategoryService", () => ({
   getAllCategories: jest.fn(),
+  addCategory: jest.fn(),
+  updateCategory: jest.fn(),
+  categorySearch: jest.fn(),
+  deleteCategory: jest.fn(),
 }));
 
 describe("Categories component - getPageSizeBasedOnWidth and resize behavior", () => {
@@ -31,7 +35,7 @@ describe("Categories component - getPageSizeBasedOnWidth and resize behavior", (
     });
 
     const tableRows = container.querySelectorAll(".table-row");
-    expect(tableRows.length).toBeLessThanOrEqual(7); // based on size of 7
+    expect(tableRows.length).toBeLessThanOrEqual(7);
   });
 
   it("should return 12 for widths less than or equal to 1024", () => {
@@ -145,20 +149,22 @@ describe("Categories component - Button Handlers", () => {
 
     expect(setShowConfirmationModal).toHaveBeenCalledWith(true);
   });
+});
 
-  jest.mock("../Api/Service", () => ({
-    categorySearch: jest.fn(), // Mock the API client function
-  }));
+describe("Categories Component", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-  describe("handleSearch", () => {
-    let setToastMessage, setShowToast, setToastType, loadCategories, setSearchData;
-
-    beforeEach(() => {
-      setToastMessage = jest.fn();
-      setShowToast = jest.fn();
-      setToastType = jest.fn();
-      loadCategories = jest.fn();
-      setSearchData = jest.fn();
+  test("should render category content after loading", async () => {
+    getAllCategories.mockResolvedValueOnce({
+      data: {
+        content: [
+          { categoryId: 1, categoryName: "Category 1", categoryIcon: "icon-url-1" },
+          { categoryId: 2, categoryName: "Category 2", categoryIcon: "icon-url-2" },
+        ],
+        totalPages: 1,
+      },
     });
 
     render(
@@ -169,76 +175,208 @@ describe("Categories component - Button Handlers", () => {
       </BrowserRouter>
     );
 
-    test("should trim the search keyword and call loadCategories for empty input", async () => {
-      const searchInput = screen.getByPlaceholderText("Search Category");
-      fireEvent.change(searchInput, { target: { value: "   " } });
-
-      fireEvent.click(screen.getByRole("button", { name: /search/i }));
-
-      expect(loadCategories).toHaveBeenCalled();
-      expect(setSearchData).toHaveBeenCalledWith([]);
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
     });
 
-    test("should show error toast when input is less than 3 characters", async () => {
-      const searchInput = screen.getByPlaceholderText("Search Category");
-      fireEvent.change(searchInput, { target: { value: "ab" } });
-
-      fireEvent.click(screen.getByRole("button", { name: /search/i }));
-
-      expect(setToastMessage).toHaveBeenCalledWith("Atleast 3 characters are required!");
-      expect(setShowToast).toHaveBeenCalledWith(true);
-      expect(setToastType).toHaveBeenCalledWith("error");
-    });
-
-    test("should search categories for valid input and display results", async () => {
-      const mockResponse = { data: [{ categoryIcon: "icon-url", categoryName: "Category1" }] };
-      categorySearch.mockResolvedValueOnce(mockResponse);
-
-      const searchInput = screen.getByPlaceholderText("Search Category");
-      fireEvent.change(searchInput, { target: { value: "valid keyword" } });
-
-      fireEvent.click(screen.getByRole("button", { name: /search/i }));
-
-      expect(categorySearch).toHaveBeenCalledWith("valid keyword");
-      expect(setSearchData).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({
-            categoryIcon: expect.anything(),
-            operation: expect.anything(),
-          }),
-        ])
-      );
-    });
-
-    test("should show error toast when no categories are found", async () => {
-      categorySearch.mockResolvedValueOnce({ data: [] }); // Mock empty result
-
-      const searchInput = screen.getByPlaceholderText("Search Category");
-      fireEvent.change(searchInput, { target: { value: "valid keyword" } });
-
-      fireEvent.click(screen.getByRole("button", { name: /search/i }));
-
-      // Assert that the error toast is displayed
-      expect(setToastMessage).toHaveBeenCalledWith("No data found!");
-      expect(setShowToast).toHaveBeenCalledWith(true);
-      expect(setToastType).toHaveBeenCalledWith("error");
-    });
-
-    test("should show error toast when there is an API error", async () => {
-      categorySearch.mockRejectedValueOnce(new Error("API Error"));
-
-      const searchInput = screen.getByPlaceholderText("Search Category");
-      fireEvent.change(searchInput, { target: { value: "valid keyword" } });
-
-      fireEvent.click(screen.getByRole("button", { name: /search/i }));
-
-      // Wait for the async code to execute
-      await screen.findByText("Error finding items!");
-
-      // Assert that the error toast is shown
-      expect(setToastMessage).toHaveBeenCalledWith("Error finding items!");
-      expect(setShowToast).toHaveBeenCalledWith(true);
-      expect(setToastType).toHaveBeenCalledWith("error");
+    await waitFor(() => {
+      expect(screen.queryByTestId("category-container")).toBeInTheDocument();
     });
   });
+
+  test("should show add category button and search bar", async () => {
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
+    const addButton = screen.getByText("Add Category");
+    expect(addButton).toBeInTheDocument();
+
+    const searchBar = screen.getByTestId("search-container");
+    expect(searchBar).toBeInTheDocument();
+  });
+});
+
+describe("Categories - handleSearch function", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should show 'At least 3 characters are required!' toast for short keywords", async () => {
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
+    const searchInput = screen.getByPlaceholderText("Search Category");
+
+    fireEvent.change(searchInput, { target: { value: "ab" } });
+
+    const searchButton = screen.getByAltText("search");
+    fireEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Atleast 3 characters are required!")).toBeInTheDocument();
+    });
+  });
+
+  test("should show 'No data found!' toast when no categories are returned", async () => {
+    categorySearch.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+    const searchInput = screen.getByPlaceholderText("Search Category");
+
+    fireEvent.change(searchInput, { target: { value: "valid keyword" } });
+
+    const searchButton = screen.getByAltText("search");
+    fireEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("No data found!")).toBeInTheDocument();
+    });
+  });
+
+  test("should display categories when search returns data", async () => {
+    categorySearch.mockResolvedValueOnce({
+      data: [
+        { categoryId: 1, categoryName: "Category 1", categoryIcon: "icon-url-1" },
+        { categoryId: 2, categoryName: "Category 2", categoryIcon: "icon-url-2" },
+      ],
+    });
+
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+    const searchInput = screen.getByPlaceholderText("Search Category");
+
+    fireEvent.change(searchInput, { target: { value: "valid keyword" } });
+
+    const searchButton = screen.getByAltText("search"); // Adjust if necessary
+    fireEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Category 1")).toBeInTheDocument();
+      expect(screen.getByText("Category 2")).toBeInTheDocument();
+    });
+  });
+
+  test("should show 'Error finding items!' toast when API call fails", async () => {
+    categorySearch.mockRejectedValueOnce(new Error("API error"));
+
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+    const searchInput = screen.getByPlaceholderText("Search Category");
+
+    fireEvent.change(searchInput, { target: { value: "valid keyword" } });
+
+    const searchButton = screen.getByAltText("search");
+    fireEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Error finding items!")).toBeInTheDocument();
+    });
+  });
+});
+
+describe("Categories Component - Error Handling", () => {
+  let originalError;
+  beforeEach(() => {
+    originalError = console.error;
+    console.error = jest.fn();
+  });
+
+  afterEach(() => {
+    console.error = originalError;
+  });
+
+  test("should display an error message when loadCategories API fails", async () => {
+    getAllCategories.mockRejectedValueOnce(new Error("Error fetching categories"));
+
+    render(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Categories />
+        </Provider>
+      </BrowserRouter>
+    );
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalled();
+      const calls = console.error.mock.calls.map((call) => call[0]);
+
+      expect(calls.some((message) => message.includes("There was an error fetching the categories data!"))).toBe(true);
+    });
+  });
+});
+
+test("should call addCategory API and show success toast when submitting a new category", async () => {
+  addCategory.mockResolvedValue({ status: 201, data: { message: "Category added successfully!" } });
+
+  render(
+    <BrowserRouter>
+      <Provider store={store}>
+        <Categories />
+      </Provider>
+    </BrowserRouter>
+  );
+
+  await new Promise((resolve) => {
+    setTimeout(resolve, 3000);
+  });
+
+  fireEvent.click(screen.getByText("Add Category"));
+
+  const nameInput = screen.getByPlaceholderText("Category Name");
+  fireEvent.change(nameInput, { target: { value: "New Category" } });
+
+  const iconInput = screen.getByPlaceholderText("Category Icon");
+  fireEvent.change(iconInput, { target: { value: "Icon.png" } });
+
+  const submitButton = screen.getByText("Add");
+  fireEvent.click(submitButton);
+
+  await waitFor(() => expect(screen.getByText("Category added successfully!")).toBeInTheDocument());
 });

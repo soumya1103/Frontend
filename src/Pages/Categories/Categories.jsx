@@ -37,7 +37,7 @@ function Categories() {
   const [columns] = useState([
     { header: "S.No.", accessor: "sNo" },
     { header: "Name", accessor: "categoryName" },
-    { header: "Icon", accessor: "categoryIcon" },
+    { header: "Image", accessor: "categoryIcon" },
     { header: "Action", accessor: "operation" },
   ]);
 

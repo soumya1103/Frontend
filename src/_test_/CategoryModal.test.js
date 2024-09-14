@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import CategoryModal from "../Pages/Categories/CategoryModal";
-import { addCategory } from "../Api/Service/CategoryService";
 
 jest.mock("../Api/Service/CategoryService", () => ({
   addCategory: jest.fn(),
@@ -50,27 +49,66 @@ test("shows validation errors when fields are empty", () => {
   expect(screen.getByText("Category icon is required.")).toBeInTheDocument();
 });
 
-test("submits form successfully", async () => {
-  addCategory.mockResolvedValue({ status: 201 });
+describe("CategoryModal Component", () => {
+  const mockOnInputChange = jest.fn();
+  const mockOnSubmit = jest.fn();
+  const mockOnClose = jest.fn();
 
-  render(<CategoryModal isEdit={false} categoryData={{}} onClose={() => {}} reloadCategories={() => {}} auth={{ token: "123" }} />);
+  const defaultProps = {
+    isEdit: false,
+    categoryData: { categoryName: "", categoryIcon: "" },
+    onInputChange: mockOnInputChange,
+    onSubmit: mockOnSubmit,
+    onClose: mockOnClose,
+  };
 
-  fireEvent.change(screen.getByLabelText("Category Name"), { target: { value: "New Category" } });
-  fireEvent.change(screen.getByLabelText("Category Icon"), { target: { value: "icon.png" } });
-  fireEvent.click(screen.getByText("Add"));
+  const fillInputs = (categoryName = "", categoryIcon = "") => {
+    fireEvent.change(screen.getByLabelText(/Category Name/i), { target: { value: categoryName } });
+    fireEvent.change(screen.getByLabelText(/Category Icon/i), { target: { value: categoryIcon } });
+  };
 
-  expect(addCategory).toHaveBeenCalledWith({ categoryName: "New Category", categoryIcon: "icon.png" });
-  expect(await screen.findByText("Category added successfully!")).toBeInTheDocument();
-});
+  it("should render the modal with input fields and button", () => {
+    render(<CategoryModal {...defaultProps} />);
+    expect(screen.getByText(/Add Category/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Category Name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Category Icon/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Add/i })).toBeInTheDocument();
+  });
 
-test("handles errors on submission", async () => {
-  addCategory.mockResolvedValue({ status: 500 });
+  it("should display validation errors if fields are empty", () => {
+    render(<CategoryModal {...defaultProps} />);
+    fireEvent.click(screen.getByRole("button", { name: /Add/i }));
 
-  render(<CategoryModal isEdit={false} categoryData={{}} onClose={() => {}} reloadCategories={() => {}} auth={{ token: "123" }} />);
+    expect(screen.getByText(/Category name is required./i)).toBeInTheDocument();
+    expect(screen.getByText(/Category icon is required./i)).toBeInTheDocument();
+    expect(mockOnSubmit).not.toHaveBeenCalled();
+  });
 
-  fireEvent.change(screen.getByLabelText("Category Name"), { target: { value: "New Category" } });
-  fireEvent.change(screen.getByLabelText("Category Icon"), { target: { value: "icon.png" } });
-  fireEvent.click(screen.getByText("Add"));
+  it("should allow only alphabets in category name and no special characters", () => {
+    render(<CategoryModal {...defaultProps} />);
 
-  expect(addCategory).toHaveBeenCalledWith({ categoryName: "New Category", categoryIcon: "icon.png" });
+    fillInputs("123", "icon");
+
+    fireEvent.click(screen.getByRole("button", { name: /Add/i }));
+    expect(screen.getByText(/Only alphabets are allowed./i)).toBeInTheDocument();
+
+    fillInputs("Category@", "icon");
+    fireEvent.click(screen.getByRole("button", { name: /Add/i }));
+    expect(screen.getByText(/No special characters are allowed./i)).toBeInTheDocument();
+
+    expect(mockOnSubmit).not.toHaveBeenCalled();
+  });
+
+  it("should call onSubmit if form passes validation", () => {
+    render(<CategoryModal {...defaultProps} categoryData={{ categoryName: "Valid Category", categoryIcon: "icon" }} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Add/i }));
+    expect(mockOnSubmit).toHaveBeenCalled();
+  });
+
+  it("should display 'Edit Category' and update button when isEdit is true", () => {
+    render(<CategoryModal {...defaultProps} isEdit={true} />);
+    expect(screen.getByText(/Edit Category/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Update/i })).toBeInTheDocument();
+  });
 });

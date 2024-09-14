@@ -70,7 +70,7 @@ export const GET_USERS_BY_CREDENTIAL = BASE_URL_USERS + "/credential";
 
 export const DELETE_USER = BASE_URL_USERS + "/id";
 
-export const ADD_USER = BASE_URL_USERS + "/users";
+export const ADD_USER = BASE_URL_USERS + "/user";
 
 export const UPDATE_USER = BASE_URL_USERS + "/id";
 
