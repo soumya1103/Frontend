@@ -6,10 +6,9 @@ import UserModal from "./UserModal";
 import AssignBookModal from "./AssignBookModal";
 import ConfirmationModal from "../../Component/Modal/ConfirmationModal";
 import { addUser, deleteUser, getUserByRole, updateUser, userSearch } from "../../Api/Service/UserService";
-import { getAllBooks, getAllBooksNp, getBookById, getBookByTitle, updateBook } from "../../Api/Service/BookService";
+import { getAllBooksNp, getBookById, getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import { addIssuance, getIssuancesByUserId } from "../../Api/Service/IssuanceService";
 import Operation from "../../Component/Operation/Operation";
-import { useSelector } from "react-redux";
 import UserIssuanceHistory from "./UserIssuanceHistory";
 import Table from "../../Component/Table/Table";
 import Loader from "../../Component/Loader/Loader";
@@ -38,8 +37,6 @@ function Users() {
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
-  const auth = useSelector((state) => state.auth);
 
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
@@ -87,7 +84,7 @@ function Users() {
 
   const loadUsers = async () => {
     try {
-      const response = await getUserByRole(page, size, auth?.token);
+      const response = await getUserByRole(page, size);
 
       const usersData = response.data.content.map((user, index) => ({
         ...user,
@@ -122,7 +119,6 @@ function Users() {
     } else if (trimmedKeyword.length >= 3) {
       try {
         const response = await userSearch(trimmedKeyword);
-        console.log(response.data);
 
         const usersData = response.data.map((user, index) => ({
           ...user,
@@ -165,7 +161,7 @@ function Users() {
 
   const fetchBooks = async () => {
     try {
-      const response = await getAllBooksNp(auth?.token);
+      const response = await getAllBooksNp();
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -247,11 +243,10 @@ function Users() {
         setToastType("success");
 
         const { data } = await getBookById(book.bookId);
-        console.log(data);
 
         const updatedBooks = { ...data, bookCount: data.bookCount - 1 };
 
-        await updateBook(updatedBooks, updatedBooks.bookId, auth?.token);
+        await updateBook(updatedBooks, updatedBooks.bookId);
       }
     } catch (error) {
       setToastMessage(error.response.data.message);
@@ -279,9 +274,8 @@ function Users() {
 
   const handleConfirmDelete = async () => {
     try {
-      console.log(userToDelete);
       if (userToDelete) {
-        const response = await deleteUser(userToDelete, auth?.token);
+        const response = await deleteUser(userToDelete);
         if (response?.status === 200 || response?.status === 201) {
           setToastMessage("User deleted successfully!");
           setShowToast(true);
@@ -315,7 +309,7 @@ function Users() {
   const handleBookChange = async (title) => {
     try {
       setBookTitle(title);
-      const response = await getBookByTitle(title, auth?.token);
+      const response = await getBookByTitle(title);
       setBook(response.data);
     } catch (error) {
       console.error("Error fetching book:", error);
@@ -334,7 +328,7 @@ function Users() {
   const handleShowIssuance = async (userId) => {
     setShowIssuanceModal(true);
     try {
-      const response = await getIssuancesByUserId(userId, auth?.token);
+      const response = await getIssuancesByUserId(userId);
       setIssuances(response.data);
     } catch (error) {
       console.log(error);

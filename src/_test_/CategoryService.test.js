@@ -91,15 +91,6 @@ describe("CategoryService API functions", () => {
     }
   });
 
-  test("countCategory should fetch count correctly", async () => {
-    const responseData = { count: 100 };
-
-    mock.onGet("/lms/categories/count").reply(200, responseData);
-
-    const response = await countCategory();
-    expect(response.data).toEqual(responseData);
-  });
-
   test("categorySearch should fetch search results correctly", async () => {
     const keyword = "test";
     const responseData = { results: [] };

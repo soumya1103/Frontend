@@ -6,10 +6,9 @@ import BookModal from "./BookModal";
 import AssignModal from "./AssignModal";
 import ConfirmationModal from "../../Component/Modal/ConfirmationModal";
 import { addBook, bookSearch, deleteBook, getAllBooks, getBookByTitle, updateBook } from "../../Api/Service/BookService";
-import { getAllCategories, getAllCategoriesNp } from "../../Api/Service/CategoryService";
-import { getUserByRole, getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
+import { getAllCategoriesNp } from "../../Api/Service/CategoryService";
+import { getUserByRoleNp, getUsersByCredential } from "../../Api/Service/UserService";
 import { addIssuance, getIssuancesByBookId } from "../../Api/Service/IssuanceService";
-import { useSelector } from "react-redux";
 import BookIssuanceHistory from "./BookIssuanceHistory";
 import Operation from "../../Component/Operation/Operation";
 import Table from "../../Component/Table/Table";
@@ -46,8 +45,6 @@ function Books() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const auth = useSelector((state) => state.auth);
-
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
@@ -82,7 +79,7 @@ function Books() {
 
   const loadBooks = async () => {
     try {
-      const response = await getAllBooks(page, size, auth?.token);
+      const response = await getAllBooks(page, size);
 
       const booksData = response.data.content.map((book, index) => ({
         ...book,
@@ -109,7 +106,7 @@ function Books() {
 
   const fetchCategories = async () => {
     try {
-      const response = await getAllCategoriesNp(auth?.token);
+      const response = await getAllCategoriesNp();
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories", error);
@@ -118,7 +115,7 @@ function Books() {
 
   const fetchUsers = async () => {
     try {
-      const response = await getUserByRoleNp(auth?.token);
+      const response = await getUserByRoleNp();
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users", error);
@@ -163,7 +160,7 @@ function Books() {
       setShowAssignModal(true);
     }
     try {
-      const response = await getBookByTitle(book.bookTitle, auth?.token);
+      const response = await getBookByTitle(book.bookTitle);
       setBookId(response.data.bookId);
     } catch (error) {
       console.log(error);
@@ -235,7 +232,7 @@ function Books() {
 
   const addIssuances = async (issuanceData) => {
     try {
-      const response = await addIssuance(issuanceData, auth?.token);
+      const response = await addIssuance(issuanceData);
       if (response?.status === 200 || response?.status === 201) {
         setToastMessage("Book issued successfully!");
         setShowToast(true);
@@ -296,7 +293,7 @@ function Books() {
   const handleCredentialChange = async (credential) => {
     try {
       setUserCredential(credential);
-      const response = await getUsersByCredential(credential, auth?.token);
+      const response = await getUsersByCredential(credential);
       setUser(response.data);
     } catch (error) {
       console.log(error);
@@ -326,7 +323,7 @@ function Books() {
     setIssuances([]);
     setShowIssuanceModal(true);
     try {
-      const response = await getIssuancesByBookId(bookId, auth?.token);
+      const response = await getIssuancesByBookId(bookId);
       setIssuances(response.data);
     } catch (error) {
       console.log(error);
@@ -348,7 +345,6 @@ function Books() {
 
   const handleSearch = async () => {
     const trimmedKeyword = keyword.trim();
-    console.log(trimmedKeyword);
 
     if (trimmedKeyword === "") {
       loadBooks();
@@ -356,7 +352,6 @@ function Books() {
     } else if (trimmedKeyword.length >= 3) {
       try {
         const response = await bookSearch(trimmedKeyword);
-        console.log(response.data);
 
         if (response.data.length === 0) {
           setToastMessage("No data found!");

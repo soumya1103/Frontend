@@ -7,7 +7,6 @@ import Operation from "../../Component/Operation/Operation";
 import DashboardHoc from "../../Component/HOC/DashboardHoc";
 import AddIssuanceModal from "./AddIssuanceModal";
 import EditIssuanceModal from "./EditIssuanceModal";
-import { useSelector } from "react-redux";
 import Loader from "../../Component/Loader/Loader";
 import Toast from "../../Component/Toast/Toast";
 
@@ -43,8 +42,6 @@ function Issuances() {
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
 
-  const auth = useSelector((state) => state.auth);
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString();
@@ -76,7 +73,7 @@ function Issuances() {
 
   const loadIssuances = async () => {
     try {
-      const response = await getIssuances(page, size, auth?.token);
+      const response = await getIssuances(page, size);
       const issuanceList = response.data.content.map((issuance, index) => ({
         ...issuance,
         sNo: index + 1 + page * size,
@@ -117,7 +114,7 @@ function Issuances() {
       setSearchData([]);
     } else if (keyword.length >= 3) {
       try {
-        const response = await issuanceSearch(keyword, auth?.token);
+        const response = await issuanceSearch(keyword);
         const issuanceList = response.data.map((issuance, index) => ({
           ...issuance,
           sNo: index + 1 + page * size,
@@ -172,16 +169,9 @@ function Issuances() {
               <Table show={true} currentPage={page} totalPages={totalPages} columns={columns} data={issuances} onPageChange={setPage} />
             )}
           </div>
-          <AddIssuanceModal
-            show={showAddModal}
-            onClose={() => setShowAddModal(false)}
-            reloadIssuances={loadIssuances}
-            auth={auth}
-            renderUtil={renderUtil}
-          />
+          <AddIssuanceModal show={showAddModal} onClose={() => setShowAddModal(false)} reloadIssuances={loadIssuances} renderUtil={renderUtil} />
           {currentIssuance && (
             <EditIssuanceModal
-              auth={auth}
               show={showEditModal}
               onClose={() => setShowEditModal(false)}
               issuance={currentIssuance}

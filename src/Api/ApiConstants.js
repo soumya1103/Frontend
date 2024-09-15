@@ -28,8 +28,6 @@ export const ADD_CATEGORY = "/lms/categories";
 
 export const UPDATE_CATEGORY = BASE_URL_CATEGORIES + "/id";
 
-export const COUNT_CATEGORY = BASE_URL_CATEGORIES + "/count";
-
 export const CATEGORY_SEARCH = BASE_URL_CATEGORIES + "/search";
 
 const BASE_URL_ISSUANCES = "/lms/issuances";
@@ -45,8 +43,6 @@ export const DELETE_ISSUANCE = BASE_URL_ISSUANCES + "/id";
 export const ADD_ISSUANCE = "/lms/issuances";
 
 export const UPDATE_ISSUANCE = BASE_URL_ISSUANCES + "/id";
-
-export const COUNT_ISSUANCE = BASE_URL_ISSUANCES + "/type/count";
 
 export const GET_ISSUANCES_BY_BOOK_ID = BASE_URL_ISSUANCES + "/book";
 
@@ -74,6 +70,8 @@ export const ADD_USER = BASE_URL_USERS + "/user";
 
 export const UPDATE_USER = BASE_URL_USERS + "/id";
 
-export const COUNT_USER = BASE_URL_USERS + "/count";
-
 export const USER_SEARCH = BASE_URL_USERS + "/search";
+
+const BASE_URL_DASHBOARD = "/lms/dashboard";
+
+export const GET_COUNTS = BASE_URL_DASHBOARD + "/count/all";

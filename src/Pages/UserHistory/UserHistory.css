@@ -6,7 +6,6 @@
 
 .user-history-inner-container {
   display: grid;
-  /* grid-template-columns: 10% 20%; */
   text-align: left;
   align-items: center;
 }
@@ -16,7 +15,10 @@
   margin-top: 1%;
 }
 
-.giphy-embed {
-  background: none;
-  border: none;
+.user-history-text {
+  font-size: 1.1rem;
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: #e55b13;
 }

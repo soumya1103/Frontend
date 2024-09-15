@@ -62,11 +62,10 @@ function UserHistory() {
           <Navigation />
           <div className="pages-outer-container">
             <div className="user-history-inner-container">
-              {/* <iframe src="https://giphy.com/embed/nOBbIHGKD2HQs" title="book-gif" width="100%" className="giphy-embed"></iframe> */}
               <h3 className="issuance-history">Issuance History</h3>
             </div>
             <div className="user-history-table">
-              <Table columns={columns} data={issuances} />
+              {issuances.length > 0 ? <Table columns={columns} data={issuances} /> : <p className="user-history-text">No Issuance Found</p>}
             </div>
           </div>
         </>
@@ -76,19 +75,3 @@ function UserHistory() {
 }
 
 export default UserHistory;
-// const [name, setName] = useState();
-
-//   const findUserName = async () => {
-//     try {
-//       const response = await getUsersByCredential(auth.userCredential, auth?.token);
-//       setName(response.data.userName);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   if (historyName !== null) {
-//     setName(historyName);
-//   } else {
-//     findUserName();
-//   }

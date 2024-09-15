@@ -39,10 +39,6 @@ export const updateUser = async (userData, userId) => {
   return await app.put(`${UPDATE_USER}/${userId}`, userData);
 };
 
-export const countUser = async () => {
-  return await app.get(COUNT_USER);
-};
-
 export const userSearch = async (keyword) => {
   return await app.get(`${USER_SEARCH}/${keyword}`);
 };

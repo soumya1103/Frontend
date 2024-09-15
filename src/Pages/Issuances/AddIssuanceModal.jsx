@@ -8,7 +8,7 @@ import { getAllBooksNp, getBookByTitle, updateBook } from "../../Api/Service/Boo
 import Error from "../../Component/Error/Error";
 import Toast from "../../Component/Toast/Toast";
 
-function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) {
+function AddIssuanceModal({ show, onClose, reloadIssuances, renderUtil }) {
   const initialIssuanceData = {
     userId: "",
     bookId: "",
@@ -87,10 +87,10 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
   }, [show]);
 
   const fetchData = async () => {
-    const usersResponse = await getUserByRoleNp(auth?.token);
+    const usersResponse = await getUserByRoleNp();
     setUsers(usersResponse.data);
 
-    const booksResponse = await getAllBooksNp(auth?.token);
+    const booksResponse = await getAllBooksNp();
     setBooks(booksResponse.data);
   };
 
@@ -122,7 +122,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
 
   const handleCredentialChange = async (e) => {
     try {
-      const response = await getUsersByCredential(e.target.value, auth?.token);
+      const response = await getUsersByCredential(e.target.value);
       setIssuanceData({ ...issuanceData, userId: response.data.userId });
       setUserName(response.data.userName);
       setErrors((prev) => ({ ...prev, userId: "" }));
@@ -133,7 +133,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
 
   const handleBookChange = async (e) => {
     try {
-      const response = await getBookByTitle(e.target.value, auth?.token);
+      const response = await getBookByTitle(e.target.value);
       setIssuanceData({ ...issuanceData, bookId: response.data.bookId });
       setBookAuthor(response.data.bookAuthor);
       setErrors((prev) => ({ ...prev, bookId: "" }));
@@ -164,13 +164,12 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
       ...issuanceData,
       returnDate: `${currentDate}T${value}`,
     });
-    // setErrors((prev) => ({ ...prev, returnDate: "" }));
   };
 
   const handleAddIssuance = async () => {
     if (validate()) {
       try {
-        const response = await addIssuance(issuanceData, auth?.token);
+        const response = await addIssuance(issuanceData);
         if (response?.status === 200 || response?.status === 201) {
           setToastMessage("Issuance added successfully!");
           setShowToast(true);
@@ -183,7 +182,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, auth, renderUtil }) 
             ...issuedBook,
             bookCount: issuedBook.bookCount - 1,
           };
-          await updateBook(updatedBookData, issuanceData.bookId, auth?.token);
+          await updateBook(updatedBookData, issuanceData.bookId);
         }
         onClose();
         reloadIssuances();

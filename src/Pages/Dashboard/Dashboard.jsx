@@ -7,12 +7,9 @@ import userDashboard from "../../Images/users-dashboard.png";
 import inhouseUserDashboard from "../../Images/inhouse-users-dashboard.png";
 import Table from "../../Component/Table/Table";
 import { getAllBooksNp } from "../../Api/Service/BookService";
-import { countCategory } from "../../Api/Service/CategoryService";
-import { countUser } from "../../Api/Service/UserService";
-import { countByType } from "../../Api/Service/IssuanceService";
-import { useSelector } from "react-redux";
 import Loader from "../../Component/Loader/Loader";
 import { Link } from "react-router-dom";
+import { getAllCount } from "../../Api/Service/DashboardService";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);
@@ -21,7 +18,6 @@ function Dashboard() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalInHouseUsers, setTotalInHouseUsers] = useState(0);
 
-  const auth = useSelector((state) => state.auth);
   const booksColumns = [
     { header: "Title", accessor: "bookTitle" },
     { header: "Author", accessor: "bookAuthor" },
@@ -31,7 +27,7 @@ function Dashboard() {
 
   const loadBooks = async () => {
     try {
-      const response = await getAllBooksNp(auth?.token);
+      const response = await getAllBooksNp();
       const limitedBooksData = response.data.slice(0, 8);
       setBooksData(limitedBooksData);
       setTotalBooks(response.data.length);
@@ -40,38 +36,20 @@ function Dashboard() {
     }
   };
 
-  const categoryCount = async () => {
+  const loadCounts = async () => {
     try {
-      const response = await countCategory(auth?.token);
-      setTotalCategories(response.data);
+      const response = await getAllCount();
+      setTotalCategories(response.data.categoryCount);
+      setTotalUsers(response.data.userCount);
+      setTotalInHouseUsers(response.data.issuanceCountByType);
     } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const userCount = async () => {
-    try {
-      const response = await countUser(auth?.token);
-      setTotalUsers(response.data);
-    } catch (error) {
-      console.error("There was an error fetching the users count!", error);
-    }
-  };
-
-  const inHouseUserCount = async () => {
-    try {
-      const response = await countByType(auth?.token);
-      setTotalInHouseUsers(response.data);
-    } catch (error) {
-      console.error("There was an error fetching the inhouse users count!", error);
+      console.log(error);
     }
   };
 
   useEffect(() => {
     loadBooks();
-    categoryCount();
-    userCount();
-    inHouseUserCount();
+    loadCounts();
   }, []);
 
   const [loading, setLoading] = useState(true);

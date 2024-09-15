@@ -18,8 +18,6 @@ const UserIssuanceHistory = ({ data, show, onClose }) => {
     return `${formattedDate} ${formattedTime}`;
   };
 
-  console.log(data);
-
   const issuanceList = data.map((issuance) => ({
     ...issuance,
     issueDate: formatDate(issuance.issueDate),

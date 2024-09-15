@@ -8,7 +8,7 @@ import { getBookByTitle, updateBook } from "../../Api/Service/BookService";
 import Error from "../../Component/Error/Error";
 import Toast from "../../Component/Toast/Toast";
 
-function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, render }) {
+function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, render }) {
   const [issuanceData, setIssuanceData] = useState({});
   const [userName, setUserName] = useState("");
   const [users, setUsers] = useState([]);
@@ -24,33 +24,7 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
 
-  // const [tomorrowDate, setTomorrowDate] = useState("");
   const [currentTime, setCurrentTime] = useState("");
-
-  // const getCurrentDate = () => {
-  //   const now = new Date();
-  //   return now.toISOString().split("T")[0];
-  // };
-
-  // const getCurrentDatePlusOne = () => {
-  //   const now = new Date();
-  //   now.setDate(now.getDate() + 1);
-  //   return now.toISOString().split("T")[0];
-  // };
-
-  // const getCurrentTimeIST = () => {
-  //   const now = new Date();
-  //   const istOffset = 5 * 60 + 30;
-  //   const istTime = new Date(now.getTime() + istOffset * 60 * 1000);
-  //   return istTime.toISOString().slice(11, 16);
-  // };
-
-  // const getCurrentTimeISTFiveSec = () => {
-  //   const now = new Date();
-  //   const istOffset = 5 * 60 + 30;
-  //   const istTime = new Date(now.getTime() + istOffset * 60 * 1000 + 5 * 1000);
-  //   return istTime.toISOString().slice(11, 16);
-  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,10 +32,10 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
         setIssuanceData(issuance);
         setOriginalStatus(issuance.status);
 
-        const booksResponse = await getBookByTitle(issuance.bookTitle, auth?.token);
+        const booksResponse = await getBookByTitle(issuance.bookTitle);
         setBooks(booksResponse.data);
 
-        const usersResponse = await getUsersByCredential(issuance.userCredential, auth?.token);
+        const usersResponse = await getUsersByCredential(issuance.userCredential);
         setUsers(usersResponse.data);
 
         setUserName(issuance.userName || "");
@@ -138,7 +112,7 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
       }
 
       if (updatedBook.bookCount !== books.bookCount) {
-        await updateBook(updatedBook, books.bookId, auth?.token);
+        await updateBook(updatedBook, books.bookId);
       }
     } catch (error) {
       console.error("Failed to update book count", error);
@@ -157,7 +131,7 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, auth, ren
         };
 
         await updateBookCount(issuanceData.status);
-        const response = await updateIssuance(updatePayload, issuance.issuanceId, auth?.token);
+        const response = await updateIssuance(updatePayload, issuance.issuanceId);
         if (response?.status === 200 || response?.status === 201) {
           setToastMessage("Issuance updated successfully!");
           setShowToast(true);

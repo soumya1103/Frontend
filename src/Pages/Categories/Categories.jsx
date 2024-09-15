@@ -108,7 +108,6 @@ function Categories() {
 
   const handleSearch = async () => {
     const trimmedKeyword = keyword.trim();
-    console.log(trimmedKeyword);
 
     if (trimmedKeyword === "") {
       loadCategories();
@@ -116,7 +115,6 @@ function Categories() {
     } else if (trimmedKeyword.length >= 3) {
       try {
         const response = await categorySearch(trimmedKeyword);
-        console.log(response.data);
 
         if (response.data.length === 0) {
           setToastMessage("No data found!");
