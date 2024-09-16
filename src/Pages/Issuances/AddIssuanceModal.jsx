@@ -127,7 +127,9 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, renderUtil }) {
       setUserName(response.data.userName);
       setErrors((prev) => ({ ...prev, userId: "" }));
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -138,7 +140,9 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, renderUtil }) {
       setBookAuthor(response.data.bookAuthor);
       setErrors((prev) => ({ ...prev, bookId: "" }));
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 

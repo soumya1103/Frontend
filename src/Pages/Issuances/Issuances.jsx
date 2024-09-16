@@ -126,7 +126,9 @@ function Issuances() {
         }));
         setSearchData(issuanceList);
       } catch (error) {
-        console.log(error);
+        setToastMessage(error.response.data.message);
+        setShowToast(true);
+        setToastType("error");
       }
     } else if (keyword.length < 3 && keyword.length > 0) {
       setToastMessage("Atleast 3 characters are required!");

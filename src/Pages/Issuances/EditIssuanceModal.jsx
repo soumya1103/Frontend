@@ -48,7 +48,9 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, render })
         setTime(timeString);
         setMinReturnDate(`${dateString}T${timeString}`);
       } catch (error) {
-        console.error("Failed to fetch users or books", error);
+        setToastMessage(error.response.data.message);
+        setShowToast(true);
+        setToastType("error");
       }
     };
     fetchData();
@@ -115,7 +117,9 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, render })
         await updateBook(updatedBook, books.bookId);
       }
     } catch (error) {
-      console.error("Failed to update book count", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 

@@ -9,7 +9,6 @@ import { login } from "../../Api/Service/Login";
 import { loginUser } from "../../Redux/Authentication/AuthenticationAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../Component/Loader/Loader";
-import Error from "../../Component/Error/Error";
 import { validationPatterns, validTLDs } from "../../Validations/Constant";
 import Toast from "../../Component/Toast/Toast";
 import danger from "../../Images/danger.svg";
@@ -113,8 +112,6 @@ const Login = () => {
         dispatch(loginUser(response.data));
         window.localStorage.setItem("authtoken", response.data.token);
       } catch (error) {
-        console.log(error.response.data.message);
-
         setToastMessage(error.response.data.message);
         setShowToast(true);
         setToastType("error");

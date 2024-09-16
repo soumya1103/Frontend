@@ -106,7 +106,9 @@ function Users() {
       setUsers(usersData);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -164,7 +166,9 @@ function Users() {
       const response = await getAllBooksNp();
       setBooks(response.data);
     } catch (error) {
-      console.error("Error fetching books:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -302,7 +306,9 @@ function Users() {
       setUserId(user.userId);
       setShowAssignModal(true);
     } catch (error) {
-      console.error("Error assigning book:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -312,7 +318,9 @@ function Users() {
       const response = await getBookByTitle(title);
       setBook(response.data);
     } catch (error) {
-      console.error("Error fetching book:", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -331,7 +339,9 @@ function Users() {
       const response = await getIssuancesByUserId(userId);
       setIssuances(response.data);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 

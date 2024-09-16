@@ -100,7 +100,9 @@ function Books() {
       setBooks(booksData);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error("Error fetching books", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -109,7 +111,9 @@ function Books() {
       const response = await getAllCategoriesNp();
       setCategories(response.data);
     } catch (error) {
-      console.error("Error fetching categories", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -118,7 +122,9 @@ function Books() {
       const response = await getUserByRoleNp();
       setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -163,7 +169,9 @@ function Books() {
       const response = await getBookByTitle(book.bookTitle);
       setBookId(response.data.bookId);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -296,7 +304,9 @@ function Books() {
       const response = await getUsersByCredential(credential);
       setUser(response.data);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -326,7 +336,9 @@ function Books() {
       const response = await getIssuancesByBookId(bookId);
       setIssuances(response.data);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 

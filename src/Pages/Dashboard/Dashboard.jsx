@@ -10,6 +10,7 @@ import { getAllBooksNp } from "../../Api/Service/BookService";
 import Loader from "../../Component/Loader/Loader";
 import { Link } from "react-router-dom";
 import { getAllCount } from "../../Api/Service/DashboardService";
+import Toast from "../../Component/Toast/Toast";
 
 function Dashboard() {
   const [booksData, setBooksData] = useState([]);
@@ -17,6 +18,10 @@ function Dashboard() {
   const [totalCategories, setTotalCategories] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalInHouseUsers, setTotalInHouseUsers] = useState(0);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
 
   const booksColumns = [
     { header: "Title", accessor: "bookTitle" },
@@ -32,7 +37,9 @@ function Dashboard() {
       setBooksData(limitedBooksData);
       setTotalBooks(response.data.length);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -43,7 +50,9 @@ function Dashboard() {
       setTotalUsers(response.data.userCount);
       setTotalInHouseUsers(response.data.issuanceCountByType);
     } catch (error) {
-      console.log(error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -102,6 +111,7 @@ function Dashboard() {
           </div>
         </div>
       )}
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>
   );
 }

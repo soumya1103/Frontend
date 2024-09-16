@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { getIssuancesByUserCredential } from "../../Api/Service/IssuanceService";
 import "./UserHistory.css";
 import Loader from "../../Component/Loader/Loader";
+import Toast from "../../Component/Toast/Toast";
 
 function UserHistory() {
   const columns = [
@@ -18,6 +19,10 @@ function UserHistory() {
   const [issuances, setIssuances] = useState([]);
 
   const auth = useSelector((state) => state.auth);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -37,7 +42,9 @@ function UserHistory() {
       }));
       setIssuances(issuanceList);
     } catch (error) {
-      console.error("There was an error fetching the issuance data!", error);
+      setToastMessage(error.response.data.message);
+      setShowToast(true);
+      setToastType("error");
     }
   };
 
@@ -70,6 +77,7 @@ function UserHistory() {
           </div>
         </>
       )}
+      <Toast message={toastMessage} type={toastType} show={showToast} onClose={() => setShowToast(false)} />
     </>
   );
 }
