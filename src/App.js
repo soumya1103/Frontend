@@ -27,7 +27,7 @@ function App() {
     } else {
       navigate("/login");
     }
-  }, [dispatch]);
+  }, []);
 
   const loadUser = async (token) => {
     try {

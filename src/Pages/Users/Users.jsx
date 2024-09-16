@@ -258,6 +258,10 @@ function Users() {
       setToastType("error");
     } finally {
       handleCloseAssignModal();
+      setBook("");
+      setBookTitle("");
+      setIssuanceType("");
+      setReturnDate("");
     }
   };
 
