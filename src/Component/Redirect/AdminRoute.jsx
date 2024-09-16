@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import LoadingToRedirect from "./LoadingToRedirect";
 
-const AdminRoute = ({ children, ...rest }) => {
+const AdminRoute = ({ children }) => {
   const auth = useSelector((state) => state.auth);
   const [verified, setVerified] = useState(false);
 

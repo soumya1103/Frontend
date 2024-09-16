@@ -109,28 +109,35 @@ function Issuances() {
   }, [page, size]);
 
   const handleSearch = async () => {
-    if (keyword.trim() === "") {
+    const trimmedKeyword = keyword.trim();
+    if (trimmedKeyword === "") {
       loadIssuances();
       setSearchData([]);
-    } else if (keyword.length >= 3) {
+    } else if (trimmedKeyword.length >= 3) {
       try {
-        const response = await issuanceSearch(keyword);
-        const issuanceList = response.data.map((issuance, index) => ({
-          ...issuance,
-          sNo: index + 1 + page * size,
-          issueDate: formatDate(issuance.issueDate),
-          returnDate: formatDate(issuance.returnDate),
-          operation: (
-            <Operation widthE="130%" showExtra={false} isBooksPage={false} isIssuance={true} onClickEdit={() => handleEditIssuanceIcon(issuance)} />
-          ),
-        }));
-        setSearchData(issuanceList);
+        const response = await issuanceSearch(trimmedKeyword);
+        if (response.data.length === 0) {
+          setToastMessage("No data found!");
+          setShowToast(true);
+          setToastType("error");
+        } else {
+          const issuanceList = response.data.map((issuance, index) => ({
+            ...issuance,
+            sNo: index + 1 + page * size,
+            issueDate: formatDate(issuance.issueDate),
+            returnDate: formatDate(issuance.returnDate),
+            operation: (
+              <Operation widthE="130%" showExtra={false} isBooksPage={false} isIssuance={true} onClickEdit={() => handleEditIssuanceIcon(issuance)} />
+            ),
+          }));
+          setSearchData(issuanceList);
+        }
       } catch (error) {
         setToastMessage(error.response.data.message);
         setShowToast(true);
         setToastType("error");
       }
-    } else if (keyword.length < 3 && keyword.length > 0) {
+    } else if (trimmedKeyword.length < 3 && trimmedKeyword.length > 0) {
       setToastMessage("Atleast 3 characters are required!");
       setShowToast(true);
       setToastType("error");
