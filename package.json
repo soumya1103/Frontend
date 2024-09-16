@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!axios)/'",
     "eject": "react-scripts eject",
-    "coverage": "react-scripts test --transformIgnorePatterns 'node_modules/(?!axios)/ --env=jsdom --watchAll=false --coverage"
+    "coverage":"react-scripts test --env=jsdom --transformIgnorePatterns 'node_modules/(?!axios)/' --watchAll=false --coverage --collectCoverageFrom='src/Pages/Categories/Categories.jsx' --collectCoverageFrom='src/Pages/Categories/CategoryModal.jsx' --collectCoverageFrom='src/Pages/Categories/CategoryOperations.jsx' --collectCoverageFrom='src/Api/Service/CategoryService.js' --collectCoverageFrom='src/Component/Button/Button.jsx' --collectCoverageFrom='src/Component/Error/Error.jsx' --collectCoverageFrom='src/Component/Table/Table.jsx' --collectCoverageFrom='src/Component/ProfileButton/ProfileButton.jsx' --collectCoverageFrom='src/Component/Input/Input.jsx' --collectCoverageFrom='src/Component/HOC/DashboardHoc.jsx'"
   },
   "eslintConfig": {
     "extends": [
