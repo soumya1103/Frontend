@@ -33,15 +33,6 @@ function App() {
     try {
       const { data } = await getCurrentUser(token);
       dispatch(loginUser(data));
-      window.localStorage.setItem("authtoken", data.token);
-
-      if (data.role === "ROLE_ADMIN") {
-        navigate("/dashboard");
-      } else if (data.role === "ROLE_USER") {
-        navigate("/userHistory");
-      } else {
-        navigate("/login");
-      }
     } catch (error) {
       console.log(error);
       navigate("/login");

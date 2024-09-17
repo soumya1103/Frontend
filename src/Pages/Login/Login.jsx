@@ -40,7 +40,7 @@ const Login = () => {
         navigate("/userHistory");
       }
     }
-  }, [auth, navigate]);
+  }, [auth]);
 
   const handleAdminClick = () => {
     setSelectedRole("admin");

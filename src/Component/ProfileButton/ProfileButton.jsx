@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../Redux/Authentication/AuthenticationAction";
 import { logout } from "../../Api/Service/Login";
-import Button from "../Button/Button";
 import ConfirmationModal from "../Modal/ConfirmationModal";
 
 const ProfileButton = ({ name }) => {
