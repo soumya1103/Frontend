@@ -1,0 +1,17 @@
+import React from "react";
+import { useSelector } from "react-redux";
+import LoadingToRedirect from "./LoadingToRedirect";
+
+const UserRoute = ({ children }) => {
+  const auth = useSelector((state) => state.auth);
+
+  return auth && auth.token ? (
+    children
+  ) : (
+    <div className="">
+      <LoadingToRedirect />
+    </div>
+  );
+};
+
+export default UserRoute;

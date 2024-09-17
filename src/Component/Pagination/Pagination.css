@@ -1,0 +1,49 @@
+.pagination-container {
+  margin: 2% auto;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  width: 9%;
+  background: none;
+  border: none;
+  color: #e55b13;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.icon:hover {
+  color: #003060;
+}
+
+.icon:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon:disabled:hover {
+  color: #e55b13;
+  opacity: 0.6;
+}
+
+.pagination span {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #a47551;
+}
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .pagination {
+    margin-top: 7%;
+  }
+}

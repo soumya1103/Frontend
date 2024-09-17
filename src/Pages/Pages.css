@@ -1,0 +1,41 @@
+.pages-outer-container {
+  padding: 2% 3%;
+}
+
+.pages-inner-container {
+  display: grid;
+  grid-template-columns: 30% 11%;
+  text-align: left;
+  justify-content: space-between;
+}
+
+.pages-table {
+  margin-top: 2%;
+  height: 73vh;
+}
+
+.pages-table::-webkit-scrollbar {
+  display: none;
+}
+
+select option:disabled {
+  color: red;
+}
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .pages-outer-container {
+    padding: 8% 5%;
+  }
+
+  .pages-inner-container {
+    grid-template-columns: 40% 25%;
+    margin-bottom: 6%;
+  }
+
+  .pages-table {
+    margin-top: 2%;
+    width: 100%;
+    overflow-x: auto;
+  }
+}

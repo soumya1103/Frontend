@@ -1,0 +1,45 @@
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  overflow: hidden;
+  background-color: white;
+  border: 2px solid #a4755141;
+}
+
+.search-bar-container input::placeholder {
+  color: #a47551;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1rem;
+  background-color: white;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 1% 2.5%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background-color: white;
+  color: #a47551;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.search-button {
+  border: none;
+  padding: 1.5% 0;
+  cursor: pointer;
+  font-size: 18px;
+  background: white;
+  width: 10%;
+}

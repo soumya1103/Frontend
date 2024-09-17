@@ -1,0 +1,85 @@
+.sidebar-container {
+  background-color: #faf5ec;
+  padding: 10% 5% 5% 22%;
+  height: 84vh;
+  border-right: 0.5px solid #a4755116;
+  display: grid;
+}
+
+.sidebar-inner-container {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.sidebar-icon h3 {
+  color: #003060;
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 1.3rem;
+}
+
+.sidebar-inner-container h3:hover {
+  transform: scale(1.1);
+}
+
+.sidebar-icon.active h3 {
+  color: #e55b13;
+}
+
+.sidebar-icon {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar-icon img {
+  text-align: right;
+  justify-content: right;
+  margin-right: 5%;
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.sidebar-logout-btn img {
+  margin-right: 5%;
+}
+
+.sidebar-logout-btn h3 {
+  color: #e55b13;
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 1.3rem;
+}
+
+.sidebar-logout-btn :hover {
+  color: #003060;
+}
+
+/* Portrait Tablet */
+@media (max-width: 1024px) {
+  .sidebar-container {
+    padding: 18% 5% 5% 15%;
+    height: 88vh;
+  }
+
+  .sidebar-logout-btn img {
+    margin-top: 28%;
+  }
+
+  .sidebar-logout-btn h3 {
+    margin-top: 40%;
+  }
+}
