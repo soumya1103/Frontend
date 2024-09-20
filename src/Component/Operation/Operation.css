@@ -10,7 +10,7 @@
 }
 
 .operation-img:hover {
-  border-bottom: 3px solid #003060;
+  transform: scale(1.1);
 }
 
 .operation-container button {

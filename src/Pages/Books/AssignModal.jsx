@@ -162,8 +162,8 @@ const AssignModal = ({
           <div></div>
           {errors.userCredential && <Error error={errors.userCredential} />}
         </div>
-        <Input label="User Name" name="userName" value={user?.userName} type="text" readOnly={true} />
-        <Input label="Book Title" name="bookTitle" value={bookData?.bookTitle} type="text" readOnly={true} />
+        <Input label="User Name" name="userName" value={user?.userName} type="text" disabled={true} />
+        <Input label="Book Title" name="bookTitle" value={bookData?.bookTitle} type="text" disabled={true} />
 
         <div className="form-content">
           <label className="form-field-label">Issuance Type</label>
@@ -177,7 +177,7 @@ const AssignModal = ({
         </div>
         {type === "Inhouse" ? (
           <>
-            <Input label="Return Date" name="returnDate" value={currentDate} type="date" readOnly={true} />
+            <Input label="Return Date" name="returnDate" value={currentDate} type="date" disabled={true} />
             <Input
               label="Return Time"
               name="returnTime"

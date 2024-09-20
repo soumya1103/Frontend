@@ -33,7 +33,8 @@ function Dashboard() {
   const loadBooks = async () => {
     try {
       const response = await getAllBooksNp();
-      const limitedBooksData = response.data.slice(0, 8);
+      const books = response.data.reverse();
+      const limitedBooksData = books.slice(0, 7);
       setBooksData(limitedBooksData);
       setTotalBooks(response.data.length);
     } catch (error) {
@@ -76,18 +77,18 @@ function Dashboard() {
       ) : (
         <div className="dashboard-outer-container">
           <div className="dashboard-inner-container">
-            <Link to="/books" style={{ textDecoration: "none" }}>
-              <div className="dashboard-card">
-                <img src={bookDashboard} alt="book" width="20%" />
-                <h3>{totalBooks}</h3>
-                <h4>Total Books</h4>
-              </div>
-            </Link>
             <Link to="/categories" style={{ textDecoration: "none" }}>
               <div className="dashboard-card">
                 <img src={categoryDashboard} alt="category" width="20%" />
                 <h3>{totalCategories}</h3>
                 <h4>Total Categories</h4>
+              </div>
+            </Link>
+            <Link to="/books" style={{ textDecoration: "none" }}>
+              <div className="dashboard-card">
+                <img src={bookDashboard} alt="book" width="20%" />
+                <h3>{totalBooks}</h3>
+                <h4>Total Books</h4>
               </div>
             </Link>
             <Link to="/users" style={{ textDecoration: "none" }}>
@@ -106,7 +107,7 @@ function Dashboard() {
             </Link>
           </div>
           <div className="dashboard-table-container">
-            <h2>Books</h2>
+            <h2>Newly Added Books</h2>
             <Table columns={booksColumns} data={booksData} />
           </div>
         </div>

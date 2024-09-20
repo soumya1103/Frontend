@@ -1,13 +1,4 @@
-import {
-  ADD_USER,
-  COUNT_USER,
-  DELETE_USER,
-  GET_ALL_USERS,
-  GET_ALL_USERS_NP,
-  GET_USERS_BY_CREDENTIAL,
-  UPDATE_USER,
-  USER_SEARCH,
-} from "../ApiConstants";
+import { ADD_USER, DELETE_USER, GET_ALL_USERS, GET_ALL_USERS_NP, GET_USERS_BY_CREDENTIAL, UPDATE_USER, USER_SEARCH } from "../ApiConstants";
 import app from "../apiClient";
 
 export const getUserByRole = async (page, size) => {

@@ -67,3 +67,8 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+.disabled {
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}

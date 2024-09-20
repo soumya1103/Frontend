@@ -2,14 +2,14 @@ import React from "react";
 import "./Form.css";
 import Error from "../Error/Error";
 
-function Input({ label, name, min, max, type, value, onChange, readOnly, className, maxLength, error = "" }) {
+function Input({ label, name, min, max, type, value, onChange, className, maxLength, error = "", disabled }) {
   return (
     <div className="form-content">
       <label htmlFor={name} className="form-field-label">
         {label}
       </label>
       <input
-        className={`form-field-input ${className}`}
+        className={disabled ? `form-field-input disabled ${className}` : `form-field-input ${className}`}
         id={name}
         name={name}
         type={type}
@@ -18,7 +18,6 @@ function Input({ label, name, min, max, type, value, onChange, readOnly, classNa
         autoComplete="off"
         min={min}
         max={max}
-        readOnly={readOnly}
         placeholder={label}
         maxLength={maxLength}
       />

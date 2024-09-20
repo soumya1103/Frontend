@@ -231,7 +231,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, renderUtil }) {
             {errors.userId && <Error error={errors.userId} />}
           </div>
 
-          <Input label="User Name" value={userName} name="userName" type="text" readOnly={true} />
+          <Input label="User Name" value={userName} name="userName" type="text" disabled={true} />
 
           <div className="form-content">
             <label className="form-field-label">Book Title</label>
@@ -247,7 +247,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, renderUtil }) {
             {errors.bookId && <Error error={errors.bookId} />}
           </div>
 
-          <Input label="Book Author" value={bookAuthor} name="bookAuthor" type="text" readOnly={true} />
+          <Input label="Book Author" value={bookAuthor} name="bookAuthor" type="text" disabled={true} />
 
           <div className="form-content">
             <label className="form-field-label">Issuance Type</label>
@@ -261,7 +261,7 @@ function AddIssuanceModal({ show, onClose, reloadIssuances, renderUtil }) {
           </div>
           {issuanceType === "Inhouse" ? (
             <>
-              <Input label="Return Date" value={currentDate} readOnly={true} />
+              <Input label="Return Date" value={currentDate} disabled={true} />
               <Input
                 label="Return Time"
                 name="returnTime"
