@@ -141,7 +141,7 @@ const AssignBookModal = ({
           <select className="form-field-input" value={bookTitle} onChange={(e) => handleBookChange(e.target.value)}>
             <option value="">Select Book</option>
             {books.map((book) => (
-              <option key={book.bookId} value={book?.bookTitle} disabled={book.bookCount === 0 ? true : false}>
+              <option key={book.bookId} value={book?.bookTitle} readOnly={true} disabled={book.bookCount === 0 ? true : false}>
                 {book.bookTitle}
               </option>
             ))}
@@ -149,10 +149,10 @@ const AssignBookModal = ({
           <div></div>
           {errors.bookTitle && <Error error={errors.bookTitle} />}
         </div>
-        <Input label="Book Author" name="bookAuthor" value={book?.bookAuthor} type="text" disabled={true} />
+        <Input label="Book Author" name="bookAuthor" value={book?.bookAuthor} type="text" readOnly={true} disabled={true} />
 
-        <Input label="Phone No" name="userCredential" value={userData?.userCredential} type="text" disabled={true} />
-        <Input label="User Name" name="userName" value={userData?.userName} type="text" disabled={true} />
+        <Input label="Phone No" name="userCredential" value={userData?.userCredential} type="text" readOnly={true} disabled={true} />
+        <Input label="User Name" name="userName" value={userData?.userName} type="text" readOnly={true} disabled={true} />
 
         <div className="form-content">
           <label className="form-field-label">Issuance Type</label>
@@ -166,7 +166,7 @@ const AssignBookModal = ({
         </div>
         {type === "Inhouse" ? (
           <>
-            <Input label="Return Date" name="returnDate" value={currentDate} type="date" disabled={true} />
+            <Input label="Return Date" name="returnDate" value={currentDate} type="date" readOnly={true} disabled={true} />
             <Input
               label="Return Time"
               name="returnTime"

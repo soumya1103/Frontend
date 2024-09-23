@@ -181,14 +181,14 @@ function EditIssuanceModal({ show, onClose, issuance, reloadIssuances, render })
       <Modal show={show} onClose={onClose} height={modalDimensions.height} width={modalDimensions.width}>
         <p className="form-title">Edit Issuance</p>
         <div>
-          <Input label="Phone No." value={issuanceData.userCredential} name="userCredential" type="text" disabled={true} />
-          <Input label="User Name" value={userName} name="userName" type="text" disabled={true} />
-          <Input label="Book Title" value={issuanceData.bookTitle} name="bookTitle" type="text" disabled={true} />
-          <Input label="Issuance Type" value={issuanceData.issuanceType} name="issuanceType" type="text" disabled={true} />
+          <Input label="Phone No." value={issuanceData.userCredential} name="userCredential" type="text" readOnly={true} disabled={true} />
+          <Input label="User Name" value={userName} name="userName" type="text" readOnly={true} disabled={true} />
+          <Input label="Book Title" value={issuanceData.bookTitle} name="bookTitle" type="text" readOnly={true} disabled={true} />
+          <Input label="Issuance Type" value={issuanceData.issuanceType} name="issuanceType" type="text" readOnly={true} disabled={true} />
 
           {issuanceType === "Inhouse" ? (
             <>
-              <Input label="Return Date" value={issDate || ""} disabled={true} />
+              <Input label="Return Date" value={issDate || ""} readOnly={true} disabled={true} />
               <Input label="Return Time" name="returnTime" type="time" value={returnTime} onChange={handleTimeChange} />
             </>
           ) : (
