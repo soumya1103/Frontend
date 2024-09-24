@@ -80,7 +80,7 @@ const UserModal = ({ show, onClose, isEdit, userData, onChange, onSubmit }) => {
           maxLength={10}
           error={errors.userCredential}
           disabled={isEdit ? true : false}
-          readOnly={true}
+          readOnly={isEdit ? true : false}
         />
         <Input label="User Name" name="userName" value={formData.userName || ""} type="text" onChange={handleInputChange} error={errors.userName} />
       </div>
