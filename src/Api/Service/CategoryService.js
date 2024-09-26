@@ -1,5 +1,13 @@
 import app from "../apiClient";
-import { GET_ALL_CATEGORIES, GET_ALL_CATEGORIES_NP, DELETE_CATEGORY, ADD_CATEGORY, UPDATE_CATEGORY, CATEGORY_SEARCH } from "../ApiConstants";
+import {
+  GET_ALL_CATEGORIES,
+  GET_ALL_CATEGORIES_NP,
+  DELETE_CATEGORY,
+  ADD_CATEGORY,
+  UPDATE_CATEGORY,
+  CATEGORY_SEARCH,
+  GET_CATEGORY_BY_NAME,
+} from "../ApiConstants";
 
 export const getAllCategories = async (page, size) => {
   return await app.get(GET_ALL_CATEGORIES, {
@@ -12,6 +20,10 @@ export const getAllCategories = async (page, size) => {
 
 export const getAllCategoriesNp = async () => {
   return await app.get(GET_ALL_CATEGORIES_NP);
+};
+
+export const getCategoryByCategoryName = async (categoryName) => {
+  return await app.get(`${GET_CATEGORY_BY_NAME}/${categoryName}`);
 };
 
 export const deleteCategory = async (categoryId) => {

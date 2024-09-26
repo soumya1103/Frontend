@@ -142,6 +142,8 @@ function Books() {
   };
 
   const handleEditIcon = (book) => {
+    console.log("handleedit", book);
+
     setBookData({
       categoryId: book.categoryId,
       categoryName: book.categoryName,
@@ -181,6 +183,7 @@ function Books() {
         ...bookData,
         bookTitle: bookData.bookTitle.trim(),
         bookAuthor: bookData.bookAuthor.trim(),
+        categoryId: Number(bookData.categoryId),
       };
 
       const response = await updateBook(trimmedBookData, bookId);

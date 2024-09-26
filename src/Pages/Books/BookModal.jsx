@@ -4,17 +4,24 @@ import Input from "../../Component/Input/Input";
 import Button from "../../Component/Button/Button";
 import Error from "../../Component/Error/Error";
 import { validationPatterns } from "../../Validations/Constant";
+import { getCategoryByCategoryName } from "../../Api/Service/CategoryService";
 
 const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChange, onInputChange, onSubmit }) => {
   const [formData, setFormData] = useState(bookData);
   const [errors, setErrors] = useState({});
 
+  const handleCategoryIdSet = async (categoryName) => {
+    const response = await getCategoryByCategoryName(categoryName);
+    setFormData({ ...bookData, categoryId: Number(response.data.categoryId) });
+  };
+
   useEffect(() => {
     if (show) {
-      setFormData(bookData || {});
+      handleCategoryIdSet(bookData.categoryName);
+      setFormData(formData);
       setErrors({});
     }
-  }, [bookData, show]);
+  }, [show]);
 
   const validate = () => {
     const errors = {};
@@ -75,6 +82,8 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
 
   const handleCategoryChange = (e) => {
     const value = e.target.value;
+    console.log(value);
+
     setFormData((prevData) => ({
       ...prevData,
       categoryId: value,
