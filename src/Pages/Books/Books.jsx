@@ -142,8 +142,6 @@ function Books() {
   };
 
   const handleEditIcon = (book) => {
-    console.log("handleedit", book);
-
     setBookData({
       categoryId: book.categoryId,
       categoryName: book.categoryName,

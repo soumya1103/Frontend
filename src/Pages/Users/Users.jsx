@@ -292,7 +292,7 @@ function Users() {
         await loadUsers();
       }
     } catch (error) {
-      setToastMessage("User can't be deleted as a book is issued!");
+      setToastMessage(error.response.data.message);
       setShowToast(true);
       setToastType("error");
     } finally {

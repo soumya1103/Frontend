@@ -11,12 +11,16 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
   const [errors, setErrors] = useState({});
 
   const handleCategoryIdSet = async (categoryName) => {
-    const response = await getCategoryByCategoryName(categoryName);
-    setFormData({ ...bookData, categoryId: Number(response.data.categoryId) });
+    try {
+      const response = await getCategoryByCategoryName(categoryName);
+      setFormData({ ...bookData, categoryId: Number(response.data.categoryId) });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    if (show) {
+    if (show && isEdit) {
       handleCategoryIdSet(bookData.categoryName);
       setFormData(formData);
       setErrors({});
@@ -82,7 +86,6 @@ const BookModal = ({ show, onClose, isEdit, bookData, categories, onCategoryChan
 
   const handleCategoryChange = (e) => {
     const value = e.target.value;
-    console.log(value);
 
     setFormData((prevData) => ({
       ...prevData,
